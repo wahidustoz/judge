@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{624BCC62-8BB1-4C65-AD63-82431EE8C8B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Client", "src\Ilmhub.Judge.Client\Ilmhub.Judge.Client.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Client.Abstractions", "src\Ilmhub.Judge.Client.Abstractions\Ilmhub.Judge.Client.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4CDAF729-CB88-40C9-958C-D8CBF8FBDE68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Client.Tests.Integration", "tests\Ilmhub.Judge.Client.Tests.Integration\Ilmhub.Judge.Client.Tests.Integration.csproj", "{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{890EC7B3-7C37-42BA-B434-0E0819E53389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{890EC7B3-7C37-42BA-B434-0E0819E53389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{890EC7B3-7C37-42BA-B434-0E0819E53389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{890EC7B3-7C37-42BA-B434-0E0819E53389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5927E60-5151-43F5-8A32-C826592F7B23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5927E60-5151-43F5-8A32-C826592F7B23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5927E60-5151-43F5-8A32-C826592F7B23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5927E60-5151-43F5-8A32-C826592F7B23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{890EC7B3-7C37-42BA-B434-0E0819E53389} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{D5927E60-5151-43F5-8A32-C826592F7B23} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44} = {4CDAF729-CB88-40C9-958C-D8CBF8FBDE68}
+	EndGlobalSection
+EndGlobal
