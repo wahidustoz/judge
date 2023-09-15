@@ -48,7 +48,7 @@ public class LanguageConfiguration : ILanguageConfiguration
                 Run = new RunConfiguration()
                 {
                     Command = "{exe_path}",
-                    SeccompRule = null,
+                    SeccompRule = string.Empty,
                     Environment = new string[] { "LANG=en_US.UTF-8", "LANGUAGE=en_US:en", "LC_ALL=en_US.UTF-8" }
                 }
             }
@@ -114,7 +114,7 @@ public class LanguageConfiguration : ILanguageConfiguration
                 Run = new RunConfiguration()
                 {
                     Command = "/usr/bin/mono {exe_path}",
-                    SeccompRule = null,
+                    SeccompRule = string.Empty,
                     Environment = new string[] { "LANG=en_US.UTF-8", "LANGUAGE=en_US:en", "LC_ALL=en_US.UTF-8" },
                     MemoryLimitCheckOnly = true
                 }

@@ -21,7 +21,8 @@ public class JudgeServerClient : IJudgeServerClient
         long maxCpuTime,
         long maxMemory,
         IEnumerable<ITestCase> testCases = default, 
-        string testCaseId = null, 
+        string testCaseId = null,
+        bool showsOutput = false,
         CancellationToken cancellationToken = default)
     {
         var request = new JudgeRequestDto

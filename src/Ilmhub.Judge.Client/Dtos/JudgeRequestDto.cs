@@ -19,6 +19,7 @@ public class JudgeRequestDto
     public IEnumerable<TestCaseDto> TestCases { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), JsonPropertyName("test_case_id")]
     public string TestCaseId { get; set; }
+
 }
 
 public class LanguageConfigurationDto

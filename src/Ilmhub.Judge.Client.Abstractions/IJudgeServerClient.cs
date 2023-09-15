@@ -12,5 +12,6 @@ public interface IJudgeServerClient
         long maxMemory,
         IEnumerable<ITestCase> testCases = default,
         string testCaseId = null,
+        bool showsOutput = false,
         CancellationToken cancellationToken = default);
 }

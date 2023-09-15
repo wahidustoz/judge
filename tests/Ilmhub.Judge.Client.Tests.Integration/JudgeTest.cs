@@ -33,7 +33,8 @@ public class JudgeTest
             {
                 new TestCase { Input = "1 2", Output = "3" },
                 new TestCase { Input = "4 1", Output = "5" },
-            }
+            },
+            showsOutput: true
         );
 
         Assert.Contains(@"""err"": null", response);
@@ -45,12 +46,13 @@ public class JudgeTest
         var client = provider.GetRequiredService<IJudgeServerClient>();
         var csSource = @"
         using System;
+        using System.Linq;
         public class HelloWorld
         {    
             public static void Main(string[] args)
             {
                 var numbers = Console.ReadLine()
-                    .Split(' '. StringSplitOptions.RemoveEmptyEntries)
+                    .Split(' ')
                     .Select(int.Parse)
                     .ToArray(); 
                 Console.WriteLine($""{numbers[0]+numbers[1]}"");
@@ -58,7 +60,7 @@ public class JudgeTest
         }";
         var response = await client.JudgeAsync(
             sourceCode: csSource,
-            languageConfiguration: LanguageConfiguration.Defaults[ELanguageType.C],
+            languageConfiguration: LanguageConfiguration.Defaults[ELanguageType.CSharp],
             maxCpuTime: 3000,
             maxMemory: 1024 * 1024 * 128,
             testCases: new List<ITestCase>
