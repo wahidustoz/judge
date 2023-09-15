@@ -14,7 +14,7 @@ public class JudgeTest
         => provider = SetupServiceProvider("http://localhost:12358", "123token");
 
     [Fact]
-    public async Task Dummy()
+    public async Task CTestSuccessfullyJudges()
     {
         var client = provider.GetRequiredService<IJudgeServerClient>();
         var csSource = @"
@@ -23,6 +23,38 @@ public class JudgeTest
             scanf(""%d %d"", &a, &b);
             printf(""%d"", a + b);
             return 0;
+        }";
+        var response = await client.JudgeAsync(
+            sourceCode: csSource,
+            languageConfiguration: LanguageConfiguration.Defaults[ELanguageType.C],
+            maxCpuTime: 3000,
+            maxMemory: 1024 * 1024 * 128,
+            testCases: new List<ITestCase>
+            {
+                new TestCase { Input = "1 2", Output = "3" },
+                new TestCase { Input = "4 1", Output = "5" },
+            }
+        );
+
+        Assert.Contains(@"""err"": null", response);
+    }
+
+    [Fact]
+    public async Task CSharpTestSuccessfullyJudges()
+    {
+        var client = provider.GetRequiredService<IJudgeServerClient>();
+        var csSource = @"
+        using System;
+        public class HelloWorld
+        {    
+            public static void Main(string[] args)
+            {
+                var numbers = Console.ReadLine()
+                    .Split(' '. StringSplitOptions.RemoveEmptyEntries)
+                    .Select(int.Parse)
+                    .ToArray(); 
+                Console.WriteLine($""{numbers[0]+numbers[1]}"");
+            }
         }";
         var response = await client.JudgeAsync(
             sourceCode: csSource,
