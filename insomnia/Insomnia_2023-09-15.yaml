@@ -1,0 +1,190 @@
+_type: export
+__export_format: 4
+__export_date: 2023-09-15T11:57:30.753Z
+__export_source: insomnia.desktop.app:v2023.5.8
+resources:
+  - _id: req_1d62c19d99374754a6e7aa471f13e25a
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1694778935299
+    created: 1694778322841
+    url: "{{ _.endpoint }}/ping"
+    name: Ping
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_35cbf6e2142e44e98508c59b78cf139e
+      - id: pair_14a2f027d3fe4aa98c82a6159402a258
+        name: X-Judge-Server-Token
+        value: "{% hash 'sha256', 'hex', _.token %}"
+        description: ""
+    authentication: {}
+    metaSortKey: -1694778322841
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: wrk_31e1d3728a6f44b99b5cee652affc546
+    parentId: null
+    modified: 1694778179234
+    created: 1694778179234
+    name: Judge
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_5825c5915b10474eb4a80954deca083f
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1694778997850
+    created: 1694778288650
+    url: "{{ _.endpoint }}/judge"
+    name: C
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"output": true,
+          "src": "int main() { int a, b; scanf(\" %d %d\", &a, &b); printf(\"%d\", a+b+5); return 0;}",
+          "language_config": {
+            "name": "C",
+            "compile": {
+              "src_name": "main.c",
+              "exe_name": "main",
+              "max_cpu_time": 3000,
+              "max_real_time": 5000,
+              "max_memory": -1,
+              "compile_command": "/usr/bin/gcc -DONLINE_JUDGE -O2 -w -fmax-errors=3 -std=c99 {src_path} -lm -o {exe_path}"
+            },
+            "run": {
+              "command": "{exe_path}",
+              "env": [
+                "LANG=en_US.UTF-8",
+                "LANGUAGE=en_US:en",
+                "LC_ALL=en_US.UTF-8"
+              ],
+        		"seccomp_rule": "c_cpp"
+            }
+          },
+          "max_cpu_time": 3000,
+          "max_memory": 134217728,
+          "test_case": [ {
+        	  "input": "1 2",
+        	  "output": "3"
+          }, {
+        	  "input": "4 1",
+        	  "output": "5"
+          }]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_7d84d07ab8eb479f9850b55776e81bde
+      - name: X-Judge-Server-Token
+        value: "{% hash 'sha256', 'hex', _.token %}"
+        id: pair_e78ecd23f23345dea900171c80533fcf
+    authentication: {}
+    metaSortKey: -1694778288650
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_56156b3abb964b11ba42503896b3db68
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1694778982566
+    created: 1694778244792
+    url: "{{ _.endpoint }}/judge"
+    name: C Sharp
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"output": true,
+          "src": "using System;public class HelloWorld{    public static void Main(string[] args){var numbers = Console.ReadLine(); Console.WriteLine(numbers);}}",
+          "language_config": {
+            "name": "csharp",
+            "compile": {
+              "src_name": "Main.cs",
+              "exe_name": "Main",
+              "max_cpu_time": 3000,
+              "max_real_time": 5000,
+              "max_memory": -1,
+              "compile_command": "/usr/bin/mcs -out:{exe_path} {src_path}"
+            },
+            "run": {
+              "command": "/usr/bin/mono {exe_path}",
+              "env": [
+                "LANG=en_US.UTF-8",
+                "LANGUAGE=en_US:en",
+                "LC_ALL=en_US.UTF-8"
+              ],
+              "memory_limit_check_only": 1,
+        		"seccomp_rule": ""
+            }
+          },
+          "max_cpu_time": 3000,
+          "max_memory": 134217728,
+          "test_case": [ {
+        	  "input": "1 2",
+        	  "output": "3"
+          }, {
+        	  "input": "4 1",
+        	  "output": "5"
+          }]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_701cb9ef59b5441daee44dcd706e989b
+      - name: X-Judge-Server-Token
+        value: "{% hash 'sha256', 'hex', _.token %}"
+        id: pair_58ee9a3a0b964b308a4cd2c857f7cfa3
+    authentication: {}
+    metaSortKey: -1694778244792
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_125e2ad31fa95024de0310558b4ffc058c846cb5
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1694778831961
+    created: 1694778179238
+    name: Base Environment
+    data:
+      endpoint: http://localhost:12358
+      token: 123token
+    dataPropertyOrder:
+      "&":
+        - endpoint
+        - token
+    color: null
+    isPrivate: false
+    metaSortKey: 1694778179238
+    _type: environment
+  - _id: jar_125e2ad31fa95024de0310558b4ffc058c846cb5
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1694778179240
+    created: 1694778179240
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
