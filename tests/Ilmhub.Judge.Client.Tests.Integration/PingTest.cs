@@ -10,7 +10,7 @@ public class PingTest
     private readonly ServiceProvider provider;
 
     public PingTest()
-        => provider = SetupServiceProvider("http://localhost:12358", "123token");
+        => provider = ServiceCollectionMockProvider.SetupServiceProvider("http://localhost:12358", "123token");
 
     [Fact]
     public async Task ValidPingSucceedsAsync()
@@ -25,7 +25,7 @@ public class PingTest
     [Fact]
     public async Task PingWithInvalidTokenThrowsPingFailedExceptionAsync()
     {
-        var provider = SetupServiceProvider("http://localhost:12358", "POTATO");
+        var provider = ServiceCollectionMockProvider.SetupServiceProvider("http://localhost:12358", "POTATO");
         var client = provider.GetRequiredService<IJudgeServerClient>();
 
         var pingTask = () => client.PingAsync().AsTask();
@@ -36,26 +36,11 @@ public class PingTest
     [Fact]
     public async Task PingWithInvalidUrlThrowsHttpRequestExceptionAsync()
     {
-        var provider = SetupServiceProvider("http://localhost:123", "POTATO");
+        var provider = ServiceCollectionMockProvider.SetupServiceProvider("http://localhost:123", "POTATO");
         var client = provider.GetRequiredService<IJudgeServerClient>();
 
         var pingTask = () => client.PingAsync().AsTask();
 
         await Assert.ThrowsAsync<HttpRequestException>(pingTask);
-    }
-
-    private ServiceProvider SetupServiceProvider(string baseUrl, string token)
-    {
-        var configuration = ConfigurationMockFactory.Create(new Dictionary<string, string>
-            {
-                { "JudgeServer:BaseUrl", baseUrl },
-                { "JudgeServer:Token", token }
-            });
-
-        var services = new ServiceCollection();
-        services.AddSingleton(configuration);
-        services.AddJudgeServerClient(configuration);
-
-        return services.BuildServiceProvider();
     }
 }

@@ -11,7 +11,7 @@ public class JudgeTest
     private readonly ServiceProvider provider;
 
     public JudgeTest()
-        => provider = SetupServiceProvider("http://localhost:12358", "123token");
+        => provider = ServiceCollectionMockProvider.SetupServiceProvider("http://localhost:12358", "123token");
 
     [Fact]
     public async Task CTestSuccessfullyJudges()
@@ -76,20 +76,5 @@ public class JudgeTest
 
         Assert.True(response.IsSuccess);
         Assert.NotEmpty(response.TestCases);
-    }
-
-    private ServiceProvider SetupServiceProvider(string baseUrl, string token)
-    {
-        var configuration = ConfigurationMockFactory.Create(new Dictionary<string, string>
-            {
-                { "JudgeServer:BaseUrl", baseUrl },
-                { "JudgeServer:Token", token }
-            });
-
-        var services = new ServiceCollection();
-        services.AddSingleton(configuration);
-        services.AddJudgeServerClient(configuration);
-
-        return services.BuildServiceProvider();
     }
 }
