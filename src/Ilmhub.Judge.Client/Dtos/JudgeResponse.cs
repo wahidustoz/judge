@@ -31,5 +31,6 @@ public class TestCaseResponseDto
     public string TestCase { get; set; }
     [JsonPropertyName("output_md5")]
     public string OutputMd5 { get; set; }
+    [JsonPropertyName("output")]
     public string Output { get; set; }
 }

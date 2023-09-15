@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Ilmhub.Judge.Client.Tests.Integration;
 
-public class JudgeTest
+public partial class JudgeTest
 {
     private readonly ServiceProvider provider;
 
