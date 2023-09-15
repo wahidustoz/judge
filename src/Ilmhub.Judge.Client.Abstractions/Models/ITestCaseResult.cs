@@ -8,7 +8,7 @@ public interface ITestCaseResult
     long Signal { get; set; }
     long ExitCode { get; set; }
     long Error { get; set; }
-    long Result { get; set; }
+    EJudgeStatus Status { get; set; }
     string TestCase { get; set; }
     string OutputMd5 { get; set; }
     string Output { get; set; }

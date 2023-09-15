@@ -37,7 +37,7 @@ public class JudgeServerClient : IJudgeServerClient
                 Signal = tc.Signal,
                 ExitCode = tc.ExitCode,
                 Error = tc.Error,
-                Result = tc.Result,
+                Status = (EJudgeStatus)tc.Result,
                 TestCase = tc.TestCase,
                 OutputMd5 = tc.OutputMd5,
                 Output = tc.Output

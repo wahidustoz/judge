@@ -10,7 +10,7 @@ public class PingTest
     private readonly ServiceProvider provider;
 
     public PingTest()
-        => provider = SetupServiceProvider("http://localhost:12358", "dccf62d6-3628-4ad0-a30e-49d159e54136");
+        => provider = SetupServiceProvider("http://localhost:12358", "123token");
 
     [Fact]
     public async Task ValidPingSucceedsAsync()

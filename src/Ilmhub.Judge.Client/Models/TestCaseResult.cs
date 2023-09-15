@@ -10,7 +10,7 @@ public class TestCaseResult : ITestCaseResult
     public long Signal { get; set; }
     public long ExitCode { get; set; }
     public long Error { get; set; }
-    public long Result { get; set; }
+    public EJudgeStatus Status { get; set; }
     public string TestCase { get; set; }
     public string OutputMd5 { get; set; }
     public string Output { get; set; }
