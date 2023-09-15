@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Ilmhub.Judge.Client.Abstractions;
 using Ilmhub.Judge.Client.Abstractions.Models;
 using Ilmhub.Judge.Client.Dtos;
@@ -15,37 +14,35 @@ public class JudgeServerClient : IJudgeServerClient
 
     public JudgeServerClient(HttpClient client) => this.client = client;
 
-    public async ValueTask<string> JudgeAsync(
-        string sourceCode, 
-        ILanguageConfiguration languageConfiguration, 
-        long maxCpuTime,
-        long maxMemory,
-        IEnumerable<ITestCase> testCases = default, 
-        string testCaseId = null,
-        bool showsOutput = false,
-        CancellationToken cancellationToken = default)
+    public async ValueTask<IJudgeResult> JudgeAsync(IJudgeRequest request, CancellationToken cancellationToken = default)
     {
-        var request = new JudgeRequestDto
-        {
-            SourceCode = sourceCode,
-            MaxCpuTime = maxCpuTime,
-            MaxMemory = maxMemory,
-            TestCaseId = testCaseId,
-            TestCases = testCases.Select(t => new TestCaseDto(t)),
-            LanguageConfiguration = new LanguageConfigurationDto(languageConfiguration)
-        };
-
-        var requestString = JsonSerializer.Serialize(request, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
-
         var response = await client.PostAsJsonAsync(
             requestUri: "/judge", 
-            value: request,
+            value: new JudgeRequestDto(request),
             cancellationToken: cancellationToken);
+        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+        var responseDto = JsonSerializer.Deserialize<JudgeResponse>(responseString);
 
-        return await response.Content.ReadAsStringAsync(cancellationToken);
+        if(responseDto.IsSuccess is false)
+            throw new JudgeFailedException(responseDto);
+
+        return new JudgeResult
+        {
+            ErrorMessage = responseDto.ErrorMessage,
+            TestCases = responseDto.TestCases.Select(tc => new TestCaseResult
+            {
+                CpuTime = tc.CpuTime,
+                RealTime = tc.RealTime,
+                Memory = tc.Memory,
+                Signal = tc.Signal,
+                ExitCode = tc.ExitCode,
+                Error = tc.Error,
+                Result = tc.Result,
+                TestCase = tc.TestCase,
+                OutputMd5 = tc.OutputMd5,
+                Output = tc.Output
+            })
+        };
     }
 
     public async ValueTask<IServerInfo> PingAsync(CancellationToken cancellationToken = default)

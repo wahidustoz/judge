@@ -17,27 +17,29 @@ public class JudgeTest
     public async Task CTestSuccessfullyJudges()
     {
         var client = provider.GetRequiredService<IJudgeServerClient>();
-        var csSource = @"
+        var cSource = @"
         int main() {
             int a, b;
             scanf(""%d %d"", &a, &b);
             printf(""%d"", a + b);
             return 0;
         }";
-        var response = await client.JudgeAsync(
-            sourceCode: csSource,
-            languageConfiguration: LanguageConfiguration.Defaults[ELanguageType.C],
-            maxCpuTime: 3000,
-            maxMemory: 1024 * 1024 * 128,
-            testCases: new List<ITestCase>
+        var response = await client.JudgeAsync(new JudgeRequest
+        {
+            SourceCode = cSource,
+            LanguageConfiguration = LanguageConfiguration.Defaults[ELanguageType.C],
+            MaxCpuTime = 3000,
+            MaxMemory = 1024 * 1024 * 128,
+            TestCases = new List<ITestCase>
             {
                 new TestCase { Input = "1 2", Output = "3" },
                 new TestCase { Input = "4 1", Output = "5" },
             },
-            showsOutput: true
-        );
+            ShouldReturnOutput = true
+        });
 
-        Assert.Contains(@"""err"": null", response);
+        Assert.True(response.IsSuccess);
+        Assert.NotEmpty(response.TestCases);
     }
 
     [Fact]
@@ -58,19 +60,22 @@ public class JudgeTest
                 Console.WriteLine($""{numbers[0]+numbers[1]}"");
             }
         }";
-        var response = await client.JudgeAsync(
-            sourceCode: csSource,
-            languageConfiguration: LanguageConfiguration.Defaults[ELanguageType.CSharp],
-            maxCpuTime: 3000,
-            maxMemory: 1024 * 1024 * 128,
-            testCases: new List<ITestCase>
+        var response = await client.JudgeAsync(new JudgeRequest
+        {
+            SourceCode = csSource,
+            LanguageConfiguration = LanguageConfiguration.Defaults[ELanguageType.CSharp],
+            MaxCpuTime = 3000,
+            MaxMemory = 1024 * 1024 * 128,
+            TestCases = new List<ITestCase>
             {
                 new TestCase { Input = "1 2", Output = "3" },
                 new TestCase { Input = "4 1", Output = "5" },
-            }
-        );
+            },
+            ShouldReturnOutput = true
+        });
 
-        Assert.Contains(@"""err"": null", response);
+        Assert.True(response.IsSuccess);
+        Assert.NotEmpty(response.TestCases);
     }
 
     private ServiceProvider SetupServiceProvider(string baseUrl, string token)

@@ -5,6 +5,17 @@ namespace Ilmhub.Judge.Client.Dtos;
 
 public class JudgeRequestDto
 {
+    public JudgeRequestDto(IJudgeRequest model)
+    {
+        ShouldReturnOutput = model.ShouldReturnOutput;
+        SourceCode = model.SourceCode;
+        MaxCpuTime = model.MaxCpuTime;
+        MaxMemory = model.MaxMemory;
+        TestCaseId = model.TestCaseId;
+        TestCases = model?.TestCases.Select(tc => new TestCaseDto(tc));
+        LanguageConfiguration = new LanguageConfigurationDto(model.LanguageConfiguration);
+    }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault), JsonPropertyName("output")]
     public bool ShouldReturnOutput { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull), JsonPropertyName("src")]
