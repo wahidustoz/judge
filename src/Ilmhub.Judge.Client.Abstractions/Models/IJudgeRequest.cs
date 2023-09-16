@@ -1,6 +1,4 @@
-﻿using Ilmhub.Judge.Client.Abstractions.Models;
-
-namespace Ilmhub.Judge.Client.Abstractions.Models;
+﻿namespace Ilmhub.Judge.Sdk.Abstractions.Models;
 
 public interface IJudgeRequest
 {

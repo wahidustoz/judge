@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using Ilmhub.Judge.Client.Abstractions.Models;
+using Ilmhub.Judge.Sdk.Abstractions.Models;
 
-namespace Ilmhub.Judge.Client.Dtos;
+namespace Ilmhub.Judge.Sdk.Dtos;
 
 public class JudgeRequestDto
 {
@@ -106,7 +106,7 @@ public class TestCaseDto
     public TestCaseDto(ITestCase model)
     {
         Input = model.Input;
-        Output = model.Output;    
+        Output = model.Output;
     }
 
     [JsonPropertyName("input")]

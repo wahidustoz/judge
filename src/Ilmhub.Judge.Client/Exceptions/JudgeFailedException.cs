@@ -1,4 +1,4 @@
-namespace Ilmhub.Judge.Client.Exceptions;
+namespace Ilmhub.Judge.Sdk.Exceptions;
 
 [Serializable]
 public class JudgeFailedException : Exception

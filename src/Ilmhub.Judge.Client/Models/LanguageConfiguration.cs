@@ -1,7 +1,6 @@
-﻿using Ilmhub.Judge.Client.Abstractions;
-using Ilmhub.Judge.Client.Abstractions.Models;
+﻿using Ilmhub.Judge.Sdk.Abstractions.Models;
 
-namespace Ilmhub.Judge.Client.Models;
+namespace Ilmhub.Judge.Sdk.Models;
 
 public class LanguageConfiguration : ILanguageConfiguration
 {
@@ -9,10 +8,10 @@ public class LanguageConfiguration : ILanguageConfiguration
     public ICompileConfiguration Compile { get; set; }
     public IRunConfiguration Run { get; set; }
 
-    public static Dictionary<ELanguageType, LanguageConfiguration> Defaults => new() 
+    public static Dictionary<ELanguageType, LanguageConfiguration> Defaults => new()
     {
-        { 
-            ELanguageType.C, 
+        {
+            ELanguageType.C,
             new LanguageConfiguration
             {
                 Compile = new CompileConfiguration()
@@ -32,8 +31,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.Pascal, 
+        {
+            ELanguageType.Pascal,
             new LanguageConfiguration
             {
                 Compile = new CompileConfiguration()
@@ -53,8 +52,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.Cpp, 
+        {
+            ELanguageType.Cpp,
             new LanguageConfiguration
             {
                 Compile = new CompileConfiguration()
@@ -74,8 +73,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.Java, 
+        {
+            ELanguageType.Java,
             new LanguageConfiguration
             {
                 Name = "java",
@@ -97,8 +96,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.CSharp, 
+        {
+            ELanguageType.CSharp,
             new LanguageConfiguration
             {
                 Name = "csharp",
@@ -120,8 +119,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.Python2, 
+        {
+            ELanguageType.Python2,
             new LanguageConfiguration
             {
                 Compile = new CompileConfiguration()
@@ -141,8 +140,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.Python3, 
+        {
+            ELanguageType.Python3,
             new LanguageConfiguration
             {
                 Compile = new CompileConfiguration()
@@ -162,8 +161,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.JavaScript, 
+        {
+            ELanguageType.JavaScript,
             new LanguageConfiguration
             {
                 Run = new RunConfiguration()
@@ -176,8 +175,8 @@ public class LanguageConfiguration : ILanguageConfiguration
                 }
             }
         },
-        { 
-            ELanguageType.Go, 
+        {
+            ELanguageType.Go,
             new LanguageConfiguration
             {
                 Compile = new CompileConfiguration()

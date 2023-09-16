@@ -1,6 +1,6 @@
-using Ilmhub.Judge.Client.Abstractions.Models;
+using Ilmhub.Judge.Sdk.Abstractions.Models;
 
-namespace Ilmhub.Judge.Client.Models;
+namespace Ilmhub.Judge.Sdk.Models;
 
 public class TestCase : ITestCase
 {

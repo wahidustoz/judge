@@ -1,9 +1,9 @@
-﻿using Ilmhub.Judge.Client.Abstractions;
-using Ilmhub.Judge.Client.Exceptions;
+﻿using Ilmhub.Judge.Sdk.Abstractions;
+using Ilmhub.Judge.Sdk.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Ilmhub.Judge.Client.Tests.Integration;
+namespace Ilmhub.Judge.Sdk.Tests.Integration;
 
 public class PingTest
 {

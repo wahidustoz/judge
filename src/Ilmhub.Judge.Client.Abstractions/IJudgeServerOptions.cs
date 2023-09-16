@@ -1,4 +1,4 @@
-﻿namespace Ilmhub.Judge.Client.Abstractions;
+﻿namespace Ilmhub.Judge.Sdk.Abstractions;
 
 public interface IJudgeServerOptions
 {

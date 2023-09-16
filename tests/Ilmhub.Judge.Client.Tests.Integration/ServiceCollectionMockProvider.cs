@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Ilmhub.Judge.Sdk;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Ilmhub.Judge.Client.Tests.Integration;
+namespace Ilmhub.Judge.Sdk.Tests.Integration;
 
 internal class ServiceCollectionMockProvider
 {

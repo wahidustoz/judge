@@ -1,18 +1,18 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Ilmhub.Judge.Client.Abstractions;
+using Ilmhub.Judge.Sdk.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Ilmhub.Judge.Client;
+namespace Ilmhub.Judge.Sdk;
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddJudgeServerClient(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<JudgeServerOptions>(configuration.GetSection("JudgeServer"));
-        services.AddHttpClient<IJudgeServerClient, JudgeServerClient>((provider, client) => 
+        services.AddHttpClient<IJudgeServerClient, JudgeServerClient>((provider, client) =>
         {
             var options = provider.GetRequiredService<IOptions<JudgeServerOptions>>();
             var baseUri = new Uri(options.Value.BaseUrl);

@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Ilmhub.Judge.Client.Dtos;
+using Ilmhub.Judge.Sdk.Dtos;
 
-namespace Ilmhub.Judge.Client.Json;
+namespace Ilmhub.Judge.Sdk.Json;
 
 public class JudgeResponseConverter : JsonConverter<JudgeResponse>
 {
-    public override bool CanConvert(Type typeToConvert) 
+    public override bool CanConvert(Type typeToConvert)
         => typeof(JudgeResponse).IsAssignableFrom(typeToConvert);
 
-    public override void Write(Utf8JsonWriter writer, JudgeResponse value, JsonSerializerOptions options) 
+    public override void Write(Utf8JsonWriter writer, JudgeResponse value, JsonSerializerOptions options)
         => throw new NotImplementedException();
 
     public override JudgeResponse Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -38,7 +38,7 @@ public class JudgeResponseConverter : JsonConverter<JudgeResponse>
                 result.TestCases = Enumerable.Empty<TestCaseResponseDto>();
                 result.CompileError = new CompileErrorDto();
                 var dataString = reader.GetString();
-                if(TryGetCompilerRuntimeErrorInfoString(dataString, out var infoString))
+                if (TryGetCompilerRuntimeErrorInfoString(dataString, out var infoString))
                     result.CompileError = JsonSerializer.Deserialize<CompileErrorDto>(infoString, options);
                 else
                     result.ErrorMessage = dataString;
@@ -49,17 +49,17 @@ public class JudgeResponseConverter : JsonConverter<JudgeResponse>
     }
 
     private bool TokenIsPropertyName(Utf8JsonReader reader) => reader.TokenType is JsonTokenType.PropertyName;
-    private bool TokenIsErrorMessage(Utf8JsonReader reader, string currentProperty) 
+    private bool TokenIsErrorMessage(Utf8JsonReader reader, string currentProperty)
         => reader.TokenType is JsonTokenType.String && currentProperty.Equals("err");
-    private bool TokenIsTestCaseArray(Utf8JsonReader reader, string currentProperty) 
+    private bool TokenIsTestCaseArray(Utf8JsonReader reader, string currentProperty)
         => reader.TokenType is JsonTokenType.StartArray && currentProperty.Equals("data");
-    private bool TokenIsCompileErrorData(Utf8JsonReader reader, string currentProperty, string errorMessage) 
-        => reader.TokenType is JsonTokenType.String 
-            && currentProperty.Equals("data") 
+    private bool TokenIsCompileErrorData(Utf8JsonReader reader, string currentProperty, string errorMessage)
+        => reader.TokenType is JsonTokenType.String
+            && currentProperty.Equals("data")
             && errorMessage.Equals("CompileError", StringComparison.OrdinalIgnoreCase);
-    private bool TryGetCompilerRuntimeErrorInfoString(string errorString, out string infoString) 
+    private bool TryGetCompilerRuntimeErrorInfoString(string errorString, out string infoString)
     {
-        if(errorString.IndexOf("info:") != -1)
+        if (errorString.IndexOf("info:") != -1)
         {
             infoString = errorString[(errorString.IndexOf("info:") + 5)..];     // using range operator for substring
             return true;

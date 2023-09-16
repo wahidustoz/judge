@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ilmhub.Judge.Client\Ilmhub.Judge.Client.csproj" />
+    <ProjectReference Include="..\..\src\Ilmhub.Judge.Client\Ilmhub.Judge.Sdk.csproj" />
   </ItemGroup>
 
 </Project>

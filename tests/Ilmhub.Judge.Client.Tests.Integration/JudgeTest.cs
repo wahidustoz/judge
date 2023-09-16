@@ -1,6 +1,7 @@
-﻿using Ilmhub.Judge.Client.Abstractions;
-using Ilmhub.Judge.Client.Abstractions.Models;
-using Ilmhub.Judge.Client.Models;
+﻿using Ilmhub.Judge.Sdk.Abstractions;
+using Ilmhub.Judge.Sdk.Abstractions.Models;
+using Ilmhub.Judge.Sdk.Models;
+using Ilmhub.Judge.Sdk.Tests.Integration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

@@ -1,12 +1,12 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using Ilmhub.Judge.Client.Abstractions;
-using Ilmhub.Judge.Client.Abstractions.Models;
-using Ilmhub.Judge.Client.Dtos;
-using Ilmhub.Judge.Client.Exceptions;
-using Ilmhub.Judge.Client.Models;
+using Ilmhub.Judge.Sdk.Abstractions;
+using Ilmhub.Judge.Sdk.Abstractions.Models;
+using Ilmhub.Judge.Sdk.Dtos;
+using Ilmhub.Judge.Sdk.Exceptions;
+using Ilmhub.Judge.Sdk.Models;
 
-namespace Ilmhub.Judge.Client;
+namespace Ilmhub.Judge.Sdk;
 
 public class JudgeServerClient : IJudgeServerClient
 {
@@ -17,13 +17,13 @@ public class JudgeServerClient : IJudgeServerClient
     public async ValueTask<IJudgeResult> JudgeAsync(IJudgeRequest request, CancellationToken cancellationToken = default)
     {
         var response = await client.PostAsJsonAsync(
-            requestUri: "/judge", 
+            requestUri: "/judge",
             value: new JudgeRequestDto(request),
             cancellationToken: cancellationToken);
         var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
         var responseDto = JsonSerializer.Deserialize<JudgeResponse>(responseString);
 
-        if(responseDto.IsSuccess is false && responseDto.CompileError is not null)
+        if (responseDto.IsSuccess is false && responseDto.CompileError is not null)
             throw new CompileErrorException(new CompileError
             {
                 Message = responseDto.ErrorMessage,
@@ -35,7 +35,7 @@ public class JudgeServerClient : IJudgeServerClient
                 Status = (ECompileErrorStatus)responseDto.CompileError.Result
             });
 
-        if(responseDto.IsSuccess is false)
+        if (responseDto.IsSuccess is false)
             throw new JudgeFailedException(responseDto.ErrorMessage);
 
         return new JudgeResult
@@ -62,7 +62,7 @@ public class JudgeServerClient : IJudgeServerClient
         var repsonse = await client.PostAsJsonAsync("/ping", new { }, cancellationToken);
         var pingResponseDto = JsonSerializer.Deserialize<PingResponse>(await repsonse.Content.ReadAsStringAsync(cancellationToken));
 
-        if(pingResponseDto.IsSuccess is false)
+        if (pingResponseDto.IsSuccess is false)
             throw new PingFailedException(pingResponseDto);
 
         return new ServerInfo

@@ -1,6 +1,6 @@
-﻿using Ilmhub.Judge.Client.Abstractions.Models;
+﻿using Ilmhub.Judge.Sdk.Abstractions.Models;
 
-namespace Ilmhub.Judge.Client;
+namespace Ilmhub.Judge.Sdk.Exceptions;
 
 [Serializable]
 public class CompileErrorException : Exception

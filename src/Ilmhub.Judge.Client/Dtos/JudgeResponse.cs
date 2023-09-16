@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using Ilmhub.Judge.Client.Json;
+using Ilmhub.Judge.Sdk.Json;
 
-namespace Ilmhub.Judge.Client.Dtos;
+namespace Ilmhub.Judge.Sdk.Dtos;
 
 [JsonConverter(typeof(JudgeResponseConverter))]
 public class JudgeResponse

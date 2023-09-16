@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Ilmhub.Judge.Client.Dtos;
+using Ilmhub.Judge.Sdk.Dtos;
 
-namespace Ilmhub.Judge.Client.Json;
+namespace Ilmhub.Judge.Sdk.Json;
 
 public class PingResponseConverter : JsonConverter<PingResponse>
 {

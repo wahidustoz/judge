@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Ilmhub.Judge.Client.Tests.Integration;
+namespace Ilmhub.Judge.Sdk.Tests.Integration;
 
 internal class ConfigurationMockFactory
 {
