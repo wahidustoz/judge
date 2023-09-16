@@ -23,8 +23,20 @@ public class JudgeServerClient : IJudgeServerClient
         var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
         var responseDto = JsonSerializer.Deserialize<JudgeResponse>(responseString);
 
+        if(responseDto.IsSuccess is false && responseDto.CompileError is not null)
+            throw new CompileErrorException(new CompileError
+            {
+                Message = responseDto.ErrorMessage,
+                CpuTime = responseDto.CompileError.CpuTime,
+                RealTime = responseDto.CompileError.RealTime,
+                Memory = responseDto.CompileError.Memory,
+                ExitCode = responseDto.CompileError.ExitCode,
+                Signal = responseDto.CompileError.Signal,
+                Status = (ECompileErrorStatus)responseDto.CompileError.Result
+            });
+
         if(responseDto.IsSuccess is false)
-            throw new JudgeFailedException(responseDto);
+            throw new JudgeFailedException(responseDto.ErrorMessage);
 
         return new JudgeResult
         {

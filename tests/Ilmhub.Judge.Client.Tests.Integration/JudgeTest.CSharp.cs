@@ -301,18 +301,18 @@ public partial class JudgeTest
     {
         var client = provider.GetRequiredService<IJudgeServerClient>();
         var csSource = @"
-    using System;
-    public class RealTimeConsumer
-    {    
-        public static void Main(string[] args)
-        {
-            System.Threading.Thread.Sleep(5000); // Sleep for 5 seconds
-            Console.WriteLine(""Done"");
-        }
-    }";
+        using System;
+        public class RealTimeConsumer
+        {    
+            public static void Main(string[] args)
+            {
+                System.Threading.Thread.Sleep(50); // Sleep for 50 milliseconds
+                Console.WriteLine(""Done"");
+            }
+        }";
         var languageConfigWithLowRealTimeMemory = LanguageConfiguration.Defaults[ELanguageType.CSharp];
-        languageConfigWithLowRealTimeMemory.Compile.MaxRealTime = 100;
-        var response = await client.JudgeAsync(new JudgeRequest
+        languageConfigWithLowRealTimeMemory.Compile.MaxRealTime = 50;
+        var judgeTask = client.JudgeAsync(new JudgeRequest
         {
             SourceCode = csSource,
             LanguageConfiguration = languageConfigWithLowRealTimeMemory,
@@ -323,12 +323,15 @@ public partial class JudgeTest
                 new TestCase { Input = "", Output = "Done" }
             },
             ShouldReturnOutput = true
-        });
+        }).AsTask();
 
-        Assert.True(response.IsSuccess);
-        Assert.NotEmpty(response.TestCases);
-        var testCaseResult = response.TestCases.First();
-        Assert.Equal(EJudgeStatus.RealTimeLimitExceeded, testCaseResult.Status);
+        await Assert.ThrowsAsync<CompileErrorException>(() => judgeTask);
+        
+        var compileErrorException = judgeTask.Exception.InnerExceptions
+            .First(e => e is CompileErrorException) as CompileErrorException;
+        var compileErrorObject = compileErrorException.Error;
+
+        Assert.Equal(ECompileErrorStatus.RealTimeLimit, compileErrorObject.Status);
     }
 
     [Fact]
@@ -336,15 +339,15 @@ public partial class JudgeTest
     {
         var client = provider.GetRequiredService<IJudgeServerClient>();
         var csSource = @"
-    using System;
-    public class SyntaxError
-    {    
-        public static void Main(string[] args)
-        {
-            // Missing semicolon at the end of the line
-            Console.WriteLine(""Hello, world"")
-        }
-    }";
+        using System;
+        public class SyntaxError
+        {    
+            public static void Main(string[] args)
+            {
+                // Missing semicolon at the end of the line
+                Console.WriteLine(""Hello, world"")
+            }
+        }";
         var judgeTask = client.JudgeAsync(new JudgeRequest
         {
             SourceCode = csSource,
@@ -358,9 +361,68 @@ public partial class JudgeTest
             ShouldReturnOutput = true
         }).AsTask();
 
-        await Assert.ThrowsAsync<JudgeFailedException>(() => judgeTask);
-        var exception = judgeTask.Exception.InnerExceptions.First(ex => ex is JudgeFailedException);
-        Assert.Contains("CompileError", exception.Message);
+        await Assert.ThrowsAsync<CompileErrorException>(() => judgeTask);
+        
+        var compileErrorException = judgeTask.Exception.InnerExceptions
+            .First(e => e is CompileErrorException) as CompileErrorException;
+        var compileErrorObject = compileErrorException.Error;
+
+        Assert.Equal(ECompileErrorStatus.Syntax, compileErrorObject.Status);
+        Assert.NotEmpty(compileErrorObject.Message);
     }
 
+    [Fact]
+    public async Task CSharpNegativeTest_CpuTimeExceededError()
+    {
+        var client = provider.GetRequiredService<IJudgeServerClient>();
+        var csSource = @"
+        using System;
+        using System.Diagnostics;
+        using System.Threading;
+
+        class Program
+        {
+            static void Main()
+            {
+                // Get the current stopwatch timestamp
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                int seconds = int.Parse(Console.ReadLine());
+                // Loop until approximately 2 seconds of CPU time has elapsed
+                TimeSpan targetCpuTime = TimeSpan.FromSeconds(seconds);
+                while (stopwatch.Elapsed < targetCpuTime)
+                {
+                    // Do some busy work here (e.g., calculate meaningless values)
+                    for (int i = 0; i < 1000000; i++)
+                    {
+                        Math.Sqrt(i);
+                    }
+                }
+
+                // Stop the stopwatch and print elapsed time
+                stopwatch.Stop();
+            }
+        }";
+
+        var result = await client.JudgeAsync(new JudgeRequest
+        {
+            SourceCode = csSource,
+            LanguageConfiguration = LanguageConfiguration.Defaults[ELanguageType.CSharp],
+            MaxCpuTime = 2000,
+            MaxMemory = 1024 * 1024 * 128,
+            TestCases = new List<ITestCase>
+            {
+                new TestCase { Input = "1", Output = "" },
+                new TestCase { Input = "3", Output = "" }
+            },
+            ShouldReturnOutput = true
+        });
+
+        Assert.Multiple(() =>
+        {
+            Assert.True(result.IsSuccess);
+            Assert.Equal(2, result.TestCases.Count());
+            Assert.Equal(EJudgeStatus.Success, result.TestCases.First(t => t.TestCase == "1").Status);
+            Assert.Equal(EJudgeStatus.LimitExceeded, result.TestCases.First(t => t.TestCase == "2").Status);
+        });
+    }
 }

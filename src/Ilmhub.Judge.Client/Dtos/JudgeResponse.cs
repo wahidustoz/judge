@@ -9,6 +9,25 @@ public class JudgeResponse
     public string ErrorMessage { get; set; }
     public bool IsSuccess => string.IsNullOrWhiteSpace(ErrorMessage) && TestCases?.Any() is true;
     public IEnumerable<TestCaseResponseDto> TestCases { get; set; }
+    public CompileErrorDto CompileError { get; set; }
+}
+
+public class CompileErrorDto
+{
+    [JsonPropertyName("cpu_time")]
+    public long CpuTime { get; set; }
+    [JsonPropertyName("real_time")]
+    public long RealTime { get; set; }
+    [JsonPropertyName("memory")]
+    public long Memory { get; set; }
+    [JsonPropertyName("signal")]
+    public long Signal { get; set; }
+    [JsonPropertyName("exit_code")]
+    public long ExitCode { get; set; }
+    [JsonPropertyName("error")]
+    public long Error { get; set; }
+    [JsonPropertyName("result")]
+    public long Result { get; set; }
 }
 
 public class TestCaseResponseDto

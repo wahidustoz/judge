@@ -6,10 +6,11 @@ namespace Ilmhub.Judge.Client.Json;
 
 public class JudgeResponseConverter : JsonConverter<JudgeResponse>
 {
-    public override bool CanConvert(Type typeToConvert)
-    {
-        return typeof(JudgeResponse).IsAssignableFrom(typeToConvert);
-    }
+    public override bool CanConvert(Type typeToConvert) 
+        => typeof(JudgeResponse).IsAssignableFrom(typeToConvert);
+
+    public override void Write(Utf8JsonWriter writer, JudgeResponse value, JsonSerializerOptions options) 
+        => throw new NotImplementedException();
 
     public override JudgeResponse Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -20,30 +21,51 @@ public class JudgeResponseConverter : JsonConverter<JudgeResponse>
             throw new JsonException("Expected start of an object.");
         }
 
-        string propertyName = string.Empty;
+        string currentProperty = string.Empty;
         while (reader.Read())
         {
-            if (reader.TokenType == JsonTokenType.PropertyName)
-                propertyName = reader.GetString();
-            else if (reader.TokenType == JsonTokenType.String && propertyName == "err")
+            if (TokenIsPropertyName(reader))
+                currentProperty = reader.GetString();
+            else if (TokenIsErrorMessage(reader, currentProperty))
                 result.ErrorMessage = reader.GetString();
-            else if (reader.TokenType == JsonTokenType.String && propertyName == "data")
-            {
-                result.TestCases = Enumerable.Empty<TestCaseResponseDto>();
-                result.ErrorMessage = $"{result.ErrorMessage}\n{reader.GetString()}";
-            }
-            else if (reader.TokenType == JsonTokenType.StartArray && propertyName == "data")
+            else if (TokenIsTestCaseArray(reader, currentProperty))
             {
                 var testCases = JsonSerializer.Deserialize<IEnumerable<TestCaseResponseDto>>(ref reader, options);
                 result.TestCases = testCases;
+            }
+            else if (TokenIsCompileErrorData(reader, currentProperty, result.ErrorMessage))
+            {
+                result.TestCases = Enumerable.Empty<TestCaseResponseDto>();
+                result.CompileError = new CompileErrorDto();
+                var dataString = reader.GetString();
+                if(TryGetCompilerRuntimeErrorInfoString(dataString, out var infoString))
+                    result.CompileError = JsonSerializer.Deserialize<CompileErrorDto>(infoString, options);
+                else
+                    result.ErrorMessage = dataString;
             }
         }
 
         return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, JudgeResponse value, JsonSerializerOptions options)
+    private bool TokenIsPropertyName(Utf8JsonReader reader) => reader.TokenType is JsonTokenType.PropertyName;
+    private bool TokenIsErrorMessage(Utf8JsonReader reader, string currentProperty) 
+        => reader.TokenType is JsonTokenType.String && currentProperty.Equals("err");
+    private bool TokenIsTestCaseArray(Utf8JsonReader reader, string currentProperty) 
+        => reader.TokenType is JsonTokenType.StartArray && currentProperty.Equals("data");
+    private bool TokenIsCompileErrorData(Utf8JsonReader reader, string currentProperty, string errorMessage) 
+        => reader.TokenType is JsonTokenType.String 
+            && currentProperty.Equals("data") 
+            && errorMessage.Equals("CompileError", StringComparison.OrdinalIgnoreCase);
+    private bool TryGetCompilerRuntimeErrorInfoString(string errorString, out string infoString) 
     {
-        throw new NotImplementedException();
+        if(errorString.IndexOf("info:") != -1)
+        {
+            infoString = errorString[(errorString.IndexOf("info:") + 5)..];     // using range operator for substring
+            return true;
+        }
+
+        infoString = string.Empty;
+        return false;
     }
 }
