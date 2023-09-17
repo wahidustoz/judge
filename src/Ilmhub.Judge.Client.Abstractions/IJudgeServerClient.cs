@@ -6,4 +6,5 @@ public interface IJudgeServerClient
 {
     ValueTask<IServerInfo> PingAsync(CancellationToken cancellationToken = default);
     ValueTask<IJudgeResult> JudgeAsync(IJudgeRequest request, CancellationToken cancellationToken = default);
+    ValueTask CompileSpecialAsync(ICompileSpecialRequest request, CancellationToken cancellationToken = default);
 }

@@ -10,4 +10,3 @@ public interface ICompileConfiguration
     string CompileCommand { get; set; }
     IEnumerable<string> Environment { get; set; }
 }
-

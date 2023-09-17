@@ -14,6 +14,19 @@ public class JudgeServerClient : IJudgeServerClient
 
     public JudgeServerClient(HttpClient client) => this.client = client;
 
+    public async ValueTask CompileSpecialAsync(ICompileSpecialRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await client.PostAsJsonAsync(
+            requestUri: "/compile_spj",
+            value: new CompileSpecialRequestDto(request),
+            cancellationToken: cancellationToken);
+        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+        var responseDto = JsonSerializer.Deserialize<CompileSpecialResponse>(responseString);
+
+        if(responseDto.IsSuccess is false)
+            throw new CompileSpecialErrorException(responseDto.ErrorMessage);
+    }
+
     public async ValueTask<IJudgeResult> JudgeAsync(IJudgeRequest request, CancellationToken cancellationToken = default)
     {
         var response = await client.PostAsJsonAsync(
