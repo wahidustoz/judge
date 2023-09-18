@@ -27,6 +27,49 @@ public class JudgeServerClient : IJudgeServerClient
             throw new CompileSpecialErrorException(responseDto.ErrorMessage);
     }
 
+    public async ValueTask<IJudgeResult> JudgeSpecialAsync(IJudgeSpecialRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await client.PostAsJsonAsync(
+            requestUri: "/judge",
+            value: new JudgeSpecialRequestDto(request),
+            cancellationToken: cancellationToken);
+        var responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+        var responseDto = JsonSerializer.Deserialize<JudgeResponse>(responseString);
+
+        if (responseDto.IsSuccess is false && responseDto.CompileError is not null)
+            throw new CompileErrorException(new CompileError
+            {
+                Message = responseDto.ErrorMessage,
+                CpuTime = responseDto.CompileError.CpuTime,
+                RealTime = responseDto.CompileError.RealTime,
+                Memory = responseDto.CompileError.Memory,
+                ExitCode = responseDto.CompileError.ExitCode,
+                Signal = responseDto.CompileError.Signal,
+                Status = (ECompileErrorStatus)responseDto.CompileError.Result
+            });
+
+        if (responseDto.IsSuccess is false)
+            throw new JudgeFailedException(responseDto.ErrorMessage);
+
+        return new JudgeResult
+        {
+            ErrorMessage = responseDto.ErrorMessage,
+            TestCases = responseDto.TestCases.Select(tc => new TestCaseResult
+            {
+                CpuTime = tc.CpuTime,
+                RealTime = tc.RealTime,
+                Memory = tc.Memory,
+                Signal = tc.Signal,
+                ExitCode = tc.ExitCode,
+                Error = tc.Error,
+                Status = (EJudgeStatus)tc.Result,
+                TestCase = tc.TestCase,
+                OutputMd5 = tc.OutputMd5,
+                Output = tc.Output
+            })
+        };
+    }
+
     public async ValueTask<IJudgeResult> JudgeAsync(IJudgeRequest request, CancellationToken cancellationToken = default)
     {
         var response = await client.PostAsJsonAsync(
