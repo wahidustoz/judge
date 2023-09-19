@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Ilmhub.Judge.Api.Models;
@@ -41,13 +42,12 @@ public class JudgeService
         
         if(langConfiguration.Compile is not null)
         {
-            var compiledOutputPath = Path.Combine(submissionEnvironment.ExecutablePath, "compiler.out");
             var compileCommand = langConfiguration.Compile.CompileCommand;
             if(string.IsNullOrWhiteSpace(compileCommand) is false)
             {
                 compileCommand = compileCommand.Replace("{src_path}", submissionEnvironment.SourcePath);
                 compileCommand = compileCommand.Replace("{exe_dir}", submissionEnvironment.ExecutablePath);
-                compileCommand = compileCommand.Replace("{exe_path}", compiledOutputPath);
+                compileCommand = compileCommand.Replace("{exe_path}", submissionEnvironment.ExecutableFilePath);
             }
 
             var cliArgs = SplitCommandLine(compileCommand);
@@ -64,7 +64,7 @@ public class JudgeService
                 Gid = options.Compiler.GroupId,
                 SeccompRuleName = null,
                 InputPath = submissionEnvironment.SourcePath,
-                OutputPath = compiledOutputPath,
+                OutputPath = Path.Combine(submissionEnvironment.ExecutablePath, "build-log"),
                 ExecutablePath = cliArgs.First(),
                 Arguments = cliArgs.Skip(1).ToArray()
             });

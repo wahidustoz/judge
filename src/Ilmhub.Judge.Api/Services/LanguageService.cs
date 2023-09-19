@@ -187,6 +187,26 @@ public class LanguageService
                     SeccompRule = string.Empty,
                     Environment = new string[] { "LANG=en_US.UTF-8", "LANGUAGE=en_US:en", "LC_ALL=en_US.UTF-8" }
                 }
+            },
+            new LanguageConfiguration
+            {
+                Id = 10,
+                Name = ".NET 6",
+                Compile = new CompileConfiguration()
+                {
+                    SourceName = "app.csproj",
+                    ExecutableName = "app",
+                    MaxCpuTime = 3000,
+                    MaxRealTime = 5000,
+                    MaxMemory = 1280 * 1024 * 1024,
+                    CompileCommand = "/usr/bin/dotnet publish {src_path} -c Release -o {exe_path} --self-contained --use-current-runtime -p:PublishSingleFile=true",
+                },
+                Run = new RunConfiguration()
+                {
+                    Command = "{exe_path}",
+                    SeccompRule = string.Empty,
+                    Environment = new string[] { "DOTNET_CLI_HOME=$HOME" }
+                }
             }
         });
 }

@@ -5,13 +5,17 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{624BCC62-8BB1-4C65-AD63-82431EE8C8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilmhub.Judge.Client\Ilmhub.Judge.Sdk.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Abstractions", "src\Ilmhub.Judge.Client.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Abstractions", "src\Ilmhub.Judge.Sdk.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4CDAF729-CB88-40C9-958C-D8CBF8FBDE68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Tests.Integration", "tests\Ilmhub.Judge.Client.Tests.Integration\Ilmhub.Judge.Sdk.Tests.Integration.csproj", "{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Wrapper.Abstractions", "src\Ilmhub.Judge.Wrapper.Abstractions\Ilmhub.Judge.Wrapper.Abstractions.csproj", "{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Wrapper", "src\Ilmhub.Judge.Wrapper\Ilmhub.Judge.Wrapper.csproj", "{69FCE106-A814-4F2B-AB19-97043FAB934B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +35,14 @@ Global
 		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,5 +51,7 @@ Global
 		{890EC7B3-7C37-42BA-B434-0E0819E53389} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 		{D5927E60-5151-43F5-8A32-C826592F7B23} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44} = {4CDAF729-CB88-40C9-958C-D8CBF8FBDE68}
+		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{69FCE106-A814-4F2B-AB19-97043FAB934B} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 	EndGlobalSection
 EndGlobal

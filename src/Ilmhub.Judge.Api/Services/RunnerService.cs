@@ -42,8 +42,10 @@ public class RunnerService
         var processLog = File.ReadAllText(Path.Combine(tempDirectory, LOG_PATH));
         var processError = File.ReadAllText(Path.Combine(tempDirectory, ERROR_PATH));
 
-        logger.LogInformation("Process log:\n{log}", processLog);
-        logger.LogWarning("Process error:\n{error}", processError);
+        if(string.IsNullOrWhiteSpace(processLog) is false)
+            logger.LogWarning("Process log:\n{log}", processLog);
+        if(string.IsNullOrWhiteSpace(processError) is false)
+            logger.LogWarning("Process error:\n{error}", processError);
 
         logger.LogInformation("Removeing temporary folder: {tempDirectory}", tempDirectory);
         DestroyTemporaryFolder(tempDirectory);
@@ -67,29 +69,28 @@ public class RunnerService
 
     private string CreateTemporaryFolder()
     {
-        var tempFolder = Directory.CreateTempSubdirectory();
-        var errorFile = File.Create(Path.Combine(tempFolder.FullName, ERROR_PATH));
-        var logFIle = File.Create(Path.Combine(tempFolder.FullName, LOG_PATH));
+        var tempFolder = Path.GetFullPath(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())); 
+        Directory.CreateDirectory(tempFolder);
+        var errorFile = File.Create(Path.Combine(tempFolder, ERROR_PATH));
+        var logFIle = File.Create(Path.Combine(tempFolder, LOG_PATH));
 
         errorFile.Close();
         logFIle.Close();
 
-        return tempFolder.FullName;
+        return tempFolder;
     }
 
     private string BuildArgumentList(RunRequest request, string tempDirectory)
     {
-
         StringBuilder builder = new StringBuilder();
-        builder.Append($" --exe_path={request.ExecutablePath}");
-        builder.Append($" --input_path={request.InputPath}");
-        builder.Append($" --output_path={request.OutputPath}");
-        builder.Append($" --error_path={Path.Combine(tempDirectory, ERROR_PATH)}");
-        builder.Append($" --log_path={Path.Combine(tempDirectory, LOG_PATH)}");
-
-        if(string.IsNullOrWhiteSpace(request.SeccompRuleName) is false)
-            builder.Append($" --seccomp_rule_name={request.SeccompRuleName}");
+        AppendSingleArgument(builder, "exe_path", request.ExecutablePath);
+        AppendSingleArgument(builder, "input_path", request.InputPath);
+        AppendSingleArgument(builder, "output_path", request.OutputPath);
+        AppendSingleArgument(builder, "error_path", Path.Combine(tempDirectory, ERROR_PATH));
+        AppendSingleArgument(builder, "log_path", Path.Combine(tempDirectory, LOG_PATH));
+        AppendSingleArgument(builder, "seccomp_rule_name", request.SeccompRuleName);
         
+        // below values have defualt value so we dont need to null-check
         builder.Append($" --max_cpu_time={request.CpuTime}");
         builder.Append($" --max_real_time={request.RealTime}");
         builder.Append($" --max_memory={request.Memory}");
@@ -99,17 +100,23 @@ public class RunnerService
         builder.Append($" --max_output_size={request.OutputSize}");
         builder.Append($" --uid={request.Uid}");
         builder.Append($" --gid={request.Gid}");
+
         builder.Append($" --env=\"PATH={Environment.GetEnvironmentVariable("PATH")}\"");
 
         if(request.Environments?.Any() is true)
             foreach(var env in request.Environments)
-                builder.Append($" --env=PATH={env}");
+                AppendSingleArgument(builder, "env", env);
+
         if(request.Arguments?.Any() is true)
             foreach(var arg in request.Arguments)
-                builder.Append($" --args={arg}");
+                AppendSingleArgument(builder, "args", arg);
         
         logger.LogInformation("Libjudger arguments: {arguments}", builder.ToString());
 
         return builder.ToString();
     }
+
+    private void AppendSingleArgument(StringBuilder builder, string key, string value) => 
+        if(string.IsNullOrWhiteSpace(value) is false) 
+            builder.Append($" --{key}={value}");
 }
