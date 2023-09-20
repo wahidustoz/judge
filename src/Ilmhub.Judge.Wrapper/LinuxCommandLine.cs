@@ -11,11 +11,11 @@ public class LinuxCommandLine : ILinuxCommandLine
 
     public LinuxCommandLine(ILogger<LinuxCommandLine> logger) => this.logger = logger;
 
-    public ValueTask ChangePathModeAsync(string mode, string path, CancellationToken cancellationToken = default)
-        => RunCommandAsync("chmod", $"{mode} {path}");
+    public ValueTask ChangePathModeAsync(string mode, string path, bool recursive = false, CancellationToken cancellationToken = default)
+        => RunCommandAsync("chmod", $"{(recursive ? "-R " : "")}{mode} {path}");
 
-    public ValueTask AddPathOwnerAsync(string owner, string path, CancellationToken cancellationToken = default)
-        => RunCommandAsync("chown", $"{owner} {path}");
+    public ValueTask AddPathOwnerAsync(string owner, string path, bool recursive = false, CancellationToken cancellationToken = default)
+        => RunCommandAsync("chown", $"{(recursive ? "-R " : "")}{owner} {path}");
 
     public async ValueTask RunCommandAsync(string command, string arguments, CancellationToken cancellationToken = default)
     {
@@ -37,7 +37,7 @@ public class LinuxCommandLine : ILinuxCommandLine
         if(process.ExitCode is not 0 || string.IsNullOrWhiteSpace(error) is false)
             throw new LinuxCommandFailedException(command, arguments, output, error);
 
-        logger.LogInformation("Finished running linux command: {command} {arguments}, output: {output}, error: {error}", command, arguments, output, error);
+        logger.LogTrace("Finished running linux command: {command} {arguments}, output: {output}, error: {error}", command, arguments, output, error);
     }
 
     public ValueTask RemoveFolderAsync(string path, CancellationToken cancellationToken = default)

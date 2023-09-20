@@ -5,6 +5,8 @@ public interface IExecutionRequest
     string ExecutablePath { get; set; }
     string InputPath { get; set; }
     string OutputPath { get; set; }
+    string ErrorPath { get; set; }
+    string LogPath { get; set; }
     string SeccompRuleName { get; set; }
     IEnumerable<string> Arguments { get; set; }
     IEnumerable<string> Environments { get; set; }

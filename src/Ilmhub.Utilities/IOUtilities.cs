@@ -15,6 +15,11 @@ public class IOUtilities
         return tempFolder;
     }
 
-    public static void CreateEmptyFile(string path)
-        => File.Create(path).Dispose();
+    public static void CreateEmptyFile(string filePath)
+    {
+        var containingFolder = Path.GetDirectoryName(filePath);
+        if(string.IsNullOrWhiteSpace(containingFolder) is false)
+            Directory.CreateDirectory(containingFolder);
+        File.Create(filePath).Dispose();
+    }
 }

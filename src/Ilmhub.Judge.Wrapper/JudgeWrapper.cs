@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.Json;
 using Ilmhub.Judge.Wrapper.Abstractions;
 using Ilmhub.Judge.Wrapper.Abstractions.Models;
-using Ilmhub.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge.Wrapper;
@@ -26,19 +25,9 @@ public class JudgeWrapper : IJudgeWrapper
     public async ValueTask<IExecutionResult> ExecuteJudgerAsync(IExecutionRequest request, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Starting to execute Judgerlib.so process.");
-
-        var tempFolder = string.Empty;
-        var output = string.Empty;
-        var error = string.Empty;
-        var logPath = Path.Combine(tempFolder, LOG_FILENAME);
-        var errorPath = Path.Combine(tempFolder, ERROR_FILENAME);
         try
         {
-            tempFolder = IOUtilities.CreateTemporaryDirectory();
-            var processArguments = BuildArguments(
-                request: request,
-                errorPath: errorPath,
-                logPath: logPath);
+            var processArguments = BuildArguments(request);
             var startInfo = new ProcessStartInfo
             {
                 FileName = LIBJUDGER_PATH,
@@ -52,43 +41,40 @@ public class JudgeWrapper : IJudgeWrapper
 
             process.Start();
             await process.WaitForExitAsync(cancellationToken);
-            logger.LogInformation("Libjudger.so process finished with exit code {exitCode}.", process.ExitCode);
 
-            output = process.StandardOutput.ReadToEnd();
-            error = process.StandardError.ReadToEnd();
-            logger.LogInformation("Juder Execution output: {output}", output);
-            logger.LogInformation("Judger Execution error: {error}", error);
-
-            var libjudgerError = await File.ReadAllTextAsync(errorPath, cancellationToken);
-            var libjudgerLog = await File.ReadAllTextAsync(logPath, cancellationToken);
-            logger.LogInformation("Libjudger.so output: {output}", libjudgerLog);
-            logger.LogInformation("Libjudger.so error: {error}", libjudgerError);
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
+            logger.LogInformation(
+                "Libjudger.so process finished. Exit code: {exitCode}, Output: {output}, Error: {error}.", 
+                process.ExitCode,
+                output,
+                error);
 
             var resultObject = JsonSerializer.Deserialize<ExecutionResult>(output);
-            resultObject.ErrorMessage = $"{error} {libjudgerError}";
-            resultObject.OutputMessage = $"{output} {libjudgerLog}";
+            resultObject.ErrorMessage = error;
+            resultObject.Output = output;
             return resultObject;
+        }
+        catch(JsonException jsonException)
+        {
+            logger.LogError(jsonException, "Failed to deserialize Libjudger.so output.");
+            throw;
         }
         catch(Exception ex)
         {
-            logger.LogWarning(ex, "Failed to deserialize process output {output}.", output);
-            throw new JudgeProcessFailedException($"Libjudger.so returned invalid value. Error: {error}, Output: {output}", ex);
-        }
-        finally
-        {
-            logger.LogInformation("Deleting temporary folder: {tempFolder}", tempFolder);
-            await cli.RemoveFolderAsync(tempFolder, cancellationToken);
+            logger.LogWarning(ex, "Libjudger.so process faild while executing {executable}.", request.ExecutablePath);
+            throw new JudgeProcessFailedException($"Libjudger.so process faild while executing {request.ExecutablePath}", ex);
         }
     }
 
-    private string BuildArguments(IExecutionRequest request, string errorPath, string logPath)
+    private string BuildArguments(IExecutionRequest request)
     {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new();
         AppendSingleArgument(builder, "exe_path", request.ExecutablePath);
         AppendSingleArgument(builder, "input_path", request.InputPath);
         AppendSingleArgument(builder, "output_path", request.OutputPath);
-        AppendSingleArgument(builder, "error_path", errorPath);
-        AppendSingleArgument(builder, "log_path", logPath);
+        AppendSingleArgument(builder, "error_path", request.ErrorPath);
+        AppendSingleArgument(builder, "log_path", request.LogPath);
         AppendSingleArgument(builder, "seccomp_rule_name", request.SeccompRuleName);
         
         // below values have defualt value so we dont need to null-check

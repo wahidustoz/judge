@@ -2,7 +2,7 @@ namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 public enum EExecutionError
 {
-    Success = 0,              
+    NoError = 0,              
     InvalidConfig = -1,
     ForkFailed = -2,
     PthreadFailed = -3,
@@ -15,4 +15,3 @@ public enum EExecutionError
     ExecveFailed = -10,
     SpjError = -11            // Used for answer checking
 }
-

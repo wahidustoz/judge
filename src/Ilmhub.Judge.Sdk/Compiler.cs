@@ -1,4 +1,6 @@
-﻿using Ilmhub.Judge.Sdk.Abstractions;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Ilmhub.Judge.Sdk.Abstractions;
 using Ilmhub.Judge.Sdk.Abstractions.Models;
 using Ilmhub.Judge.Sdk.Exceptions;
 using Ilmhub.Judge.Wrapper.Abstractions;
@@ -13,7 +15,10 @@ public class Compiler : ICompiler
 {
     private const string READ_MODE = "400";
     private const string READ_WRITE_MODE = "600";
-
+    private const string READ_WRITE_EXEC_MODE = "700";
+    private const string LOG_FILENAME = "log";
+    private const string OUTPUT_FILENAME = "output";
+    private const string ERROR_FILENAME = "error";
     private readonly ILogger<Compiler> logger;
     private readonly ILinuxCommandLine cli;
     private readonly IJudgeWrapper judgeWrapper;
@@ -37,7 +42,7 @@ public class Compiler : ICompiler
     public async ValueTask<ICompilationResult> CompileAsync(
         string source, 
         int languageId,
-        string executableFilePath = default,
+        string externalExecutablePath = default,
         CancellationToken cancellationToken = default)
     {
         string tempFolder = string.Empty;
@@ -47,28 +52,14 @@ public class Compiler : ICompiler
             if(languageConfiguration is null)
                 throw new LanguageNotConfiguredException(languageId);
 
-            logger.LogInformation("Starting compilation session for language {languageId}", languageId);
+            logger.LogTrace("Starting compilation session for language {languageId}", languageId);
 
-            // create temp folder and assign compiler as owner
-            tempFolder = IOUtilities.CreateTemporaryDirectory();
-            await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, tempFolder, cancellationToken);
-            logger.LogInformation("Created temporary folder: {tempFolder}", tempFolder);
-
-            // create source file, add compiler as owner and change mode to readonly
-            var sourceFilename = Path.Combine(tempFolder, languageConfiguration.Compile.SourceName);
-            await File.WriteAllTextAsync(sourceFilename, source, cancellationToken);
-            await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, sourceFilename, cancellationToken);
-            await cli.ChangePathModeAsync(READ_MODE, sourceFilename, cancellationToken);
-            logger.LogInformation("Created source file: {sourceFilename}", sourceFilename);
-
-            // create executable file, add compiler as owner and change mode to read/write
-            var executableFilename = string.IsNullOrWhiteSpace(executableFilePath) || Directory.Exists(executableFilePath) is false
-                ? Path.Combine(tempFolder, languageConfiguration.Compile.ExecutableName)
-                : Path.Combine(executableFilePath, languageConfiguration.Compile.ExecutableName);
-            IOUtilities.CreateEmptyFile(executableFilename);
-            await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, executableFilename, cancellationToken);
-            await cli.ChangePathModeAsync(READ_WRITE_MODE, executableFilename, cancellationToken);
-            logger.LogInformation("Created executable file: {executableFilename}", executableFilename);
+            tempFolder = await CreateTemporaryFolderAsync(cancellationToken);
+            var sourceFilename = await WriteSourceFileAsync(source, tempFolder, languageConfiguration, cancellationToken);
+            (string logPath, string outputPath, string errorPath) = 
+                await CreateInputOutputFilesAsync(tempFolder, cancellationToken);
+            var executableFilename = await WriteExecutableFileAsync(externalExecutablePath, tempFolder, languageConfiguration, cancellationToken);
+            var executablePath = Path.GetDirectoryName(executableFilename);
 
             var arguments = languageConfiguration.Compile.Arguments
                 .Select(argument => 
@@ -76,18 +67,20 @@ public class Compiler : ICompiler
                     if(argument.Contains("{src_path}", StringComparison.OrdinalIgnoreCase))
                         return argument.Replace("{src_path}", sourceFilename);
                     else if(argument.Contains("{exe_dir}", StringComparison.OrdinalIgnoreCase))
-                        return argument.Replace("{exe_dir}", tempFolder);
+                        return argument.Replace("{exe_dir}", executablePath);
                     else if(argument.Contains("{exe_path}", StringComparison.OrdinalIgnoreCase))
                         return argument.Replace("{exe_path}", executableFilename);
 
                     return argument;
                 });
 
-            // run compiler
             var processResult = await judgeWrapper.ExecuteJudgerAsync(
                 request: new ExecutionRequest
                 {
                     ExecutablePath = languageConfiguration.Compile.Command,
+                    OutputPath = outputPath,
+                    LogPath = logPath,
+                    ErrorPath = errorPath,
                     Arguments = arguments,
                     Environments = languageConfiguration.Compile.EnvironmentVariables,
                     CpuTime = languageConfiguration.Compile.MaxCpuTime,
@@ -97,21 +90,117 @@ public class Compiler : ICompiler
                     Gid = judgeUsers.Compiler.GroupId
                 },
                 cancellationToken: cancellationToken);
+                logger.LogTrace("Finished compilation session for language {languageId}", languageId);
 
-                if(processResult.Status is EExecutionResult.Success && processResult.Error is EExecutionError.Success)
-                    logger.LogInformation("Compilation successful for language {languageId}", languageId);
+                (string log, string output, string error) = 
+                    await TryReadCompilerOutputFiles(logPath, outputPath, errorPath, cancellationToken);
 
-                return new CompilationResult(processResult);
+                return new CompilationResult(processResult)
+                {
+                    Log = log,
+                    Output = output,
+                    Error = error
+                };
         }
-        catch(Exception ex)
+        catch(Exception ex) when (ex is not LanguageNotConfiguredException)
         {
             logger.LogError(ex, "Failed to execute compiler for language {languageId}.", languageId);
             throw new CompilationProcessFailedException($"Failed to execute compiler for language {languageId}.", ex);
         }
         finally
         {
-            logger.LogInformation("Deleting temporary folder: {tempFolder}", tempFolder);
+            logger.LogTrace("Deleting temporary folder: {tempFolder}", tempFolder);
             await cli.RemoveFolderAsync(tempFolder, cancellationToken);
         }
+    }
+
+    private async ValueTask<(string log, string output, string error)> TryReadCompilerOutputFiles(
+        string logPath, string outputPath, string errorPath, CancellationToken cancellationToken)
+    {
+        string log = null; 
+        string output = null; 
+        string error = null;
+
+        if(Path.Exists(logPath))
+            log = await File.ReadAllTextAsync(logPath, cancellationToken);
+        if(Path.Exists(outputPath))
+            output = await File.ReadAllTextAsync(outputPath, cancellationToken);
+        if(Path.Exists(outputPath))
+            error = await File.ReadAllTextAsync(errorPath, cancellationToken);
+
+        return (log, output, error);
+    }
+
+    private async ValueTask<(string logPath, string outputPath, string errorPath)> CreateInputOutputFilesAsync(
+        string tempFolder, 
+        CancellationToken cancellationToken)
+    {
+        var logPath = Path.Combine(tempFolder, LOG_FILENAME);
+        var outputPath = Path.Combine(tempFolder, OUTPUT_FILENAME);
+        var errorPath = Path.Combine(tempFolder, ERROR_FILENAME);
+
+        var paths = new string[] { logPath, outputPath, errorPath };
+        foreach(var path in paths)
+        {
+            IOUtilities.CreateEmptyFile(path);
+            await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, path, cancellationToken: cancellationToken);
+            await cli.ChangePathModeAsync(READ_WRITE_MODE, path, cancellationToken: cancellationToken); 
+        }
+
+        logger.LogTrace(
+            "Created Compiler output files. \nLog Path {logPath}, \nOutput Path {outputPath}, \nError Path {errorPath}", 
+            logPath, 
+            outputPath, 
+            errorPath);
+
+        return (logPath, outputPath, errorPath);
+    }
+
+    private async ValueTask<string> WriteExecutableFileAsync(
+        string externalExecutablePath, 
+        string tempFolder, 
+        ILanguageConfiguration languageConfiguration, 
+        CancellationToken cancellationToken)
+    {
+        var executablePath = IsValidPath(externalExecutablePath) ? externalExecutablePath : tempFolder;
+        var executableFilename = Path.Combine(executablePath, languageConfiguration.Compile.ExecutableName);
+        IOUtilities.CreateEmptyFile(executableFilename);
+        await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, executablePath, true, cancellationToken);
+        await cli.ChangePathModeAsync(READ_WRITE_EXEC_MODE, executablePath, true, cancellationToken);
+        logger.LogInformation("Created executable file: {executableFilename}", executableFilename);
+
+        return executableFilename;
+    }
+
+    private static bool IsValidPath(string path) 
+        => string.IsNullOrWhiteSpace(path) is false 
+        && Directory.Exists(path) is true;
+
+    private async ValueTask<string> WriteSourceFileAsync(
+        string source, 
+        string tempFolder, 
+        ILanguageConfiguration languageConfiguration, 
+        CancellationToken cancellationToken)
+    {
+        var sourceName = languageConfiguration.Compile.SourceName;
+        if(string.IsNullOrWhiteSpace(Path.GetDirectoryName(sourceName)) is false)
+            throw new InvalidLanguageConfigurationException(languageConfiguration);
+
+        var sourceFilename = Path.Combine(tempFolder, sourceName);
+        await File.WriteAllTextAsync(sourceFilename, source, cancellationToken);
+        await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, sourceFilename, cancellationToken: cancellationToken);
+        await cli.ChangePathModeAsync(READ_MODE, sourceFilename, cancellationToken: cancellationToken);
+        logger.LogTrace("Created source file: {sourceFilename}", sourceFilename);
+
+        return sourceFilename;
+    }
+
+    private async ValueTask<string> CreateTemporaryFolderAsync(CancellationToken cancellationToken)
+    {
+        var folder = IOUtilities.CreateTemporaryDirectory();
+        await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, folder, cancellationToken: cancellationToken);
+        logger.LogTrace("Created temporary folder: {tempFolder}", folder);
+
+        return folder;
     }
 }

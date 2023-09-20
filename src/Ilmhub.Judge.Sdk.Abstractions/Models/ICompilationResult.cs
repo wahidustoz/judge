@@ -4,6 +4,10 @@ namespace Ilmhub.Judge.Sdk.Abstractions.Models;
 
 public interface ICompilationResult
 {
-    ECompilationStatus Status { get; set; }
+    string Output { get; set; }
+    string Log { get; set; }
+    string Error { get; set; }
+    string PotentialWarning { get; }
+    bool IsSuccess { get; }
     IExecutionResult Execution { get; set; }
 }

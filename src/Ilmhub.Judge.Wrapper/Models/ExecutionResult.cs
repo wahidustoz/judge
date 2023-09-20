@@ -19,6 +19,6 @@ public class ExecutionResult : IExecutionResult
     public EExecutionResult Status { get; set; }
     [JsonPropertyName("error")]
     public EExecutionError Error { get; set; }
-    public string OutputMessage { get; set; }
+    public string Output { get; set; }
     public string ErrorMessage { get; set; }
 }

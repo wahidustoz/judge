@@ -7,6 +7,8 @@ public class ExecutionRequest : IExecutionRequest
     public string ExecutablePath { get; set; }
     public string InputPath { get; set; }
     public string OutputPath { get; set; }
+    public string ErrorPath { get; set; }
+    public string LogPath { get; set; }
     public string SeccompRuleName { get; set; }
     public IEnumerable<string> Arguments { get; set; }
     public IEnumerable<string> Environments { get; set; }
