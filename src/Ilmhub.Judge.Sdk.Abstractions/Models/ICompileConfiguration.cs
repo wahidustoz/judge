@@ -7,6 +7,7 @@ public interface ICompileConfiguration
     int MaxCpuTime { get; set; }
     int MaxRealTime { get; set; }
     int MaxMemory { get; set; }
-    string CompileCommand { get; set; }
-    IEnumerable<string> Environment { get; set; }
+    string Command { get; set; }
+    IEnumerable<string> EnvironmentVariables { get; set; }
+    IEnumerable<string> Arguments { get; set; }
 }

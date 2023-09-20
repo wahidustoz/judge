@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Ilmhub.Judge.Client.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj" />
+    <ProjectReference Include="..\Ilmhub.Judge.Sdk.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj" />
+    <ProjectReference Include="..\Ilmhub.Judge.Wrapper\Ilmhub.Judge.Wrapper.csproj" />
   </ItemGroup>
 
   <ItemGroup>

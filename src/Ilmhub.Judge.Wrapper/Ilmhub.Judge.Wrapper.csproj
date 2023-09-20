@@ -2,9 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ilmhub.Judge.Wrapper.Abstractions\Ilmhub.Judge.Wrapper.Abstractions.csproj" />
+    <ProjectReference Include="..\Ilmhub.Utilities\Ilmhub.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="microsoft.extensions.dependencyinjection.abstractions" Version="7.0.0" />
     <PackageReference Include="microsoft.extensions.logging.abstractions" Version="7.0.1" />
   </ItemGroup>
 

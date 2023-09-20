@@ -5,8 +5,6 @@ namespace Ilmhub.Judge.Wrapper;
 
 public class ExecutionResult : IExecutionResult
 {
-    public string ErrorMessage { get; set; }
-    public bool IsSuccess => string.IsNullOrWhiteSpace(ErrorMessage);
     [JsonPropertyName("cpu_time")]
     public int CpuTime { get; set; }
     [JsonPropertyName("real_time")]
@@ -20,5 +18,7 @@ public class ExecutionResult : IExecutionResult
     [JsonPropertyName("result")]
     public EExecutionResult Status { get; set; }
     [JsonPropertyName("error")]
-    EExecutionError IExecutionResult.Error { get; set; }
+    public EExecutionError Error { get; set; }
+    public string OutputMessage { get; set; }
+    public string ErrorMessage { get; set; }
 }

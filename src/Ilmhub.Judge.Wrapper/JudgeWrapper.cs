@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Ilmhub.Judge.Wrapper.Abstractions;
 using Ilmhub.Judge.Wrapper.Abstractions.Models;
+using Ilmhub.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge.Wrapper;
@@ -14,49 +15,69 @@ public class JudgeWrapper : IJudgeWrapper
     private const string LOG_FILENAME = "log";
 
     private readonly ILogger<JudgeWrapper> logger;
+    private readonly ILinuxCommandLine cli;
 
-    public JudgeWrapper(ILogger<JudgeWrapper> logger) => this.logger = logger;
+    public JudgeWrapper(ILogger<JudgeWrapper> logger, ILinuxCommandLine cli)
+    { 
+        this.logger = logger;
+        this.cli = cli;
+    }
 
     public async ValueTask<IExecutionResult> ExecuteJudgerAsync(IExecutionRequest request, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Starting to execute Judgerlib.so process.");
 
-        var tempFolder = CreateTemporaryFolder();
-        var processArguments = BuildArguments(
-            request: request,
-            errorPath: Path.Combine(tempFolder, ERROR_FILENAME),
-            logPath: Path.Combine(tempFolder, LOG_FILENAME));
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = LIBJUDGER_PATH,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            Arguments = processArguments
-        };
-        var process = new Process { StartInfo = startInfo };
-
-        process.Start();
-        await process.WaitForExitAsync(cancellationToken);
-        logger.LogInformation("Libjudger.so process finished with exit code {exitCode}.", process.ExitCode);
-
-        var output = process.StandardOutput.ReadToEnd();
-        var error = process.StandardError.ReadToEnd();
-
-        logger.LogInformation("Libjudger.so process output:\n{output}", output);
-        logger.LogInformation("Libjudger.so process error:\n{error}", error);
-
+        var tempFolder = string.Empty;
+        var output = string.Empty;
+        var error = string.Empty;
+        var logPath = Path.Combine(tempFolder, LOG_FILENAME);
+        var errorPath = Path.Combine(tempFolder, ERROR_FILENAME);
         try
         {
-            return JsonSerializer.Deserialize<ExecutionResult>(output);
+            tempFolder = IOUtilities.CreateTemporaryDirectory();
+            var processArguments = BuildArguments(
+                request: request,
+                errorPath: errorPath,
+                logPath: logPath);
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = LIBJUDGER_PATH,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = processArguments
+            };
+            var process = new Process { StartInfo = startInfo };
+
+            process.Start();
+            await process.WaitForExitAsync(cancellationToken);
+            logger.LogInformation("Libjudger.so process finished with exit code {exitCode}.", process.ExitCode);
+
+            output = process.StandardOutput.ReadToEnd();
+            error = process.StandardError.ReadToEnd();
+            logger.LogInformation("Juder Execution output: {output}", output);
+            logger.LogInformation("Judger Execution error: {error}", error);
+
+            var libjudgerError = await File.ReadAllTextAsync(errorPath, cancellationToken);
+            var libjudgerLog = await File.ReadAllTextAsync(logPath, cancellationToken);
+            logger.LogInformation("Libjudger.so output: {output}", libjudgerLog);
+            logger.LogInformation("Libjudger.so error: {error}", libjudgerError);
+
+            var resultObject = JsonSerializer.Deserialize<ExecutionResult>(output);
+            resultObject.ErrorMessage = $"{error} {libjudgerError}";
+            resultObject.OutputMessage = $"{output} {libjudgerLog}";
+            return resultObject;
         }
         catch(Exception ex)
         {
             logger.LogWarning(ex, "Failed to deserialize process output {output}.", output);
-            throw new JudgeProcessFailedException(
-                $"Libjudger.so returned invalid value. Error: {error}, Output: {output}",
-                ex);
+            throw new JudgeProcessFailedException($"Libjudger.so returned invalid value. Error: {error}, Output: {output}", ex);
+        }
+        finally
+        {
+            logger.LogInformation("Deleting temporary folder: {tempFolder}", tempFolder);
+            await cli.RemoveFolderAsync(tempFolder, cancellationToken);
         }
     }
 
@@ -100,13 +121,5 @@ public class JudgeWrapper : IJudgeWrapper
     {
         if(string.IsNullOrWhiteSpace(value) is false) 
             builder.Append($" --{key}={value}");
-    }
-
-    private string CreateTemporaryFolder()
-    {
-        var tempFolder = Path.GetFullPath(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())); 
-        Directory.CreateDirectory(tempFolder);
-
-        return tempFolder;
     }
 }

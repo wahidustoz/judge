@@ -2,14 +2,14 @@ namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 public interface IExecutionResult
 {
-    public string ErrorMessage { get; set; }
-    public bool IsSuccess => string.IsNullOrWhiteSpace(ErrorMessage);
-    public int CpuTime { get; set; }
-    public int RealTime { get; set; }
-    public long Memory { get; set; }
-    public int Signal { get; set; }
-    public int ExitCode { get; set; }
-    public EExecutionError Error { get; set; }
-    public EExecutionResult Status { get; set; }
+    string OutputMessage { get; set; }
+    string ErrorMessage { get; set; }
+    int CpuTime { get; set; }
+    int RealTime { get; set; }
+    long Memory { get; set; }
+    int Signal { get; set; }
+    int ExitCode { get; set; }
+    EExecutionError Error { get; set; }
+    EExecutionResult Status { get; set; }
 }
 

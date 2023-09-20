@@ -11,10 +11,10 @@ public class ExecutionRequest : IExecutionRequest
     public IEnumerable<string> Arguments { get; set; }
     public IEnumerable<string> Environments { get; set; }
     public bool MemoryLimitCheckOnly { get; set; }
+    public long Stack { get; set; } = 128 * 1024 * 1024;  // this cant be infinite
     public long CpuTime { get; set; } = -1;     // means infinite
     public long RealTime { get; set; } = -1;    // means infinite
     public long Memory { get; set; } = -1;  // means infinite
-    public long Stack { get; set; } = -1;   // means infinite
     public long ProcessNumber { get; set; } = -1;   // means infinite
     public long OutputSize { get; set; } = -1;  // means infinite
     public long Uid { get; set; } = 0;          // root userId

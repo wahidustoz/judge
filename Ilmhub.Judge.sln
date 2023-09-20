@@ -9,13 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Abstractions", "src\Ilmhub.Judge.Sdk.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4CDAF729-CB88-40C9-958C-D8CBF8FBDE68}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Tests.Integration", "tests\Ilmhub.Judge.Client.Tests.Integration\Ilmhub.Judge.Sdk.Tests.Integration.csproj", "{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Wrapper.Abstractions", "src\Ilmhub.Judge.Wrapper.Abstractions\Ilmhub.Judge.Wrapper.Abstractions.csproj", "{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Wrapper", "src\Ilmhub.Judge.Wrapper\Ilmhub.Judge.Wrapper.csproj", "{69FCE106-A814-4F2B-AB19-97043FAB934B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Utilities", "src\Ilmhub.Utilities\Ilmhub.Utilities.csproj", "{6113070B-896E-4DA7-988B-8CA989FA40FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{D92A737C-7AE5-44D3-A6EC-DFE4F8711D51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Demo.Sdk", "demo\Ilmhub.Demo.Sdk\Ilmhub.Demo.Sdk.csproj", "{84B78978-61A1-4A65-BE5D-DC3523C6DCAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +33,6 @@ Global
 		{D5927E60-5151-43F5-8A32-C826592F7B23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5927E60-5151-43F5-8A32-C826592F7B23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5927E60-5151-43F5-8A32-C826592F7B23}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,6 +41,14 @@ Global
 		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69FCE106-A814-4F2B-AB19-97043FAB934B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6113070B-896E-4DA7-988B-8CA989FA40FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6113070B-896E-4DA7-988B-8CA989FA40FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6113070B-896E-4DA7-988B-8CA989FA40FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6113070B-896E-4DA7-988B-8CA989FA40FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,8 +56,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{890EC7B3-7C37-42BA-B434-0E0819E53389} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 		{D5927E60-5151-43F5-8A32-C826592F7B23} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
-		{D42956EC-4A20-42E9-B9DF-B1EFC3605A44} = {4CDAF729-CB88-40C9-958C-D8CBF8FBDE68}
 		{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 		{69FCE106-A814-4F2B-AB19-97043FAB934B} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{6113070B-896E-4DA7-988B-8CA989FA40FE} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD} = {D92A737C-7AE5-44D3-A6EC-DFE4F8711D51}
 	EndGlobalSection
 EndGlobal

@@ -9,6 +9,7 @@ public class CompileConfiguration : ICompileConfiguration
     public int MaxCpuTime { get; set; }
     public int MaxRealTime { get; set; }
     public int MaxMemory { get; set; }
-    public string CompileCommand { get; set; }
-    public IEnumerable<string> Environment { get; set; }
+    public string Command { get; set; }
+    public IEnumerable<string> EnvironmentVariables { get; set; }
+    public IEnumerable<string> Arguments { get; set; }
 }
