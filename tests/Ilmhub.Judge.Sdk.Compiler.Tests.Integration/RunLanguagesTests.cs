@@ -58,14 +58,4 @@ public class RunLanguagesTests
         // Console.WriteLine("Failing result: " + JsonSerializer.Serialize(failingResult, new JsonSerializerOptions() { WriteIndented = true }));
         // Assert.True(failingResult.IsSuccess is false);
     }
-
-    private string GetMD5Hash(string input)
-    {
-        if(string.IsNullOrWhiteSpace(input))
-                return null;
-
-        using MD5 hasher = MD5.Create();
-        byte[] bytes = Encoding.ASCII.GetBytes(input.Trim());
-        return Convert.ToHexString(hasher.ComputeHash(bytes));
-    }
 }

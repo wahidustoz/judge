@@ -105,13 +105,15 @@ public class Judger : IJudger
             }
 
             var testCases = EnumerateTestCases(testCasesFolder); 
-            await GrantRunnerPermissionToTestCasesAsync(testCasesFolder, testCases, cancellationToken);
-
+            await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, testCasesFolder, true, cancellationToken);
+            await cli.ChangePathModeAsync(LinuxCommandLine.EXECUTE_MODE, testCasesFolder, true, cancellationToken);
+            
             var testCaseResults = new List<TestCaseResult>();
-            foreach(var testCase in testCases)
+            foreach(var (InputFilePath, OutputFilePath, Id) in testCases)
             {
+                var outputTask = IOUtilities.GetAllTextOrDefaultAsync(OutputFilePath, cancellationToken);
                 IRunnerResult runnerResult = default;
-                if(string.IsNullOrWhiteSpace(testCase.InputFilePath))
+                if(string.IsNullOrWhiteSpace(InputFilePath))
                 {
                     runnerResult = await runner.RunAsync(
                         languageId,
@@ -125,7 +127,7 @@ public class Judger : IJudger
                 {
                     runnerResult = await runner.RunAsync(
                         languageId,
-                        testCase.InputFilePath, 
+                        InputFilePath, 
                         compilationResult.ExecutableFilePath,
                         maxCpu,
                         maxMemory,
@@ -138,11 +140,11 @@ public class Judger : IJudger
                     logger.LogError(
                         "Runner failed for language {id} at test case {testcaseId}. Result: {result}. ABORTING....",
                         languageId,
-                        testCase.Id, 
+                        Id, 
                         JsonSerializer.Serialize(compilationResult, new JsonSerializerOptions { WriteIndented = true }));
                 }
 
-                testCaseResults.Add(new TestCaseResult(testCase.Id, runnerResult));
+                testCaseResults.Add(new TestCaseResult(Id, await outputTask, runnerResult));
             }
 
             logger.LogInformation("Completed Judge process 🎉");
@@ -161,14 +163,6 @@ public class Judger : IJudger
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
         }
-    }
-
-    private async ValueTask GrantRunnerPermissionToTestCasesAsync(string testCasesFolder, IEnumerable<(string InputFilePath, string OutputFilePath, string Id)> testCases, CancellationToken cancellationToken)
-    {
-        await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, testCasesFolder, true, cancellationToken);
-        await cli.ChangePathModeAsync(LinuxCommandLine.EXECUTE_MODE, testCasesFolder, true, cancellationToken);
-
-        // TODO: might have to add permissions to input files otherwise remove this method
     }
 
     private async ValueTask WriteTestCasesAsync(string testcasesFolder, IEnumerable<ITestCase> testCases, CancellationToken cancellationToken)

@@ -2,8 +2,7 @@ namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 public enum EExecutionResult
 {
-    WrongAnswer = -1,            // Used for answer checking
-    Success = 0,                // Process exited normally
+    Success = 0, 
     CpuTimeLimitExceeded = 1,
     RealTimeLimitExceeded = 2,
     MemoryLimitExceeded = 3,

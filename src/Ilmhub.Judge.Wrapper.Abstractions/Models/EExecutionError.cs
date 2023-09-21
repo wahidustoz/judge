@@ -12,6 +12,5 @@ public enum EExecutionError
     SetrlimitFailed = -7,
     Dup2Failed = -8,
     SetuidFailed = -9,
-    ExecveFailed = -10,
-    SpjError = -11            // Used for answer checking
+    ExecveFailed = -10
 }

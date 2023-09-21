@@ -28,9 +28,16 @@ int main() {
     printf(""Sum: %d\n"", num1 + num2);
     return 0;
 }";
+// var pythonSource = @"
+// num1, num2 = map(int, input().split())
+// print(num1 + num2)";
 var pythonSource = @"
-num1, num2 = map(int, input().split())
-print('Sum:', num1 + num2)";
+print('22222')
+print('2   2')
+print('2   2')
+print('22222')
+print()
+";
 
 var testCases = new List<TestCase>
 {
@@ -43,7 +50,8 @@ var judgeResult = await judger.JudgeAsync(
     source: pythonSource,
     maxCpu: 3000,
     maxMemory: 128 * 1024 * 1024,
-    testCases: testCases);
+    testCasesFolder: "/judger/testcases2",
+    environmentFolder: "/judger/python");
 
 Console.WriteLine(JsonSerializer.Serialize(judgeResult, new JsonSerializerOptions() { WriteIndented = true }));
 

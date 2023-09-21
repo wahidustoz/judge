@@ -139,12 +139,15 @@ public class Runner : IRunner
                 cancellationToken: cancellationToken);
                 logger.LogTrace("Finished runner session for language {languageId}", languageId);
 
-                return new RunnerResult(processResult)
-                {
-                    Log = await IOUtilities.GetAllTextOrDefaultAsync(logPath, cancellationToken),
-                    Output = await IOUtilities.GetAllTextOrDefaultAsync(outputPath, cancellationToken),
-                    Error = await IOUtilities.GetAllTextOrDefaultAsync(errorPath, cancellationToken)
-                };
+                var log = await IOUtilities.GetAllTextOrDefaultAsync(logPath, cancellationToken);
+                var output = await IOUtilities.GetAllTextOrDefaultAsync(outputPath, cancellationToken);
+                var error = await IOUtilities.GetAllTextOrDefaultAsync(errorPath, cancellationToken);
+
+                return new RunnerResult(
+                    execution: processResult,
+                    output: output,
+                    error: error,
+                    log: log);
         }
         catch(Exception ex) when (ex is not LanguageNotConfiguredException)
         {

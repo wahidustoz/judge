@@ -4,10 +4,10 @@ namespace Ilmhub.Judge.Sdk.Abstraction.Models;
 
 public interface IRunnerResult
 {
-    string Output { get; set; }
+    string Output { get; }
     string OutputMd5 { get; }
-    string Log { get; set; }
-    string Error { get; set; }
+    string Log { get; }
+    string Error { get; }
     bool IsSuccess { get; }
-    IExecutionResult Execution { get; set; }
+    IExecutionResult Execution { get; }
 }
