@@ -4,6 +4,7 @@ namespace Ilmhub.Judge.Sdk;
 
 public class JudgeSystemUser : IJudgeSystemUser
 {
+    public JudgeSystemUser() {  }
     public JudgeSystemUser(string username, long userId, long groupId)
     {
         Username = username;
@@ -11,9 +12,7 @@ public class JudgeSystemUser : IJudgeSystemUser
         GroupId = groupId;
     }
 
-    public string Username { get; }
-
-    public long UserId { get; }
-
-    public long GroupId { get; }
+    public string Username { get; set; }
+    public long UserId { get; set; }
+    public long GroupId { get; set; }
 }

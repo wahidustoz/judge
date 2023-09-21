@@ -1,4 +1,5 @@
 ﻿using Ilmhub.Judge.Sdk.Abstractions;
+using Ilmhub.Judge.Sdk.Models;
 using Ilmhub.Judge.Sdk.Options;
 using Ilmhub.Judge.Wrapper;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +9,16 @@ namespace Ilmhub.Judge.Sdk;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, IConfigurationSection judgeSection)
     {
-        services.AddIlmhubJudge(configure => configure = configuration.GetValue<IlmhubJudgeOptions>("Judge"));
+        services.AddIlmhubJudge(options =>
+        {
+            var languages = new List<LanguageConfiguration>();
+            judgeSection.Bind(options);
+            judgeSection.Bind("LanguageConfigurations", languages);
+
+            options.LanguageConfigurations = languages;
+        });
         return services;
     }
 

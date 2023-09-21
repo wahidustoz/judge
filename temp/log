@@ -1,7 +1,0 @@
-FATAL [2023-09-21 00:22:47] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED
-FATAL [2023-09-21 00:23:46] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED
-FATAL [2023-09-21 00:25:12] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED
-FATAL [2023-09-21 00:25:24] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED
-FATAL [2023-09-21 00:25:58] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED
-FATAL [2023-09-21 00:28:16] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED
-FATAL [2023-09-21 00:28:29] [/tmp/Judger/src/child.c:164]Error: System errno: No such file or directory; Internal errno: EXECVE_FAILED

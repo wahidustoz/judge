@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E087AE54
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Compiler.Tests.Integration", "tests\Ilmhub.Judge.Sdk.Compiler.Tests.Integration\Ilmhub.Judge.Sdk.Compiler.Tests.Integration.csproj", "{2C2218D2-AD23-4421-A26E-64140FA605FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Api", "src\Ilmhub.Judge.Api\Ilmhub.Judge.Api.csproj", "{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{2C2218D2-AD23-4421-A26E-64140FA605FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C2218D2-AD23-4421-A26E-64140FA605FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C2218D2-AD23-4421-A26E-64140FA605FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,5 +75,6 @@ Global
 		{6113070B-896E-4DA7-988B-8CA989FA40FE} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD} = {D92A737C-7AE5-44D3-A6EC-DFE4F8711D51}
 		{2C2218D2-AD23-4421-A26E-64140FA605FF} = {E087AE54-8829-4655-9FB9-9C71BF53D9A9}
+		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 	EndGlobalSection
 EndGlobal
