@@ -5,6 +5,7 @@ namespace Ilmhub.Judge.Wrapper;
 
 public class ExecutionResult : IExecutionResult
 {
+    public bool IsSuccess => Status is EExecutionResult.Success && Error is EExecutionError.NoError;
     [JsonPropertyName("cpu_time")]
     public int CpuTime { get; set; }
     [JsonPropertyName("real_time")]

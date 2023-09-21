@@ -1,4 +1,5 @@
-﻿using Ilmhub.Judge.Sdk.Abstractions;
+﻿using System.ComponentModel;
+using Ilmhub.Judge.Sdk.Abstractions;
 
 namespace Ilmhub.Judge.Sdk.Models;
 

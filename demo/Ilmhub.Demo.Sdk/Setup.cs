@@ -1,26 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Ilmhub.Judge.Sdk;
 using Ilmhub.Judge.Sdk.Abstractions;
 using Ilmhub.Judge.Sdk.Abstractions.Models;
 using Ilmhub.Judge.Sdk.Models;
-using Microsoft.Extensions.Logging;
 
-namespace Ilmhub.Judge.Sdk.Compiler.Tests.Integration;
+namespace Ilmhub.Demo.Sdk;
 
-public static class MockProvider
+public static class Setup
 {
-    public static IServiceProvider SetupServiceProvider()
-    {
-        var builder = WebApplication.CreateBuilder();
-
-        builder.Services.AddIlmhubJudge(ConfigureOptions);
-        // builder.Services.AddLogging(config => config.AddFilter("Ilmhub.Judge.*", LogLevel.Trace));
-
-        var app = builder.Build();
-
-        return app.Services;
-    }
-
-    private static void ConfigureOptions(IIlmhubJudgeOptions options)
+    public static void ConfigureLanguages(IIlmhubJudgeOptions options)
     {
         options.SystemUsers = new JudgeUsersOption
         {
@@ -41,14 +28,14 @@ public static class MockProvider
                     MaxRealTime = 5000,
                     MaxMemory = 128 * 1024 * 1024,
                     Command = "/usr/bin/gcc",
-                    Arguments = new string[] { "{src_path}", "-DONLINE_JUDGE", "-O2", "-w", "-fmax-errors=3", "-std=c99", "-lm", "-o", "{exe_path}" }
+                    Arguments = new string[] { "{src_path}", "-DONLINE_JUDGE", "-O2", "-fmax-errors=3", "-std=c99", "-lm", "-o", "{exe_path}" }
                 },
                 Run = new RunConfiguration()
                 {
                     Command = "{exe_path}",
                     SeccompRule = "c_cpp"
                 }
-            }, 
+            },
             new LanguageConfiguration
             {
                 Id = 2,
@@ -61,7 +48,7 @@ public static class MockProvider
                     MaxRealTime = 5000,
                     MaxMemory = 128 * 1024 * 1024,
                     Command = "/usr/bin/g++",
-                    Arguments = new string[] { "{src_path}", "-DONLINE_JUDGE", "-O2", "-fmax-errors=3", "-std=c++11", "-lm", "-o", "{exe_path}" }
+                    Arguments = new string[] { "{src_path}", "-DONLINE_JUDGE", "-O2", "-w", "-fmax-errors=3", "-std=c++11", "-lm", "-o", "{exe_path}" }
                 },
                 Run = new RunConfiguration()
                 {
@@ -95,7 +82,7 @@ public static class MockProvider
             },
             new LanguageConfiguration
             {
-                Id = 4, 
+                Id = 4,
                 Name = "Python (3)",
                 Compile = new CompileConfiguration()
                 {
@@ -125,7 +112,7 @@ public static class MockProvider
                     ExecutableName = "main",
                     // MaxCpuTime = 3000,
                     // MaxRealTime = 5000,
-                    // MaxMemory = -1,
+                    // MaxMemory = 1024 * 1024 * 1024,
                     Command = "/usr/bin/go",
                     Arguments = new string[] { "build", "-o", "{exe_path}", "{src_path}" },
                     EnvironmentVariables = new string[] { "GOCACHE=/tmp", "PATH='$PATH'" }
@@ -150,18 +137,17 @@ public static class MockProvider
                     MaxRealTime = 5000,
                     MaxMemory = -1,
                     Command = "/usr/bin/javac",
-                    Arguments = new string[] { "{src_path}", "-d", "{exe_dir}" }
+                    Arguments = new string[] { "{src_path}", "-d", "{exe_dir}", "-encoding", "UTF8" }
                 },
                 Run = new RunConfiguration()
                 {
                     Command = "/usr/bin/java",
                     SeccompRule = null,
-                    Arguments = new string[] { "-cp", "{exe_dir}", "-Djava.awt.headless=true", "{exe_path}" },
+                    Arguments = new string[] { "-cp", "{exe_dir}", "-XX:MaxRAM={max_memory}k", "-Dfile.encoding=UTF-8", "-Djava.security.policy==/etc/java_policy", "-Djava.awt.headless=true", "Main" },
                     EnvironmentVariables = new string[] { "LANG=en_US.UTF-8", "LANGUAGE=en_US:en", "LC_ALL=en_US.UTF-8" },
                     MemoryLimitCheckOnly = true
                 }
             },
         };
     }
-
 }

@@ -7,6 +7,6 @@ public interface ICompiler
     ValueTask<ICompilationResult> CompileAsync(
         string source, 
         int languageId,
-        string executableFilePath = default,
+        string environmentFolder = default,
         CancellationToken cancellationToken = default);
 }

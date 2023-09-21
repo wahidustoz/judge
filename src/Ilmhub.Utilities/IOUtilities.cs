@@ -1,6 +1,6 @@
 ﻿namespace Ilmhub.Utilities;
 
-public class IOUtilities
+public static class IOUtilities
 {
     public static string CreateTemporaryDirectory(string rootFolder = "")
     {
@@ -22,4 +22,13 @@ public class IOUtilities
             Directory.CreateDirectory(containingFolder);
         File.Create(filePath).Dispose();
     }
+
+    public static bool IsValidPath(string path) 
+        => string.IsNullOrWhiteSpace(path) is false 
+        && Directory.Exists(path) is true;
+
+    public static async ValueTask<string> GetAllTextOrDefaultAsync(string path, CancellationToken cancellationToken)
+        => File.Exists(path)
+        ? await File.ReadAllTextAsync(path, cancellationToken)
+        : string.Empty;
 }

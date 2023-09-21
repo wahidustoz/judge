@@ -7,6 +7,9 @@ namespace Ilmhub.Judge.Wrapper;
 
 public class LinuxCommandLine : ILinuxCommandLine
 {
+    public static string READ_MODE = "400";
+    public static string WRITE_MODE = "600";
+    public static string EXECUTE_MODE = "700";
     private readonly ILogger<LinuxCommandLine> logger;
 
     public LinuxCommandLine(ILogger<LinuxCommandLine> logger) => this.logger = logger;

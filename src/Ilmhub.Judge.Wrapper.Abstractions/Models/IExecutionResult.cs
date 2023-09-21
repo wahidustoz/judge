@@ -2,6 +2,7 @@ namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 public interface IExecutionResult
 {
+    bool IsSuccess { get; }
     string Output { get; set; }
     string ErrorMessage { get; set; }
     int CpuTime { get; set; }

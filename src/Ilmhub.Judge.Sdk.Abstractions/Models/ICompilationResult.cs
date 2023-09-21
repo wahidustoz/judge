@@ -4,6 +4,7 @@ namespace Ilmhub.Judge.Sdk.Abstractions.Models;
 
 public interface ICompilationResult
 {
+    string ExecutableFilePath { get; }
     string Output { get; set; }
     string Log { get; set; }
     string Error { get; set; }
