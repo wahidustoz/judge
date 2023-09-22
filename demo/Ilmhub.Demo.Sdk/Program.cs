@@ -31,13 +31,13 @@ int main() {
 // var pythonSource = @"
 // num1, num2 = map(int, input().split())
 // print(num1 + num2)";
-var pythonSource = @"
-print('22222')
-print('2   2')
-print('2   2')
-print('22222')
-print()
-";
+// var pythonSource = @"
+// print('22222')
+// print('2   2')
+// print('2   2')
+// print('22222')
+// print()
+// ";
 
 var testCases = new List<TestCase>
 {
@@ -46,12 +46,12 @@ var testCases = new List<TestCase>
 };
 
 var judgeResult = await judger.JudgeAsync(
-    languageId: 4,
-    source: pythonSource,
+    languageId: 1,
+    source: cSource,
     maxCpu: 3000,
     maxMemory: 128 * 1024 * 1024,
-    testCasesFolder: "/judger/testcases2",
-    environmentFolder: "/judger/python");
+    // testCasesFolder: "/judger/testcases2",
+    testCases: testCases);
 
 Console.WriteLine(JsonSerializer.Serialize(judgeResult, new JsonSerializerOptions() { WriteIndented = true }));
 
