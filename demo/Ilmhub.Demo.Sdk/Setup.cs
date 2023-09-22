@@ -104,7 +104,31 @@ public static class Setup
             },
             new LanguageConfiguration
             {
-                Id = 5,
+                Id = 6,
+                Name = ".NET 6",
+                Compile = new CompileConfiguration()
+                {
+                    SourceName = "Program.cs",
+                    DotnetProjectPath = "/judger/dotnet/net6/net6.csproj",
+                    ExecutableName = "app",
+                    MaxCpuTime = -1,
+                    MaxRealTime = -1,
+                    MaxMemory = -1,
+                    Command = "/usr/bin/dotnet",
+                    Arguments = new string[] { "publish", "{src_path}", "-c", "Release", "-o", "{exe_path}", "--no-self-contained", "-r", "linux-x64", "-p:PublishSingleFile=true" },
+                    EnvironmentVariables = new string[] { "PATH=$PATH", "HOME=$HOME", "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1", "DOTNET_CLI_TELEMETRY_OPTOUT=1" }
+                },
+                Run = new RunConfiguration()
+                {
+                    Command = "{exe_path}",
+                    SeccompRule = "",
+                    EnvironmentVariables = new string[] { },
+                    MemoryLimitCheckOnly = true
+                }
+            },
+            new LanguageConfiguration
+            {
+                Id = 100,
                 Name = "Go",
                 Compile = new CompileConfiguration()
                 {
@@ -127,7 +151,7 @@ public static class Setup
             },
             new LanguageConfiguration
             {
-                Id = 6,
+                Id = 101,
                 Name = "Java",
                 Compile = new CompileConfiguration()
                 {

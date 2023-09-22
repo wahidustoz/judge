@@ -18,14 +18,15 @@ public class Judger : IJudger
     private const string OUTPUT_EXTENSION = ".out";
     private readonly ILogger<IJudger> logger;
     private readonly ILinuxCommandLine cli;
-    private readonly ICompiler compiler;
+    private readonly ICompilationHandler compiler;
     private readonly IRunner runner;
+    private readonly IIlmhubJudgeOptions options;
     private readonly IJudgeUsersOption judgeUsers;
 
     public Judger(
         ILogger<IJudger> logger,
         ILinuxCommandLine cli,
-        ICompiler compiler,
+        ICompilationHandler compiler,
         IRunner runner,
         IIlmhubJudgeOptions options)
     {
@@ -33,45 +34,68 @@ public class Judger : IJudger
         this.cli = cli;
         this.compiler = compiler;
         this.runner = runner;
+        this.options = options;
         this.judgeUsers = options.SystemUsers;
     }
+
+    public bool TestCaseExists(Guid testCaseId) => IOUtilities.IsValidPath(GetTestCaseFolder(testCaseId));
+    public string GetTestCaseFolder(Guid testCaseId) => Path.Combine(options.RootFolder, TESTCASES_FOLDER, testCaseId.ToString());
 
     public async ValueTask<IJudgeResult> JudgeAsync(
         int languageId,
         string source, 
-        long maxCpu,
-        long maxMemory,
         IEnumerable<ITestCase> testCases, 
+        long maxCpu = -1,
+        long maxMemory = -1,
+        string environmentFolder = default,
         CancellationToken cancellationToken = default)
     {
-        var judgeEnvironmentFolder = IOUtilities.CreateTemporaryDirectory();
+        var shouldDestroyTemporaryFolder = false;
         try
         {
-            var testcasesFolder = Path.Combine(judgeEnvironmentFolder, TESTCASES_FOLDER);
+            if(IOUtilities.IsValidPath(environmentFolder) is false)
+            {
+                environmentFolder = IOUtilities.CreateTemporaryDirectory();
+                shouldDestroyTemporaryFolder = true;
+            }
+
+            var testcasesFolder = Path.Combine(environmentFolder, TESTCASES_FOLDER);
             Directory.CreateDirectory(testcasesFolder);
             await WriteTestCasesAsync(testcasesFolder, testCases, cancellationToken);
-            return await JudgeAsync(
-                languageId, 
-                source, 
-                maxCpu, 
-                maxMemory, 
-                testcasesFolder, 
-                judgeEnvironmentFolder,
-                cancellationToken);
+            return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testcasesFolder, environmentFolder, cancellationToken);
         }
-        catch(Exception ex)
+        catch(Exception ex) when (ex is not JudgeFailedException)
         {
             logger.LogError(ex, "Judge operation failed.");
             throw new JudgeFailedException("Judge failed with unknown issue.", ex);
         }
         finally
         {
-            logger.LogInformation("Removing temporary judge environment folder: {folder}", judgeEnvironmentFolder);
-            await cli.RemoveFolderAsync(judgeEnvironmentFolder, cancellationToken);
+            if(shouldDestroyTemporaryFolder)
+            {
+                logger.LogInformation("Removing temporary judge environment folder: {folder}", environmentFolder);
+                await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
+            }
         }
     }
 
     public async ValueTask<IJudgeResult> JudgeAsync(
+        int languageId, 
+        string source, 
+        Guid testCaseId, 
+        long maxCpu = -1, 
+        long maxMemory = -1, 
+        string environmentFolder = default, 
+        CancellationToken cancellationToken = default)
+    {
+        if(TestCaseExists(testCaseId) is false)
+            throw new TestCaseNotFoundException(testCaseId);
+
+        var testCasesFolder = GetTestCaseFolder(testCaseId);
+        return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testCasesFolder, environmentFolder, cancellationToken);
+    }
+
+    async ValueTask<IJudgeResult> JudgeInternalAsync(
         int languageId, 
         string source, 
         long maxCpu, 

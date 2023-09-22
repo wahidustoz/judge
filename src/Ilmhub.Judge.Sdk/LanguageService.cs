@@ -7,7 +7,8 @@ using Microsoft.Extensions.Logging;
 namespace Ilmhub.Judge.Sdk;
 
 public class LanguageService : ILanguageService
-{
+{   
+    private readonly int[] supportedDotnetVersions = { 6, 7 };
     private readonly ILogger<LanguageService> logger;
     private IEnumerable<ILanguageConfiguration> languageConfigurationOptions;
 
@@ -40,4 +41,22 @@ public class LanguageService : ILanguageService
 
     public async ValueTask<IEnumerable<ILanguage>> GetLanguagesAsync(CancellationToken cancellationToken = default)
         => (await GetLangaugeConfigurationsAsync(cancellationToken)).Select(x => new Language(x.Id, x.Name));
+
+    public bool IsSupportedDotnetVersion(int languageId)
+        => supportedDotnetVersions.Contains(languageId);
+
+    public string GetDotnetProjectFileAsync(int version) 
+        => @$"
+<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net{version}.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+</Project>";
+
 }

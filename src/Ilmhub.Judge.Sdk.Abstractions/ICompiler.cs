@@ -4,6 +4,7 @@ namespace Ilmhub.Judge.Sdk.Abstractions;
 
 public interface ICompiler
 {
+    bool CanHandle(int languageId);
     ValueTask<ICompilationResult> CompileAsync(
         string source, 
         int languageId,

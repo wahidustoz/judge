@@ -32,6 +32,8 @@ public static class ServiceCollectionExtensions
         services.AddIlmhubJudgeWrapper();
         services.AddTransient<IJudger, Judger>();
         services.AddTransient<ICompiler, Compiler>();
+        services.AddTransient<ICompiler, DotnetCompiler>();
+        services.AddTransient<ICompilationHandler, CompilationHandler>();
         services.AddTransient<IRunner, Runner>();
         services.AddTransient<ILanguageService, LanguageService>();
 

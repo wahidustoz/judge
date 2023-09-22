@@ -36,6 +36,8 @@ public class Compiler : ICompiler
         this.judgeUsers = options.SystemUsers;
     }
 
+    public bool CanHandle(int languageId) => languageService.IsSupportedDotnetVersion(languageId) is false;
+
     public async ValueTask<ICompilationResult> CompileAsync(
         string source, 
         int languageId,
@@ -53,8 +55,8 @@ public class Compiler : ICompiler
                 environmentFolder = await CreateTemporaryFolderAsync(cancellationToken);
 
             var sourceFilename = await WriteSourceFileAsync(source, environmentFolder, languageConfiguration, cancellationToken);
-            (string logPath, string outputPath, string errorPath) = await CreateInputOutputFilesAsync(environmentFolder, cancellationToken);
             var executableFilename = await CreateExecutableFileAsync(environmentFolder, languageConfiguration.Compile.ExecutableName, cancellationToken);
+            (string logPath, string outputPath, string errorPath) = await CreateInputOutputFilesAsync(environmentFolder, cancellationToken);
 
             var arguments = languageConfiguration.Compile.Arguments?
                 .Select(argument => 
@@ -152,7 +154,7 @@ public class Compiler : ICompiler
 
     private async ValueTask<string> WriteSourceFileAsync(
         string source, 
-        string tempFolder, 
+        string environtmentFolder, 
         ILanguageConfiguration languageConfiguration, 
         CancellationToken cancellationToken)
     {
@@ -160,7 +162,7 @@ public class Compiler : ICompiler
         if(string.IsNullOrWhiteSpace(Path.GetDirectoryName(sourceName)) is false)
             throw new InvalidLanguageConfigurationException(languageConfiguration);
 
-        var sourceFilename = Path.Combine(tempFolder, sourceName);
+        var sourceFilename = Path.Combine(environtmentFolder, sourceName);
         await File.WriteAllTextAsync(sourceFilename, source, cancellationToken);
         await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, sourceFilename, cancellationToken: cancellationToken);
         await cli.ChangePathModeAsync(LinuxCommandLine.READ_MODE, sourceFilename, cancellationToken: cancellationToken);

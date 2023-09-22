@@ -4,20 +4,23 @@ namespace Ilmhub.Judge.Sdk.Abstractions;
 
 public interface IJudger
 {
+    bool TestCaseExists(Guid testCaseId);
+    string GetTestCaseFolder(Guid testCaseId);
     ValueTask<IJudgeResult> JudgeAsync(
         int languageId,
         string source, 
-        long maxCpu,
-        long maxMemory,
         IEnumerable<ITestCase> testCases, 
+        long maxCpu = -1,
+        long maxMemory = -1,
+        string environmentFolder = default,
         CancellationToken cancellationToken = default);
 
     ValueTask<IJudgeResult> JudgeAsync(
         int languageId,
         string source, 
-        long maxCpu,
-        long maxMemory,
-        string testCasesFolder, 
+        Guid testCaseId, 
+        long maxCpu = -1,
+        long maxMemory = -1,
         string environmentFolder = default,
         CancellationToken cancellationToken = default);
 }

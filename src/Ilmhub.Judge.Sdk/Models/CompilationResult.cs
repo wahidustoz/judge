@@ -6,6 +6,7 @@ namespace Ilmhub.Judge.Sdk;
 
 public class CompilationResult : ICompilationResult
 {
+    public CompilationResult() { }
     public CompilationResult(IExecutionResult executionResult)
         => Execution = executionResult;
     
@@ -14,7 +15,5 @@ public class CompilationResult : ICompilationResult
     public string Error { get; set; }
     public string Output { get; set; }
     public string Log { get; set; }
-    public string PotentialWarning => 
-        IsSuccess ? Output + Error : string.Empty;
     public bool IsSuccess => Execution.IsSuccess;
 }
