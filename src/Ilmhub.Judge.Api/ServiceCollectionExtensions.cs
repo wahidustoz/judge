@@ -63,7 +63,6 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection SetupHealthChecks(this IServiceCollection services)
     {
-        services.AddHealthChecksUI().AddInMemoryStorage();
         services.AddHealthChecks().AddCheck<CompilerHealthChecks>("Compilers");
         return services;
     }
@@ -76,7 +75,6 @@ public static class ServiceCollectionExtensions
             Predicate = _ => true, 
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse 
         });
-        app.MapHealthChecksUI();
 
         return app;
     }
