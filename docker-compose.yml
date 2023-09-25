@@ -1,27 +1,10 @@
 version: "3"
 services:
-    judge_server:
-        container_name: judger
-        image: davidwahid/judge
+    judger-api:
+        container_name: judger-api
+        build:
+            context: .
+            dockerfile: src/Ilmhub.Judge.Api/Dockerfile
         read_only: true
-        cap_drop:
-            - SETPCAP
-            - MKNOD
-            - NET_BIND_SERVICE
-            - SYS_CHROOT
-            - SETFCAP
-            - FSETID
-        tmpfs:
-            - /tmp
-        volumes:
-            - ./tests/test_case:/test_case:ro
-            - ./log:/log
-            # - $PWD/server:/code:ro
-            - ./run:/judger
-        environment:
-            - DISABLE_HEARTBEAT=true
-            - BACKEND_URL=http://backend:80/api/judge_server_heartbeat
-            - SERVICE_URL=http://judge-server:12358
-            - TOKEN=123token
         ports:
-            - "0.0.0.0:12358:8080"
+            - "0.0.0.0:5000:8080"

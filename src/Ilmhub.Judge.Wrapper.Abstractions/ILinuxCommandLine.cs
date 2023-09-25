@@ -2,6 +2,7 @@
 
 public interface ILinuxCommandLine
 {
+    ValueTask<(bool IsSuccess, string Output, string ErrorMessage)> TryRunAsync(string command, string arguments, CancellationToken cancellationToken = default);
     ValueTask RunCommandAsync(string command, string arguments, CancellationToken cancellationToken = default);
     ValueTask AddPathOwnerAsync(string owner, string path, bool recursive = false, CancellationToken cancellationToken = default);
     ValueTask ChangePathModeAsync(string mode, string path, bool recursive = false, CancellationToken cancellationToken = default);

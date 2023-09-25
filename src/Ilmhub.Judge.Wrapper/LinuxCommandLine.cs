@@ -19,8 +19,12 @@ public class LinuxCommandLine : ILinuxCommandLine
 
     public ValueTask AddPathOwnerAsync(string owner, string path, bool recursive = false, CancellationToken cancellationToken = default)
         => RunCommandAsync("chown", $"{(recursive ? "-R " : "")}{owner} {path}");
-
-    public async ValueTask RunCommandAsync(string command, string arguments, CancellationToken cancellationToken = default)
+    
+    // TODO: People assume this method never throws. Add try catch in the method body here
+    public async ValueTask<(bool IsSuccess, string Output, string ErrorMessage)> TryRunAsync(
+        string command,
+        string arguments,
+        CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Starting to run linux command: {command} {arguments}", command, arguments);
         var process = Process.Start(new ProcessStartInfo
@@ -37,10 +41,15 @@ public class LinuxCommandLine : ILinuxCommandLine
         var output = process.StandardOutput.ReadToEnd();
         var error = process.StandardError.ReadToEnd();
 
-        if(process.ExitCode is not 0 || string.IsNullOrWhiteSpace(error) is false)
-            throw new LinuxCommandFailedException(command, arguments, output, error);
-
         logger.LogTrace("Finished running linux command: {command} {arguments}, output: {output}, error: {error}", command, arguments, output, error);
+        return (process.ExitCode == 0, output, error);
+    }
+
+    public async ValueTask RunCommandAsync(string command, string arguments, CancellationToken cancellationToken = default)
+    {
+        var processResult = await TryRunAsync(command, arguments, cancellationToken);
+        if(processResult.IsSuccess is false)
+            throw new LinuxCommandFailedException(command, arguments, processResult.Output, processResult.ErrorMessage);
     }
 
     public ValueTask RemoveFolderAsync(string path, CancellationToken cancellationToken = default)

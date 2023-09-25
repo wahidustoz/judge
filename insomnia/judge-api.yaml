@@ -1,0 +1,271 @@
+_type: export
+__export_format: 4
+__export_date: 2023-09-25T09:47:56.544Z
+__export_source: insomnia.desktop.app:v2023.5.8
+resources:
+  - _id: req_27de45e6bf3f42dead0fc6e6b499f6d8
+    parentId: fld_45dada12adeb4271b255361f6bebaf20
+    modified: 1695634553101
+    created: 1695417679046
+    url: "{{ _.endpoint }}/languages"
+    name: Languages
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/2023.5.8
+    authentication: {}
+    metaSortKey: -1695417463997
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_45dada12adeb4271b255361f6bebaf20
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1695634390689
+    created: 1695417457717
+    name: Judge
+    description: ""
+    environment: {}
+    environmentPropertyOrder: {}
+    metaSortKey: -1695417457717
+    _type: request_group
+  - _id: wrk_31e1d3728a6f44b99b5cee652affc546
+    parentId: null
+    modified: 1694778179234
+    created: 1694778179234
+    name: Judge
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_2467758dfdfe4aab8a8ecd9ad8d32cba
+    parentId: fld_45dada12adeb4271b255361f6bebaf20
+    modified: 1695634560132
+    created: 1695416768351
+    url: "{{ _.endpoint }}/judge"
+    name: Judge .NET 6 Test Case ID
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"languageId": "6",
+          	"Source": "using System.Linq; var sum = Console.ReadLine().Split(' ').Select(int.Parse).Sum(); Console.WriteLine(sum);",
+          	"TestCaseId": "0bd41375-8535-473c-b80c-1d59b06bacda"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/2023.5.8
+    authentication: {}
+    metaSortKey: -1695417463897
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_11b83ba6a428443db3e693e746ae648e
+    parentId: fld_45dada12adeb4271b255361f6bebaf20
+    modified: 1695634566422
+    created: 1695346479615
+    url: "{{ _.endpoint }}/judge"
+    name: Judge .NET 6 TestCases
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"languageId": "6",
+          "Source": "using System.Linq; var sum = Console.ReadLine().Split(' ').Select(int.Parse).Sum(); Console.Write(sum);",
+          "maxcpu": "1000",
+        	"maxMemory": "-1",
+          "TestCases": [ {
+        	  "Id": "1",
+        	  "input": "1 2",
+        	  "output": "3"
+          }, {
+        	  "Id": "2",
+        	  "input": "4 1",
+        	  "output": "5"
+          }]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/2023.5.8
+    authentication: {}
+    metaSortKey: -1695417463797
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_3ec3760b2eb549bda0ba6c30e7b9f1bb
+    parentId: fld_45dada12adeb4271b255361f6bebaf20
+    modified: 1695634587587
+    created: 1695411820942
+    url: "{{ _.endpoint }}/judge"
+    name: Judge C Tests Cases
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"languageId": "1",
+          "Source": "int main() { int a, b; scanf(\" %d %d\", &a, &b); printf(\"%d\", a+b); return 0;}",
+          "maxcpu": "1000",
+        	"maxMemory": "134217728",
+          "TestCases": [ {
+        	  "Id": "1",
+        	  "input": "1 2",
+        	  "output": "3"
+          }, {
+        	  "Id": "2",
+        	  "input": "4 1",
+        	  "output": "5"
+          }]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/2023.5.8
+    authentication: {}
+    metaSortKey: -1695417463697
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_42639cdbad2448298493c8e86922ed21
+    parentId: fld_45dada12adeb4271b255361f6bebaf20
+    modified: 1695634594189
+    created: 1695418368343
+    url: "{{ _.endpoint }}/judge"
+    name: "FAIL: Judge C Tests Cases"
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"languageId": "1",
+          "Source": "int main() { int a, b; scanf(\" %d %d\", &a, &b) printf(\"%d\", a+b); return 0;}",
+          "maxcpu": "1000",
+        	"maxMemory": "134217728",
+          "TestCases": [ {
+        	  "Id": "1",
+        	  "input": "1 2",
+        	  "output": "3"
+          }, {
+        	  "Id": "2",
+        	  "input": "4 1",
+        	  "output": "5"
+          }]
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/2023.5.8
+    authentication: {}
+    metaSortKey: -1695257678483
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_49c010b3dbfe41de97a4cc3277049188
+    parentId: fld_45dada12adeb4271b255361f6bebaf20
+    modified: 1695634603363
+    created: 1695417485803
+    url: "{{ _.endpoint }}/judge"
+    name: Judge C Test Case ID
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"languageId": "1",
+          	"Source": "int main() { int a, b; scanf(\" %d %d\", &a, &b); printf(\"%d\", a+b); return 0;}",
+          	"TestCaseId": "0bd41375-8535-473c-b80c-1d59b06bacda"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/2023.5.8
+    authentication: {}
+    metaSortKey: -1695097893269
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_125e2ad31fa95024de0310558b4ffc058c846cb5
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1695634538300
+    created: 1694778179238
+    name: Base Environment
+    data:
+      endpoint: http://localhost:5000
+    dataPropertyOrder:
+      "&":
+        - endpoint
+    color: null
+    isPrivate: false
+    metaSortKey: 1694778179238
+    _type: environment
+  - _id: jar_125e2ad31fa95024de0310558b4ffc058c846cb5
+    parentId: wrk_31e1d3728a6f44b99b5cee652affc546
+    modified: 1694778179240
+    created: 1694778179240
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: env_8f07be029f7d4dc1a9ca340b9a4a9c77
+    parentId: env_125e2ad31fa95024de0310558b4ffc058c846cb5
+    modified: 1695634523318
+    created: 1695634488656
+    name: Docker
+    data:
+      endpoint: http://localhost:8080
+    dataPropertyOrder:
+      "&":
+        - endpoint
+    color: null
+    isPrivate: false
+    metaSortKey: 1695634488656
+    _type: environment
