@@ -1,11 +1,6 @@
 version: "3"
 services:
     judger-api:
-        container_name: judger-api
-        build:
-            context: .
-            dockerfile: src/Ilmhub.Judge.Api/Dockerfile
+        image: davidwahid/judger
         ports:
             - "5000:5000"
-        volumes:
-            - /var/run/docker.sock:/tmp/docker.sock:ro
