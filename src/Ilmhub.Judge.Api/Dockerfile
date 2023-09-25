@@ -16,29 +16,42 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get update && apt-get install -y golang-go openjdk-8-jdk nodejs mono-complete && \
     ln -sf /usr/share/zoneinfo/Asia/UTC /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata && \
-    cd /tmp && git clone -b newnew  --depth 1 https://github.com/wahid-d/judger-process.git && cd Judger && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+# build judger process CMAKE
+RUN cd /tmp && git clone -b newnew  --depth 1 https://github.com/wahid-d/judger-process.git && cd judger-process && \
     mkdir build && cd build && cmake .. && make && make install && \
     apt-get purge -y --auto-remove $buildDeps && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
     # install .NET
-    wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+RUN wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
     apt-get update && \
-    apt-get install -y dotnet-sdk-7.0 dotnet-sdk-6.0 && \
-    useradd -u 2000 compiler && useradd -u 2001 runner
-RUN apt-get update && apt-get install -y wget
-RUN wget https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.2.2/fpc-laz_3.2.2-210709_amd64.deb && \
+    apt-get install -y dotnet-sdk-7.0 dotnet-sdk-6.0
+
+# install pascal
+RUN apt-get update && apt-get install -y wget && \
+    wget https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.2.2/fpc-laz_3.2.2-210709_amd64.deb && \
     apt install -y ./fpc-laz_3.2.2-210709_amd64.deb && rm -rf fpc-laz_3.2.2-210709_amd64.deb
 
-# preparing testcases folder
-RUN mkdir /judger && mkdir /judger/testcases && \
+# preparing judger environment
+RUN useradd -u 2000 compiler && useradd -u 2001 runner && \
+    mkdir /judger && mkdir /judger/testcases && \
     chown runner /judger/testcases && \
     mkdir /judger/testcases/0bd41375-8535-473c-b80c-1d59b06bacda && \
     echo "1 2" > /judger/testcases/0bd41375-8535-473c-b80c-1d59b06bacda/1.in && \
     echo "3" > /judger/testcases/0bd41375-8535-473c-b80c-1d59b06bacda/1.out
 
+# prepare dotnet solutions
+RUN mkdir /judger/dotnet && cd /judger/dotnet && \
+    dotnet new console -o net6 -f net6.0 && \
+    dotnet new console -o net7 -f net7.0
+
 WORKDIR /App
+ENV COMPlus_EnableDiagnostics=0
 COPY --from=build-env /App/out .
-ENTRYPOINT ["usr/bin/dotnet", "Ilmhub.Judge.Api.dll"]
+EXPOSE 5000
+ENV ASPNETCORE_URLS=http://*:5000
+ENTRYPOINT ["dotnet", "Ilmhub.Judge.Api.dll"]

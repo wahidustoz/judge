@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Ilmhub.Judge.Sdk.Abstractions.Models;
+﻿using Ilmhub.Judge.Sdk.Abstractions.Models;
 using Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 namespace Ilmhub.Judge.Sdk;
