@@ -20,10 +20,8 @@ dpkg-reconfigure -f noninteractive tzdata && \
 # build judger process CMAKE and purge build dependencies
 cd /tmp && git clone -b newnew  --depth 1 https://github.com/wahid-d/judger-process.git && cd judger-process && \
 mkdir build && cd build && cmake .. && make && make install && \
-apt-get purge -y --auto-remove $buildDeps && \
-apt-get clean && rm -rf /var/lib/apt/lists/* && \
 
-    # install .NET
+# install .NET
 wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
 dpkg -i packages-microsoft-prod.deb && \
 rm packages-microsoft-prod.deb && \
@@ -48,5 +46,7 @@ mkdir /judger/dotnet && cd /judger/dotnet && \
 dotnet new console -o net6 -f net6.0 && \
 dotnet new console -o net7 -f net7.0 && \
 
-# clean tmp folder
+# clean up
 rm -rf /tmp/*
+apt-get purge -y --auto-remove $buildDeps && \
+apt-get clean && rm -rf /var/lib/apt/lists/*

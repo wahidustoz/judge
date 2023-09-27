@@ -5,10 +5,7 @@ COPY ./ ./
 RUN dotnet restore
 RUN dotnet publish src/Ilmhub.Judge.Api/Ilmhub.Judge.Api.csproj -c Release -o out
 
-FROM ubuntu:18.04
-
-COPY ./src/Ilmhub.Judge.Api/dependencies.sh .
-RUN chmod +x dependencies.sh && ./dependencies.sh && rm -f dependencies.sh
+FROM davidwahid/judger-base:latest
 
 WORKDIR /App
 COPY --from=build-env /App/out .
