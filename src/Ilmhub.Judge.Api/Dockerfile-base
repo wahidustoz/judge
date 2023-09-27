@@ -1,0 +1,4 @@
+FROM ubuntu:18.04
+
+COPY ./src/Ilmhub.Judge.Api/dependencies.sh .
+RUN chmod +x dependencies.sh && ./dependencies.sh && rm -f dependencies.sh  

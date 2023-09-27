@@ -41,21 +41,11 @@ public static class ServiceCollectionExtensions
                 builder
                     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(configuration["OpenTelemetry:ServiceName"]))
                     .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation(o =>
-                    {
-                        // list of excluded hosts from http client telemetry.
-                        var excludedHosts = new List<string>() { };
-                        o.FilterHttpWebRequest = filter => !excludedHosts.Contains(filter.RequestUri.Host);
-                    })
-                    .AddSource("Ilmhub.Judge.Sdk")
-                    .AddSource("Ilmhub.Judge.Api")
-                    .AddSource("Ilmhub.Judge.Wrapper")
+                    .AddHttpClientInstrumentation()
                     .AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug);
 
                 if (configuration["OpenTelemetry:Driver"] == "Jaeger")
-                {
                     builder.AddOtlpExporter();
-                }
             });
 
         return services;
