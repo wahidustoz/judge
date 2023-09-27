@@ -1,9 +1,9 @@
 using Ilmhub.Judge.Sdk;
 using Ilmhub.Judge.Sdk.Options;
 using Ilmhub.Judge.Api;
-using FluentValidation;
 using Ilmhub.Judge.Api.Dtos;
-using static Ilmhub.Judge.Api.Dtos.JudgeRequestDto;
+using Ilmhub.Judge.Api.Validators;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 

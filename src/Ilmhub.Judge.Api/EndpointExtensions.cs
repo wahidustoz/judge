@@ -1,5 +1,9 @@
-﻿using Ilmhub.Judge.Api.Dtos;
+﻿using System.Net;
+using FluentValidation;
+using Ilmhub.Judge.Api.Dtos;
 using Ilmhub.Judge.Sdk.Abstractions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ilmhub.Judge.Api;
 
@@ -13,12 +17,12 @@ public static class EndpointExtensions
             ? await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCases, dto.MaxCpu, dto.MaxMemory, cancellationToken: cancellationToken)
             : await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCaseId, dto.MaxCpu, dto.MaxMemory, cancellationToken: cancellationToken);
 
-            return Results.Ok(new 
+            return Results.Ok(new
             {
                 IsSuccess = judgeResult.IsSuccess,
                 Status = judgeResult.Status,
                 StatusString = judgeResult.Status.ToString(),
-                Compilation = new 
+                Compilation = new
                 {
                     IsSuccess = judgeResult.Compilation?.IsSuccess,
                     Output = judgeResult.Compilation?.Output,
@@ -40,11 +44,32 @@ public static class EndpointExtensions
                     RealTime = tc.Execution?.Execution?.RealTime
                 })
             });
-        }).WithName("Judge");
+        })
+        .AddEndpointFilter<ValidateFilter>()
+        .WithName("Judge");
 
-        app.MapGet("/languages", async (ILanguageService service, CancellationToken token) => 
+        app.MapGet("/languages", async (ILanguageService service, CancellationToken token) =>
             await service.GetLanguagesAsync(token)).WithName("Languages");
 
         return app;
     }
+}
+
+public class ValidateFilter : IEndpointFilter
+{
+    private readonly IValidator<JudgeRequestDto> _validator;
+    public ValidateFilter(IValidator<JudgeRequestDto> validator)
+    {
+        this._validator = validator;
+    }
+
+    public async ValueTask<object> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+    {
+        var judgeResult = context.Arguments.FirstOrDefault(a => a.GetType() == typeof(JudgeRequestDto)) as JudgeRequestDto;
+        var result = await _validator.ValidateAsync(judgeResult);
+        if (!result.IsValid) return Results.Json(result.Errors, statusCode: (int)HttpStatusCode.BadRequest);
+        return await next(context);
+        
+    }
+
 }
