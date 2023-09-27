@@ -40,7 +40,8 @@ public static class EndpointExtensions
                     RealTime = tc.Execution?.Execution?.RealTime
                 })
             });
-        }).WithName("Judge");
+        }).WithName("Judge")
+        .RequireRateLimiting("fixed");
 
         app.MapGet("/languages", async (ILanguageService service, CancellationToken token) => 
             await service.GetLanguagesAsync(token)).WithName("Languages");
