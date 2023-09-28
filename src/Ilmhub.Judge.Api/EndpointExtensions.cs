@@ -14,8 +14,8 @@ public static class EndpointExtensions
         app.MapPost("/judge", async (IJudger judger, IIlmhubJudgeOptions options, JudgeRequestDto dto, CancellationToken cancellationToken) =>
         {
             IJudgeResult judgeResult = dto.TestCases?.Any() is true
-            ? await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCases, dto.MaxCpu, dto.MaxMemory, cancellationToken: cancellationToken)
-            : await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCaseId, dto.MaxCpu, dto.MaxMemory, cancellationToken: cancellationToken);
+            ? await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCases, dto.MaxCpu ?? -1, dto.MaxMemory ?? -1, cancellationToken: cancellationToken)
+            : await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCaseId.Value, dto.MaxCpu ?? -1, dto.MaxMemory ?? -1, cancellationToken: cancellationToken);
 
             return Results.Ok(new
             {

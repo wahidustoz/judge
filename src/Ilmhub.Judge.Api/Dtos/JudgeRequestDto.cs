@@ -6,8 +6,8 @@ public class JudgeRequestDto
 {
     public int LanguageId { get; set; }
     public string Source { get; set; }
-    public long MaxCpu { get; set; } = -1;
-    public long MaxMemory { get; set; } = -1;
-    public Guid TestCaseId { get; set; }
+    public long? MaxCpu { get; set; }
+    public long? MaxMemory { get; set; }
+    public Guid? TestCaseId { get; set; }
     public IEnumerable<TestCase> TestCases { get; set; }
 }
