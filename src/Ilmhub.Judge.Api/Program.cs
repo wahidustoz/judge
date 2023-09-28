@@ -4,7 +4,7 @@ using Ilmhub.Judge.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfgiureRateLimiting(builder.Configuration);
+builder.Services.ConfigureRateLimiting(builder.Configuration);
 builder.Services.AddIlmhubJudge(builder.Configuration.GetSection($"{IlmhubJudgeOptions.Name}"));
 builder.Services.SetupOpenTelemetry(builder.Configuration);
 builder.Services.AddLogging(logBuilder => logBuilder.ConfigureOpenTelemetryLogging(builder.Configuration));

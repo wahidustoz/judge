@@ -1,6 +1,8 @@
-﻿using HealthChecks.UI.Client;
+﻿using System.Threading.RateLimiting;
+using HealthChecks.UI.Client;
 using Ilmhub.Judge.Api.Jaeger;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.RateLimiting;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
@@ -77,5 +79,24 @@ public static class ServiceCollectionExtensions
         });
 
         return app;
+    }
+
+    public static IServiceCollection ConfigureRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    {
+        if(configuration.GetValue<bool>("RateLimitingOptions:EnableRateLimiting") == false)
+            return services;
+
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("fixed", options =>
+            {
+                options.PermitLimit = configuration.GetValue<int>("RateLimitingOptions:Permit");
+                options.Window = configuration.GetValue<TimeSpan>("RateLimitingOptions:Window");
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                options.QueueLimit = configuration.GetValue<int>("RateLimitingOptions:QueueLimit");
+            });
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        });
+        return services;
     }
 }
