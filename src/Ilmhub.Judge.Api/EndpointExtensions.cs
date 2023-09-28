@@ -60,7 +60,9 @@ public static class EndpointExtensions
             });
         })
         .WithAsyncValidation<JudgeRequestDto>()
+        .RequireRateLimiting("fixed")
         .WithName("Judge");
+        
 
         app.MapGet("/languages", async (
             ILanguageService service, 

@@ -8,12 +8,14 @@ using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IValidator<JudgeRequestDto>, JudgeRequestValidator>();
+builder.Services.ConfigureRateLimiting(builder.Configuration);
 builder.Services.AddIlmhubJudge(builder.Configuration.GetSection($"{IlmhubJudgeOptions.Name}"));
 builder.Services.SetupOpenTelemetry(builder.Configuration);
 builder.Services.AddLogging(logBuilder => logBuilder.ConfigureOpenTelemetryLogging(builder.Configuration));
 builder.Services.SetupHealthChecks();
 
 var app = builder.Build();
+app.UseRateLimiter();
 app.AddEndpoints();
 app.ConfigureHealthChecks();
 app.Run();
