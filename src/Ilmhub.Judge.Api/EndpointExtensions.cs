@@ -59,13 +59,13 @@ public static class EndpointExtensions
                 })
             });
         })
-            .WithAsyncValidation<JudgeRequestDto>()
-            .WithName("Judge");
+        .WithAsyncValidation<JudgeRequestDto>()
+        .WithName("Judge");
 
         app.MapGet("/languages", async (
             ILanguageService service, 
             CancellationToken token) => await service.GetLanguagesAsync(token))
-            .WithName("Languages");
+        .WithName("Languages");
 
         return app;
     }
