@@ -9,11 +9,27 @@ public static class EndpointExtensions
 {
     public static WebApplication AddEndpoints(this WebApplication app)
     {
-        app.MapPost("/judge", async (IJudger judger, IIlmhubJudgeOptions options, JudgeRequestDto dto, CancellationToken cancellationToken) =>
+        app.MapPost("/judge", async (
+            IJudger judger, 
+            IIlmhubJudgeOptions options, 
+            JudgeRequestDto dto, 
+            CancellationToken cancellationToken) =>
         {
             IJudgeResult judgeResult = dto.TestCases?.Any() is true
-            ? await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCases, dto.MaxCpu ?? -1, dto.MaxMemory ?? -1, cancellationToken: cancellationToken)
-            : await judger.JudgeAsync(dto.LanguageId, dto.Source, dto.TestCaseId.Value, dto.MaxCpu ?? -1, dto.MaxMemory ?? -1, cancellationToken: cancellationToken);
+            ? await judger.JudgeAsync(
+                languageId: dto.LanguageId, 
+                source: dto.Source, 
+                testCases: dto.TestCases, 
+                maxCpu: dto.MaxCpu ?? -1, 
+                maxMemory: dto.MaxMemory ?? -1, 
+                cancellationToken: cancellationToken)
+            : await judger.JudgeAsync(
+                languageId: dto.LanguageId, 
+                source: dto.Source, 
+                testCaseId: dto.TestCaseId.Value, 
+                maxCpu: dto.MaxCpu ?? -1, 
+                maxMemory: dto.MaxMemory ?? -1, 
+                cancellationToken: cancellationToken);
 
             return Results.Ok(new
             {
@@ -43,11 +59,13 @@ public static class EndpointExtensions
                 })
             });
         })
-        .AddEndpointFilter<FluentAsynValidationFilter<JudgeRequestDto>>()
-        .WithName("Judge");
+            .WithAsyncValidation<JudgeRequestDto>()
+            .WithName("Judge");
 
-        app.MapGet("/languages", async (ILanguageService service, CancellationToken token) =>
-            await service.GetLanguagesAsync(token)).WithName("Languages");
+        app.MapGet("/languages", async (
+            ILanguageService service, 
+            CancellationToken token) => await service.GetLanguagesAsync(token))
+            .WithName("Languages");
 
         return app;
     }

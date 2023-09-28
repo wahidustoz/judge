@@ -1,8 +1,16 @@
 using System.Net;
 using FluentValidation;
-using Ilmhub.Judge.Api.Dtos;
 
 namespace Ilmhub.Judge.Api.Filters;
+
+public static class ValidationFilterRouteHandlerBuilderExtensions
+{
+    public static IEndpointConventionBuilder WithAsyncValidation<T>(this RouteHandlerBuilder builder) where T : class
+    {
+        builder.AddEndpointFilter<FluentAsynValidationFilter<T>>();
+        return builder;
+    }
+}
 
 public class FluentAsynValidationFilter<T> : IEndpointFilter where T : class
 {
