@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
     {
         if (configuration.GetValue("OpenTelemetry:Driver", "None") == "None")
             return builder;
-        
+
         builder.AddOpenTelemetry(options =>
         {
             options.IncludeScopes = true;
@@ -72,10 +72,10 @@ public static class ServiceCollectionExtensions
     public static WebApplication ConfigureHealthChecks(this WebApplication app)
     {
         app.UseHealthChecks("/health", new HealthCheckOptions { Predicate = _ => true });
-        app.UseHealthChecks("/healthz", new HealthCheckOptions 
-        { 
-            Predicate = _ => true, 
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse 
+        app.UseHealthChecks("/healthz", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
 
         return app;
@@ -83,17 +83,17 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection ConfigureRateLimiting(this IServiceCollection services, IConfiguration configuration)
     {
-        if(configuration.GetValue<bool>("RateLimitingOptions:EnableRateLimiting") == false)
+        if (configuration.GetValue<bool>("RateLimiting:Enabled") == false)
             return services;
 
         services.AddRateLimiter(options =>
         {
             options.AddFixedWindowLimiter("fixed", options =>
             {
-                options.PermitLimit = configuration.GetValue<int>("RateLimitingOptions:Permit");
-                options.Window = configuration.GetValue<TimeSpan>("RateLimitingOptions:Window");
+                options.PermitLimit = configuration.GetValue<int>("RateLimiting:Permit");
+                options.Window = TimeSpan.FromSeconds(configuration.GetValue<int>("RateLimiting:Window"));
                 options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.QueueLimit = configuration.GetValue<int>("RateLimitingOptions:QueueLimit");
+                options.QueueLimit = configuration.GetValue<int>("RateLimiting:QueueLimit");
             });
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
