@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Ilmhub.Judge.Api.Dtos;
-using Ilmhub.Judge.Api.Filters;
 using Ilmhub.Judge.Sdk.Abstractions;
 
 namespace Ilmhub.Judge.Api;
@@ -60,7 +59,7 @@ public static class EndpointExtensions
             });
         })
         .WithAsyncValidation<JudgeRequestDto>()
-        .RequireRateLimiting("fixed")
+        .WithRateLimiting("fixed", app.Configuration)
         .WithName("Judge");
         
 

@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
         return builder;
     }
 
-    public static IServiceCollection SetupOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
     {
         if (configuration.GetValue("OpenTelemetry:Driver", "None") == "None")
             return services;
@@ -71,11 +71,8 @@ public static class ServiceCollectionExtensions
         return app;
     }
 
-    public static IServiceCollection ConfigureRateLimiting(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services, IConfiguration configuration)
     {
-        if (configuration.GetValue<bool>("RateLimiting:Enabled") == false)
-            return services;
-
         services.AddRateLimiter(options =>
         {
             options.AddFixedWindowLimiter("fixed", options =>
