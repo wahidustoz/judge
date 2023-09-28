@@ -12,7 +12,7 @@ public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
             .NotEmpty()
             .MaximumLength(5000);
 
-        RuleFor(dto => dto.LanguageId)
+        RuleFor(x => x.LanguageId)
             .MustAsync(async (request, ctx, cancellation) =>
             {
                 var languageConfiguration = await languageService.GetLanguageConfigurationOrDefaultAsync(request.LanguageId, cancellation);
@@ -24,7 +24,7 @@ public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
             .GreaterThan(0)
             .When(x => x.MaxCpu is not null);
 
-        RuleFor(dto => dto.MaxMemory)
+        RuleFor(x => x.MaxMemory)
             .GreaterThan(0)
             .When(x => x.MaxMemory is not null);
 
@@ -37,7 +37,7 @@ public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
             .When(x => x.TestCases?.Any() is true)
             .WithMessage("{PropertyName} must be null when Testcases are submitted.");
 
-        RuleFor(dto => dto.TestCases)
+        RuleFor(x => x.TestCases)
             .NotEmpty()
             .DependentRules(() =>
             {
