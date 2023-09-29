@@ -77,10 +77,10 @@ public static class ServiceCollectionExtensions
         {
             options.AddFixedWindowLimiter("fixed", options =>
             {
-                options.PermitLimit = configuration.GetValue<int>("RateLimiting:Permit");
-                options.Window = TimeSpan.FromSeconds(configuration.GetValue<int>("RateLimiting:Window"));
+                options.PermitLimit = configuration.GetValue("RateLimiting:Permit", 1);
+                options.Window = TimeSpan.FromSeconds(configuration.GetValue("RateLimiting:Window", 1));
                 options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.QueueLimit = configuration.GetValue<int>("RateLimiting:QueueLimit");
+                options.QueueLimit = configuration.GetValue("RateLimiting:QueueLimit", 1);
             });
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });

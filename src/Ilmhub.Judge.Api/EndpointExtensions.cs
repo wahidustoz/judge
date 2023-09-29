@@ -66,6 +66,7 @@ public static class EndpointExtensions
         app.MapGet("/languages", async (
             ILanguageService service, 
             CancellationToken token) => await service.GetLanguagesAsync(token))
+        .WithRateLimiting("fixed", app.Configuration)
         .WithName("Languages");
 
         return app;
