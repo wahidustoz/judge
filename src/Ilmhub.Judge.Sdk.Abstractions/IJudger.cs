@@ -23,4 +23,10 @@ public interface IJudger
         long maxMemory = -1,
         string environmentFolder = default,
         CancellationToken cancellationToken = default);
+    
+    ValueTask<Guid> CreateTestCaseAsync(
+        Guid testCasesFolder,
+        IEnumerable<ITestCase> testCases,
+        CancellationToken cancellationToken
+    ); 
 }

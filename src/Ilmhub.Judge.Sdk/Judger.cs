@@ -235,4 +235,39 @@ public class Judger : IJudger
         foreach(var item in dictionary)
             yield return (item.Value, string.Empty, item.Key);
     }
+
+    public async ValueTask<Guid> CreateTestCaseAsync(
+        Guid testCasesFolder,
+        IEnumerable<ITestCase> testCases,
+        CancellationToken cancellationToken)
+    {
+        await cli.RemoveFolderAsync(testCasesFolder.ToString(), cancellationToken);
+        await cli.RunCommandAsync(
+            "mkdir",
+            $"/judger/testcases/{testCasesFolder}",
+            cancellationToken);
+
+        await cli.RunCommandAsync(
+            "chown",
+            $"runner /judger/testcases/{testCasesFolder}",
+            cancellationToken
+        );
+
+        foreach(var testCase in testCases)
+        {
+            await cli.RunCommandAsync(
+                "echo",
+                $"\"{testCase.Input}\" > /judger/testcases/{testCasesFolder}/{testCase.Id}{INPUT_EXTENSION}",
+                cancellationToken
+            );
+
+            await cli.RunCommandAsync(
+                "echo",
+                $"\"{testCase.Output}\" > /judger/testcases/{testCasesFolder}/{testCase.Id}{OUTPUT_EXTENSION}",
+                cancellationToken
+            );
+        }
+
+        return testCasesFolder;
+    }
 }

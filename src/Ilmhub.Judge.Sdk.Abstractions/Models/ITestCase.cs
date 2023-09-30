@@ -2,7 +2,7 @@
 
 public interface ITestCase
 {
-    int Id { get; set; }
+    string Id { get; set; }
     string Input { get; set; }
     string Output { get; set; }
 }
