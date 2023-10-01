@@ -240,9 +240,10 @@ public class Judger : IJudger
         IEnumerable<ITestCase> testCases,
         CancellationToken cancellationToken)
     {
-        var testCasesFolder = Guid.NewGuid();
-        var testCasesDirectory = Directory.CreateDirectory($"/judger/testcases/{testCasesFolder}");
+        var testCaseId = Guid.NewGuid();
+        var testCasesFolder = GetTestCaseFolder(testCaseId);
+        var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
         await WriteTestCasesAsync(testCasesDirectory.ToString(), testCases, cancellationToken);
-        return testCasesFolder;
+        return testCaseId;
     }
 }
