@@ -3,6 +3,8 @@ name: Docker Image CI
 on:
   push:
     branches: [ "release/*" ]
+  pull_request:
+    branches: [ "release/*" ]
 
 jobs:
   push_to_registry:
