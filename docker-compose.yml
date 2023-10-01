@@ -11,12 +11,6 @@ services:
         ports:
             - "4000:5000"
         environment:
-            - JAEGER_SERVICE_NAME=Ilmhub.Judge.Api
-            - JAEGER_AGENT_HOST=jaeger-agent
-            - JAEGER_AGENT_PORT=6831
-            - JAEGER_SAMPLER_TYPE=const
-            - JAEGER_SAMPLER_PARAM=1
-            - JAEGER_SAMPLER_MANAGER_HOST_PORT=jaeger:5778
             - JAEGER_ENDPOINT=http://jaeger:4317
     
     jaeger:
