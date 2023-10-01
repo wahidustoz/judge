@@ -47,7 +47,12 @@ public static class ServiceCollectionExtensions
                     .AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug);
 
                 if (configuration["OpenTelemetry:Driver"] == "Jaeger")
-                    builder.AddOtlpExporter();
+                    builder.AddOtlpExporter(options => 
+                    {
+                        var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
+                        if(string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
+                            options.Endpoint = new Uri(jaegerEndpoint);
+                    });
             });
 
         return services;
