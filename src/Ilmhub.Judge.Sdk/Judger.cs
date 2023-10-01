@@ -236,9 +236,7 @@ public class Judger : IJudger
             yield return (item.Value, string.Empty, item.Key);
     }
 
-    public async ValueTask<Guid> CreateTestCaseAsync(
-        IEnumerable<ITestCase> testCases,
-        CancellationToken cancellationToken)
+    public async ValueTask<Guid> CreateTestCaseAsync(IEnumerable<ITestCase> testCases, CancellationToken cancellationToken = default)
     {
         var testCaseId = Guid.NewGuid();
         var testCasesFolder = GetTestCaseFolder(testCaseId);

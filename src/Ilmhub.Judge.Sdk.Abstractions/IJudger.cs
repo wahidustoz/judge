@@ -24,8 +24,5 @@ public interface IJudger
         string environmentFolder = default,
         CancellationToken cancellationToken = default);
     
-    ValueTask<Guid> CreateTestCaseAsync(
-        IEnumerable<ITestCase> testCases,
-        CancellationToken cancellationToken = default
-    ); 
+    ValueTask<Guid> CreateTestCaseAsync(IEnumerable<ITestCase> testCases, CancellationToken cancellationToken = default); 
 }
