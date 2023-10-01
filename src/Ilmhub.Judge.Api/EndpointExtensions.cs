@@ -76,8 +76,7 @@ public static class EndpointExtensions
         app.MapPost("/testcase", async (
             IJudger judger,
             List<TestCaseDto> dto,
-            CancellationToken cancellationToken
-        ) =>
+            CancellationToken cancellationToken) =>
         {
             var testCaseId = await judger.CreateTestCaseAsync(
                 testCases: dto.Select(tc => new TestCase
@@ -86,7 +85,6 @@ public static class EndpointExtensions
                     Input = tc.Input,
                     Output = tc.Output
                 }),
-                
                 cancellationToken: cancellationToken);
 
             return Results.Ok(testCaseId);
