@@ -79,17 +79,7 @@ public static class EndpointExtensions
             CancellationToken cancellationToken
         ) =>
         {
-            foreach (var item in dto)
-            {
-                var validationRules = new TestCaseRequestValidator();
-                var result = await validationRules.ValidateAsync(item, cancellationToken);
-                if (!result.IsValid)
-                {
-                    return Results.BadRequest(result.Errors);
-                }
-            }
             var testCaseId = await judger.CreateTestCaseAsync(
-            Guid.NewGuid(),
             dto.Select(tc => new TestCase
             {
                 Id = tc.Id,
@@ -100,6 +90,7 @@ public static class EndpointExtensions
         );
             return Results.Ok(testCaseId);
         })
+        .WithAsyncValidation<IEnumerable<TestCaseDto>>()
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCases");
 

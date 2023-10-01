@@ -25,7 +25,6 @@ public interface IJudger
         CancellationToken cancellationToken = default);
     
     ValueTask<Guid> CreateTestCaseAsync(
-        Guid testCasesFolder,
         IEnumerable<ITestCase> testCases,
         CancellationToken cancellationToken
     ); 

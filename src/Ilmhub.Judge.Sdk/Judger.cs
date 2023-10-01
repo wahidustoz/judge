@@ -43,8 +43,8 @@ public class Judger : IJudger
 
     public async ValueTask<IJudgeResult> JudgeAsync(
         int languageId,
-        string source, 
-        IEnumerable<ITestCase> testCases, 
+        string source,
+        IEnumerable<ITestCase> testCases,
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
@@ -80,12 +80,12 @@ public class Judger : IJudger
     }
 
     public async ValueTask<IJudgeResult> JudgeAsync(
-        int languageId, 
-        string source, 
-        Guid testCaseId, 
-        long maxCpu = -1, 
-        long maxMemory = -1, 
-        string environmentFolder = default, 
+        int languageId,
+        string source,
+        Guid testCaseId,
+        long maxCpu = -1,
+        long maxMemory = -1,
+        string environmentFolder = default,
         CancellationToken cancellationToken = default)
     {
         if(TestCaseExists(testCaseId) is false)
@@ -96,12 +96,12 @@ public class Judger : IJudger
     }
 
     async ValueTask<IJudgeResult> JudgeInternalAsync(
-        int languageId, 
-        string source, 
-        long maxCpu, 
-        long maxMemory, 
+        int languageId,
+        string source,
+        long maxCpu,
+        long maxMemory,
         string testCasesFolder,
-        string environmentFolder = default, 
+        string environmentFolder = default,
         CancellationToken cancellationToken = default)
     {
         var shouldDestroyTemporaryFolder = false;
@@ -123,15 +123,15 @@ public class Judger : IJudger
             {
                 logger.LogError(
                     "Compilation failed for language {id}. Result: {result}. ABORTING....",
-                    languageId, 
+                    languageId,
                     JsonSerializer.Serialize(compilationResult, new JsonSerializerOptions { WriteIndented = true }));
                 return new JudgeResult(compilationResult);
             }
 
-            var testCases = EnumerateTestCases(testCasesFolder); 
+            var testCases = EnumerateTestCases(testCasesFolder);
             await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, testCasesFolder, true, cancellationToken);
             await cli.ChangePathModeAsync(LinuxCommandLine.EXECUTE_MODE, testCasesFolder, true, cancellationToken);
-            
+
             var testCaseResults = new List<TestCaseResult>();
             foreach(var (InputFilePath, OutputFilePath, Id) in testCases)
             {
@@ -151,7 +151,7 @@ public class Judger : IJudger
                 {
                     runnerResult = await runner.RunAsync(
                         languageId,
-                        InputFilePath, 
+                        InputFilePath,
                         compilationResult.ExecutableFilePath,
                         maxCpu,
                         maxMemory,
@@ -164,7 +164,7 @@ public class Judger : IJudger
                     logger.LogError(
                         "Runner failed for language {id} at test case {testcaseId}. Result: {result}. ABORTING....",
                         languageId,
-                        Id, 
+                        Id,
                         JsonSerializer.Serialize(compilationResult, new JsonSerializerOptions { WriteIndented = true }));
                 }
 
@@ -195,13 +195,13 @@ public class Judger : IJudger
         {
             if(string.IsNullOrWhiteSpace(testCase.Input) is false)
                 await File.WriteAllTextAsync(
-                    Path.Combine(testcasesFolder, $"{testCase.Id}{INPUT_EXTENSION}"), 
-                    testCase.Input, 
+                    Path.Combine(testcasesFolder, $"{testCase.Id}{INPUT_EXTENSION}"),
+                    testCase.Input,
                     cancellationToken);
             if(string.IsNullOrWhiteSpace(testCase.Output) is false)
                 await File.WriteAllTextAsync(
-                    Path.Combine(testcasesFolder, $"{testCase.Id}{OUTPUT_EXTENSION}"), 
-                    testCase.Output, 
+                    Path.Combine(testcasesFolder, $"{testCase.Id}{OUTPUT_EXTENSION}"),
+                    testCase.Output,
                     cancellationToken);
         }
 
@@ -226,7 +226,7 @@ public class Judger : IJudger
             {
                 var inputFile = dictionary[key];
                 dictionary.Remove(key);
-                yield return (inputFile, outputFile, key);   
+                yield return (inputFile, outputFile, key);
             }
             else
                 yield return (string.Empty, outputFile, key);
@@ -237,37 +237,12 @@ public class Judger : IJudger
     }
 
     public async ValueTask<Guid> CreateTestCaseAsync(
-        Guid testCasesFolder,
         IEnumerable<ITestCase> testCases,
         CancellationToken cancellationToken)
     {
-        await cli.RemoveFolderAsync(testCasesFolder.ToString(), cancellationToken);
-        await cli.RunCommandAsync(
-            "mkdir",
-            $"/judger/testcases/{testCasesFolder}",
-            cancellationToken);
-
-        await cli.RunCommandAsync(
-            "chown",
-            $"runner /judger/testcases/{testCasesFolder}",
-            cancellationToken
-        );
-
-        foreach(var testCase in testCases)
-        {
-            await cli.RunCommandAsync(
-                "echo",
-                $"\"{testCase.Input}\" > /judger/testcases/{testCasesFolder}/{testCase.Id}{INPUT_EXTENSION}",
-                cancellationToken
-            );
-
-            await cli.RunCommandAsync(
-                "echo",
-                $"\"{testCase.Output}\" > /judger/testcases/{testCasesFolder}/{testCase.Id}{OUTPUT_EXTENSION}",
-                cancellationToken
-            );
-        }
-
+        var testCasesFolder = Guid.NewGuid();
+        var testCasesDirectory = Directory.CreateDirectory($"/judger/testcases/{testCasesFolder}");
+        await WriteTestCasesAsync(testCasesDirectory.ToString(), testCases, cancellationToken);
         return testCasesFolder;
     }
 }
