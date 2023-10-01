@@ -80,14 +80,15 @@ public static class EndpointExtensions
         ) =>
         {
             var testCaseId = await judger.CreateTestCaseAsync(
-            dto.Select(tc => new TestCase
-            {
-                Id = tc.Id,
-                Input = tc.Input,
-                Output = tc.Output
-            }),
-            cancellationToken
-        );
+                testCases: dto.Select(tc => new TestCase
+                {
+                    Id = tc.Id,
+                    Input = tc.Input,
+                    Output = tc.Output
+                }),
+                
+                cancellationToken: cancellationToken);
+
             return Results.Ok(testCaseId);
         })
         .WithAsyncValidation<IEnumerable<TestCaseDto>>()
