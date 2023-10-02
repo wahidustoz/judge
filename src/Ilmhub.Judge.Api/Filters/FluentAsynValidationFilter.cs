@@ -10,13 +10,15 @@ public class FluentAsynValidationFilter<T> : IEndpointFilter where T : class
         var argumentOrNull = context.Arguments.FirstOrDefault(a => a is T);
         IValidator<T> validator = context.HttpContext.RequestServices.GetService<IValidator<T>>();
 
-        if(validator is not null && argumentOrNull is T argumentToValidate)
+        if(argumentOrNull is T argumentToValidate is false)      
+            return Results.BadRequest("Request is missing required object.");
+
+        if (validator is not null)
         {
             var validationResult = await validator.ValidateAsync(argumentToValidate);
             if (validationResult.IsValid is false)
                 return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: (int)HttpStatusCode.UnprocessableEntity);
         }
-        
         return await next.Invoke(context);
     }
 }

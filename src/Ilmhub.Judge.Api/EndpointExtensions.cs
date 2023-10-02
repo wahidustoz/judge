@@ -1,10 +1,7 @@
 ﻿using FluentValidation;
 using Ilmhub.Judge.Api.Dtos;
-using Ilmhub.Judge.Api.Validators;
 using Ilmhub.Judge.Sdk.Abstractions;
 using Ilmhub.Judge.Sdk.Models;
-using Ilmhub.Judge.Wrapper.Abstractions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Ilmhub.Judge.Api;
 
@@ -92,6 +89,17 @@ public static class EndpointExtensions
         .WithAsyncValidation<IEnumerable<TestCaseDto>>()
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCases");
+
+        app.MapPost("/testcase-files", async (
+            IJudger judger,
+            IFormFile testcases,
+            CancellationToken cancellationToken) =>
+            {
+                return Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream()));
+            })
+        .WithAsyncValidation<IFormFile>()
+        .WithRateLimiting("fixed", app.Configuration)
+        .WithName("TestCase-Files");
 
         return app;
     }
