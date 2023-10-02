@@ -1,25 +1,18 @@
-using System.Net.Mime;
 using FluentValidation;
-using Ilmhub.Judge.Api.Dtos;
 
 namespace Ilmhub.Judge.Api.Validators;
 public class TestCaseFileRequestDtoValidator : AbstractValidator<IFormFile>
 {
-    int maxBytes = 50 * 1024 * 1024;
-    string supportedFileType = null;
+    private int maxBytes = 50 * 1024 * 1024;
+    private string ZIP_EXTENSION = ".zip";
     public TestCaseFileRequestDtoValidator()
     {
-        RuleFor(f => f.FileName).NotEmpty().Equals("testcases");
-        RuleFor(f => f.Length).ExclusiveBetween(1, maxBytes)
-            .WithMessage($"File length should be greater than 0 and less than {maxBytes / 1024 / 1024} MB");
+        RuleFor(f => f.Length).ExclusiveBetween(1, maxBytes);
         RuleFor(f => f.FileName)
                 .NotEmpty()
-                .Must(fileName => HaveSupportedFileType(fileName))
-                .WithMessage($"File extension should be zip");
+                .Must(HaveSupportedFileType)
+                .WithMessage($"File extension must be {ZIP_EXTENSION}");
     }
     private bool HaveSupportedFileType(string fileName)
-    {
-        supportedFileType = Path.GetExtension(fileName).Trim('.'); // Get the file extension
-        return supportedFileType.Equals("zip", StringComparison.InvariantCultureIgnoreCase);
-    }
+       => string.Equals(Path.GetExtension(fileName), ZIP_EXTENSION, StringComparison.OrdinalIgnoreCase);
 }
