@@ -8,7 +8,7 @@ using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IValidator<JudgeRequestDto>, JudgeRequestValidator>();
-builder.Services.AddTransient<IValidator<TestCaseFileDto>, TestCaseFileRequestDtoValidator>();
+builder.Services.AddTransient<IValidator<IFormFile>, TestCaseFileRequestDtoValidator>();
 builder.Services.AddTransient<IValidator<IEnumerable<TestCaseDto>>, TestCaseRequestValidator>();
 builder.Services.AddRateLimiting(builder.Configuration);
 builder.Services.AddIlmhubJudge(builder.Configuration.GetSection($"{IlmhubJudgeOptions.Name}"));

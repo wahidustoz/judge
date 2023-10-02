@@ -108,7 +108,7 @@ public static class EndpointExtensions
                 Extension = testcases.FileName.Split('.').Last()
             });
         })
-        .WithAsyncValidation<TestCaseFileDto>()
+        .WithAsyncValidation<IFormFile>()
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCase-Files");
 
