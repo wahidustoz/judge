@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Net;
+using FluentValidation;
 using Ilmhub.Judge.Api.Dtos;
 using Ilmhub.Judge.Api.Validators;
 using Ilmhub.Judge.Sdk.Abstractions;
@@ -92,6 +93,24 @@ public static class EndpointExtensions
         .WithAsyncValidation<IEnumerable<TestCaseDto>>()
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCases");
+
+        app.MapPost("/testcase-files", async (
+            IFormFile testcases,
+            CancellationToken cancellationToken) =>
+        {
+            if (testcases is null)
+                return Results.BadRequest();
+
+            return Results.Ok(new
+            {
+                FileName = testcases.FileName,
+                Size = testcases.Length,
+                Extension = testcases.FileName.Split('.').Last()
+            });
+        })
+        .WithAsyncValidation<TestCaseFileDto>()
+        .WithRateLimiting("fixed", app.Configuration)
+        .WithName("TestCase-Files");
 
         return app;
     }

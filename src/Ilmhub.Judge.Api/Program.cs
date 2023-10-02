@@ -4,11 +4,11 @@ using Ilmhub.Judge.Api;
 using Ilmhub.Judge.Api.Dtos;
 using Ilmhub.Judge.Api.Validators;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IValidator<JudgeRequestDto>, JudgeRequestValidator>();
+builder.Services.AddTransient<IValidator<TestCaseFileDto>, TestCaseFileRequestDtoValidator>();
 builder.Services.AddTransient<IValidator<IEnumerable<TestCaseDto>>, TestCaseRequestValidator>();
 builder.Services.AddRateLimiting(builder.Configuration);
 builder.Services.AddIlmhubJudge(builder.Configuration.GetSection($"{IlmhubJudgeOptions.Name}"));
