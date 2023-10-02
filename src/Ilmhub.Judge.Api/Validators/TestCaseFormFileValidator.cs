@@ -23,9 +23,14 @@ public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
                     using var fileStream = fileReadAsIFrom.OpenReadStream();
                     using var zip = new ZipArchive(fileStream);
 
-                    if (zip.Entries.Count() == 0 || zip.Entries.Count() > 200)
+                    if (zip.Entries.Count() > 200)
                     {
                         context.AddFailure("Testcases", "There are more than 200 input files.");
+                        return;
+                    }
+                    if (zip.Entries.Count() == 0)
+                    {
+                        context.AddFailure("Testcases", "There are no input files.");
                         return;
                     }
 
