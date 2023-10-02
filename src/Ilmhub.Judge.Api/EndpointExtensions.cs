@@ -1,11 +1,7 @@
-﻿using System.Net;
-using FluentValidation;
+﻿using FluentValidation;
 using Ilmhub.Judge.Api.Dtos;
-using Ilmhub.Judge.Api.Validators;
 using Ilmhub.Judge.Sdk.Abstractions;
 using Ilmhub.Judge.Sdk.Models;
-using Ilmhub.Judge.Wrapper.Abstractions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Ilmhub.Judge.Api;
 
@@ -98,19 +94,9 @@ public static class EndpointExtensions
             IJudger judger,
             IFormFile testcases,
             CancellationToken cancellationToken) =>
-        {
-            if (testcases is null)
-                return Results.BadRequest();
-
-            var testCaseArchiveStatusToFolder = judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream());
-            
-            return Results.Ok(new
             {
-                FileName = testcases.FileName,
-                Size = testcases.Length,
-                Extension = testcases.FileName.Split('.').Last()
-            });
-        })
+                Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream()));
+            })
         .WithAsyncValidation<IFormFile>()
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCase-Files");

@@ -2,11 +2,11 @@ using System.IO.Compression;
 using FluentValidation;
 
 namespace Ilmhub.Judge.Api.Validators;
-public class TestCaseFileRequestDtoValidator : AbstractValidator<IFormFile>
+public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
 {
     private int maxBytes = 50 * 1024 * 1024;
     private string ZIP_EXTENSION = ".zip";
-    public TestCaseFileRequestDtoValidator()
+    public TestCaseFormFileValidator()
     {
         RuleFor(f => f.Length).ExclusiveBetween(1, maxBytes);
         RuleFor(f => f.FileName)
@@ -28,10 +28,10 @@ public class TestCaseFileRequestDtoValidator : AbstractValidator<IFormFile>
                         context.AddFailure("Testcases", "There are more than 200 input files.");
                         return;
                     }
-                    
+
                     var inputFiles = zip.Entries?.Where(x => x.Name.EndsWith(".in"));
                     var outputFiles = zip.Entries?.Where(x => x.Name.EndsWith(".out"));
-                    if (inputFiles.All(i => outputFiles.Any(o => Path.GetFileNameWithoutExtension(o.Name) == Path.GetFileNameWithoutExtension(i.Name))) is false)
+                    if (inputFiles.All(i => outputFiles.Any(o => HaveMatchingNames(i, o))) is false)
                     {
                         context.AddFailure("Testcases", "There is no matching output files for input files.");
                         return;
@@ -44,6 +44,9 @@ public class TestCaseFileRequestDtoValidator : AbstractValidator<IFormFile>
                 }
             });
     }
+
+    private bool HaveMatchingNames(ZipArchiveEntry x, ZipArchiveEntry y)
+        => string.Equals(Path.GetFileName(x.Name), Path.GetFileName(y.Name), StringComparison.OrdinalIgnoreCase);
     private bool HaveSupportedFileType(string fileName)
        => string.Equals(Path.GetExtension(fileName), ZIP_EXTENSION, StringComparison.OrdinalIgnoreCase);
 }
