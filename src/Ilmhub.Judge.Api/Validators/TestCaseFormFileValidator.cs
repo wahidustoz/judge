@@ -46,7 +46,7 @@ public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
     }
 
     private bool HaveMatchingNames(ZipArchiveEntry x, ZipArchiveEntry y)
-        => string.Equals(Path.GetFileName(x.Name), Path.GetFileName(y.Name), StringComparison.OrdinalIgnoreCase);
+        => string.Equals(Path.GetFileNameWithoutExtension(x.Name), Path.GetFileNameWithoutExtension(y.Name), StringComparison.OrdinalIgnoreCase);
     private bool HaveSupportedFileType(string fileName)
        => string.Equals(Path.GetExtension(fileName), ZIP_EXTENSION, StringComparison.OrdinalIgnoreCase);
 }

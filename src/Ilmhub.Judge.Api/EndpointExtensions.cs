@@ -95,7 +95,7 @@ public static class EndpointExtensions
             IFormFile testcases,
             CancellationToken cancellationToken) =>
             {
-                Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream()));
+                return Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream()));
             })
         .WithAsyncValidation<IFormFile>()
         .WithRateLimiting("fixed", app.Configuration)
