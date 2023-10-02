@@ -246,18 +246,18 @@ public class Judger : IJudger
         return testCaseId;
     }
 
-    public ValueTask<bool> ZipFileArchiveTestCaseAsync(Stream streamFile, CancellationToken cancellationToken = default)
+    public Guid CreateTestCaseFromZipArchive(Stream zipStream)
     {
         var testCaseId = Guid.NewGuid();
         var testCasesFolder = GetTestCaseFolder(testCaseId);
-        var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
-        using (var zip = new ZipArchive(streamFile, ZipArchiveMode.Read))
+
+        using (var zip = new ZipArchive(zipStream, ZipArchiveMode.Read))
         {
-            foreach (var entry in zip.Entries.Where(entry => entry.Name.EndsWith(".in") || entry.Name.EndsWith(".out")))
-            {
-                entry.ExtractToFile(Path.Combine(testCasesDirectory.ToString(), entry.Name), true);
-            }
+            var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
+            foreach (var entry in zip.Entries)
+                if (entry.Name.EndsWith(".in") || entry.Name.EndsWith(".out"))
+                    entry.ExtractToFile(Path.Combine(testCasesFolder, entry.Name), true);
         }
-        return ValueTask.FromResult(true);
+        return testCaseId;
     }
 }
