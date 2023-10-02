@@ -99,6 +99,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddFluentValidators(this IServiceCollection services)
     {
         services.AddTransient<IValidator<JudgeRequestDto>, JudgeRequestValidator>();
+        services.AddTransient<IValidator<IFormFile>, TestCaseFormFileValidator>();
         services.AddTransient<IValidator<IEnumerable<TestCaseDto>>, TestCaseRequestValidator>();
 
         return services;
