@@ -24,6 +24,6 @@ public interface IJudger
         string environmentFolder = default,
         CancellationToken cancellationToken = default);
     
+    Guid CreateTestCaseFromZipArchive(Stream zipStream);
     ValueTask<Guid> CreateTestCaseAsync(IEnumerable<ITestCase> testCases, CancellationToken cancellationToken = default); 
-    ValueTask<bool> ZipFileArchiveTestCaseAsync(Stream streamFile, CancellationToken cancellationToken = default); 
 }

@@ -108,7 +108,7 @@ public static class EndpointExtensions
             if (ziparchiveValidation.Item1 is false)
                 return Results.BadRequest(ziparchiveValidation.Item2);
 
-            var testCaseArchiveStatusToFolder = await judger.ZipFileArchiveTestCaseAsync(testcases.OpenReadStream(), cancellationToken);
+            var testCaseArchiveStatusToFolder = await judger.CreateTestCaseFromZipArchiveAsync(testcases.OpenReadStream(), cancellationToken);
             if (testCaseArchiveStatusToFolder is false)
                 return Results.BadRequest();
 
