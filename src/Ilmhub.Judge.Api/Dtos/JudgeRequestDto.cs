@@ -10,4 +10,5 @@ public class JudgeRequestDto
     public long? MaxMemory { get; set; }
     public Guid? TestCaseId { get; set; }
     public IEnumerable<TestCase> TestCases { get; set; }
+    public bool? UseStrictMode { get; set; }
 }

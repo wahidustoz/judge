@@ -7,6 +7,10 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using FluentValidation;
+using Ilmhub.Judge.Api.Validators;
+using Ilmhub.Judge.Api.Dtos;
+ 
 
 namespace Ilmhub.Judge.Api;
 
@@ -89,6 +93,14 @@ public static class ServiceCollectionExtensions
             });
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
+        return services;
+    }
+
+    public static IServiceCollection AddFluentValidators(this IServiceCollection services)
+    {
+        services.AddTransient<IValidator<JudgeRequestDto>, JudgeRequestValidator>();
+        services.AddTransient<IValidator<IEnumerable<TestCaseDto>>, TestCaseRequestValidator>();
+
         return services;
     }
 }
