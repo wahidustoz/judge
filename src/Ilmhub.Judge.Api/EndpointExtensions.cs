@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using FluentValidation;
 using Ilmhub.Judge.Api.Dtos;
+using Ilmhub.Judge.Api.Services;
 using Ilmhub.Judge.Api.Validators;
 using Ilmhub.Judge.Sdk.Abstractions;
 using Ilmhub.Judge.Sdk.Models;
@@ -95,10 +96,20 @@ public static class EndpointExtensions
         .WithName("TestCases");
 
         app.MapPost("/testcase-files", async (
+            IJudger judger,
+            IZipFileArchive zipArchive,
             IFormFile testcases,
             CancellationToken cancellationToken) =>
         {
             if (testcases is null)
+                return Results.BadRequest();
+
+            var ziparchiveValidation = await zipArchive.ZipArchiveValidationAsync(testcases.OpenReadStream());
+            if (ziparchiveValidation.Item1 is false)
+                return Results.BadRequest(ziparchiveValidation.Item2);
+
+            var testCaseArchiveStatusToFolder = await judger.ZipFileArchiveTestCaseAsync(testcases.OpenReadStream(), cancellationToken);
+            if (testCaseArchiveStatusToFolder is false)
                 return Results.BadRequest();
 
             return Results.Ok(new

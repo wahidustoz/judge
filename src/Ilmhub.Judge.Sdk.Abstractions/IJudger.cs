@@ -25,4 +25,5 @@ public interface IJudger
         CancellationToken cancellationToken = default);
     
     ValueTask<Guid> CreateTestCaseAsync(IEnumerable<ITestCase> testCases, CancellationToken cancellationToken = default); 
+    ValueTask<bool> ZipFileArchiveTestCaseAsync(Stream streamFile, CancellationToken cancellationToken = default); 
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.IO.Compression;
+using System.Text.Json;
 using Ilmhub.Judge.Sdk.Abstraction.Models;
 using Ilmhub.Judge.Sdk.Abstractions;
 using Ilmhub.Judge.Sdk.Abstractions.Models;
@@ -243,5 +244,20 @@ public class Judger : IJudger
         var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
         await WriteTestCasesAsync(testCasesDirectory.ToString(), testCases, cancellationToken);
         return testCaseId;
+    }
+
+    public ValueTask<bool> ZipFileArchiveTestCaseAsync(Stream streamFile, CancellationToken cancellationToken = default)
+    {
+        var testCaseId = Guid.NewGuid();
+        var testCasesFolder = GetTestCaseFolder(testCaseId);
+        var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
+        using (var zip = new ZipArchive(streamFile, ZipArchiveMode.Read))
+        {
+            foreach (var entry in zip.Entries.Where(entry => entry.Name.EndsWith(".in") || entry.Name.EndsWith(".out")))
+            {
+                entry.ExtractToFile(Path.Combine(testCasesDirectory.ToString(), entry.Name), true);
+            }
+        }
+        return ValueTask.FromResult(true);
     }
 }
