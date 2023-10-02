@@ -95,6 +95,8 @@ public static class EndpointExtensions
             IFormFile testcases,
             CancellationToken cancellationToken) =>
             {
+                if (testcases is null)
+                    return Results.BadRequest();
                 return Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream()));
             })
         .WithAsyncValidation<IFormFile>()
