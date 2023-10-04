@@ -92,7 +92,7 @@ public static class EndpointExtensions
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCases");
 
-        app.MapPost("/testcase-files", async (
+        app.MapPost("/testcase-files", (
             IJudger judger,
             IFormFile testcases,
             CancellationToken cancellationToken) =>
