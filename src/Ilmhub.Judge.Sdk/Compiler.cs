@@ -49,7 +49,7 @@ public class Compiler : ICompiler
             var languageConfiguration = await languageService.GetLanguageConfigurationOrDefaultAsync(languageId, cancellationToken) 
                 ?? throw new LanguageNotConfiguredException(languageId);
 
-            logger.LogTrace("Starting compilation session for language {languageId}", languageId);
+            logger.LogInformation("Starting compilation session for language {languageId}", languageId);
 
             if(IOUtilities.IsValidPath(environmentFolder) is false)
                 environmentFolder = await CreateTemporaryFolderAsync(cancellationToken);
@@ -85,7 +85,7 @@ public class Compiler : ICompiler
                     Gid = judgeUsers.Compiler.GroupId
                 },
                 cancellationToken: cancellationToken);
-                logger.LogTrace("Finished compilation session for language {languageId}", languageId);
+                logger.LogInformation("Finished compilation session for language {languageId}", languageId);
 
                 return new CompilationResult(processResult)
                 {
@@ -104,7 +104,7 @@ public class Compiler : ICompiler
         {
             if(shouldCleanUpEnvironmentFolder)
             {
-                logger.LogTrace("Deleting temporary folder: {tempFolder}", environmentFolder);
+                logger.LogInformation("Deleting temporary folder: {tempFolder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
         }
@@ -166,7 +166,7 @@ public class Compiler : ICompiler
         await File.WriteAllTextAsync(sourceFilename, source, cancellationToken);
         await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, sourceFilename, cancellationToken: cancellationToken);
         await cli.ChangePathModeAsync(LinuxCommandLine.READ_MODE, sourceFilename, cancellationToken: cancellationToken);
-        logger.LogTrace("Created source file: {sourceFilename}", sourceFilename);
+        logger.LogInformation("Created source file: {sourceFilename}", sourceFilename);
 
         return sourceFilename;
     }
@@ -175,7 +175,7 @@ public class Compiler : ICompiler
     {
         var folder = IOUtilities.CreateTemporaryDirectory();
         await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, folder, cancellationToken: cancellationToken);
-        logger.LogTrace("Created temporary folder: {tempFolder}", folder);
+        logger.LogInformation("Created temporary folder: {tempFolder}", folder);
 
         shouldCleanUpEnvironmentFolder = true;
 

@@ -98,7 +98,7 @@ public class JudgeWrapper : IJudgeWrapper
             foreach(var arg in request.Arguments)
                 AppendSingleArgument(builder, "args", arg);
         
-        logger.LogTrace("Libjudger arguments: {arguments}", builder.ToString());
+        logger.LogInformation("Libjudger arguments: {arguments}", builder.ToString());
 
         return builder.ToString();
     }

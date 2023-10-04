@@ -41,7 +41,7 @@ public class LinuxCommandLine : ILinuxCommandLine
         var output = process.StandardOutput.ReadToEnd();
         var error = process.StandardError.ReadToEnd();
 
-        logger.LogTrace("Finished running linux command: {command} {arguments}, output: {output}, error: {error}", command, arguments, output, error);
+        logger.LogInformation("Finished running linux command: {command} {arguments}, output: {output}, error: {error}", command, arguments, output, error);
         return (process.ExitCode == 0, output, error);
     }
 
