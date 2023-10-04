@@ -42,7 +42,7 @@ public class DotnetCompiler : ICompiler
             var languageConfiguration = await languageService.GetLanguageConfigurationOrDefaultAsync(languageId, cancellationToken) 
                 ?? throw new LanguageNotConfiguredException(languageId);
 
-            logger.LogTrace("Starting compilation session for language {languageId}", languageId);
+            logger.LogInformation("Starting compilation session for language {languageId}", languageId);
 
             if(IOUtilities.IsValidPath(environmentFolder) is false)
                 environmentFolder = await CreateTemporaryFolderAsync(cancellationToken);
@@ -107,7 +107,7 @@ public class DotnetCompiler : ICompiler
         {
             if(shouldCleanUpEnvironmentFolder)
             {
-                logger.LogTrace("Deleting temporary folder: {tempFolder}", environmentFolder);
+                logger.LogInformation("Deleting temporary folder: {tempFolder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
         }
@@ -117,7 +117,7 @@ public class DotnetCompiler : ICompiler
     {
         var folder = IOUtilities.CreateTemporaryDirectory();
         await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, folder, cancellationToken: cancellationToken);
-        logger.LogTrace("Created temporary folder: {tempFolder}", folder);
+        logger.LogInformation("Created temporary folder: {tempFolder}", folder);
 
         shouldCleanUpEnvironmentFolder = true;
 

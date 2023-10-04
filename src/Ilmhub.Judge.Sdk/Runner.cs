@@ -137,7 +137,7 @@ public class Runner : IRunner
                     Gid = judgeUsers.Runner.GroupId
                 },
                 cancellationToken: cancellationToken);
-                logger.LogTrace("Finished runner session for language {languageId}", languageId);
+                logger.LogInformation("Finished runner session for language {languageId}", languageId);
 
                 var log = await IOUtilities.GetAllTextOrDefaultAsync(logPath, cancellationToken);
                 var output = await IOUtilities.GetAllTextOrDefaultAsync(outputPath, cancellationToken);
@@ -158,7 +158,7 @@ public class Runner : IRunner
         {
             if(shouldCleanUpEnvironmentFolder)
             {
-                logger.LogTrace("Deleting temporary folder: {tempFolder}", environmentFolder);
+                logger.LogInformation("Deleting temporary folder: {tempFolder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
         }
@@ -180,7 +180,7 @@ public class Runner : IRunner
             await cli.ChangePathModeAsync(LinuxCommandLine.WRITE_MODE, path, cancellationToken: cancellationToken); 
         }
 
-        logger.LogTrace(
+        logger.LogInformation(
             "Created Compiler output files. \nLog Path {logPath}, \nOutput Path {outputPath}, \nError Path {errorPath}", 
             logPath, 
             outputPath, 
@@ -199,7 +199,7 @@ public class Runner : IRunner
         await File.WriteAllTextAsync(inputFilename, input, cancellationToken);
         await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, inputFilename, cancellationToken: cancellationToken);
         await cli.ChangePathModeAsync(LinuxCommandLine.READ_MODE, inputFilename, cancellationToken: cancellationToken);
-        logger.LogTrace("Created input file: {sourceFilename}", inputFilename);
+        logger.LogInformation("Created input file: {sourceFilename}", inputFilename);
 
         return inputFilename;
     }
@@ -208,7 +208,7 @@ public class Runner : IRunner
     {
         var folder = IOUtilities.CreateTemporaryDirectory();
         await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, folder, cancellationToken: cancellationToken);
-        logger.LogTrace("Created temporary folder: {tempFolder}", folder);
+        logger.LogInformation("Created temporary folder: {tempFolder}", folder);
 
         shouldCleanUpEnvironmentFolder = true;
 
