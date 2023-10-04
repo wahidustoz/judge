@@ -7,11 +7,12 @@ namespace Ilmhub.Judge.Sdk.Models;
 
 public class TestCaseResult : ITestCaseResult
 {
-    public TestCaseResult(string id, string expectedOutput, IRunnerResult execution)
+    public TestCaseResult(string id, string expectedOutput, IRunnerResult execution, bool? usestrictMode = default)
     {
         Id = id;
         ExpectedOutput = expectedOutput;
         Execution = execution;
+        UseStrictMode = usestrictMode;
     }
 
     public string Id { get; }
@@ -21,10 +22,13 @@ public class TestCaseResult : ITestCaseResult
     public string Output => Execution.Output;
     public IRunnerResult Execution { get; }
     public ETestCaseStatus Status => GetStatus();
+    public bool? UseStrictMode { get; }
 
     private ETestCaseStatus GetStatus() => Execution.IsSuccess switch
     {
-        true when string.Equals(OutputMd5, ExpectedOutputMd5, StringComparison.OrdinalIgnoreCase) 
+        true when UseStrictMode is true && string.Equals(OutputMd5, ExpectedOutputMd5, StringComparison.OrdinalIgnoreCase) 
+            => ETestCaseStatus.Success,
+        true when (UseStrictMode is false || UseStrictMode is null) && string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5(), StringComparison.OrdinalIgnoreCase)
             => ETestCaseStatus.Success,
         true when string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5(), StringComparison.OrdinalIgnoreCase) 
             => ETestCaseStatus.PresentationError,

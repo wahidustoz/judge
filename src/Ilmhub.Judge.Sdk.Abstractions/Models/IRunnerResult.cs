@@ -10,4 +10,5 @@ public interface IRunnerResult
     string Error { get; }
     bool IsSuccess { get; }
     IExecutionResult Execution { get; }
+    bool UseStrictMode { get; }
 }

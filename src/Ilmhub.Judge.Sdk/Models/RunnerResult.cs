@@ -15,6 +15,7 @@ public class RunnerResult : IRunnerResult
     }
 
     public IExecutionResult Execution { get; }
+    public bool UseStrictMode { get; }
     public string OutputMd5 => Output.Md5();
     public string Output { get; }
     public string Log { get; }

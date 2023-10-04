@@ -10,6 +10,7 @@ public interface IJudger
         int languageId,
         string source, 
         IEnumerable<ITestCase> testCases, 
+        bool? usestrictMode = default,
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
@@ -18,7 +19,8 @@ public interface IJudger
     ValueTask<IJudgeResult> JudgeAsync(
         int languageId,
         string source, 
-        Guid testCaseId, 
+        Guid testCaseId,
+        bool? usestrictMode = default, 
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
