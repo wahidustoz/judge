@@ -6,7 +6,7 @@ public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
 {
     private int maxBytes = 50 * 1024 * 1024;
     private string ZIP_EXTENSION = ".zip";
-    public TestCaseFormFileValidator()
+    public TestCaseFormFileValidator(ILogger<TestCaseFormFileValidator> logger)
     {
         RuleFor(f => f.Length).ExclusiveBetween(1, maxBytes);
         RuleFor(f => f.FileName)
@@ -45,6 +45,7 @@ public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
                 catch (Exception ex)
                 {
                     context.AddFailure("Testcases", "Invalid zip file.");
+                    logger.LogWarning(ex, "Invalid zip file.");
                     return;
                 }
             });
