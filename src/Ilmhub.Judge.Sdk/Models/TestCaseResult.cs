@@ -22,7 +22,7 @@ public class TestCaseResult : ITestCaseResult
     public string Output => Execution.Output;
     public IRunnerResult Execution { get; }
     public ETestCaseStatus Status => GetStatus();
-    public bool? UseStrictMode { get; }
+    private bool? UseStrictMode { get; }
 
     private ETestCaseStatus GetStatus() => Execution.IsSuccess switch
     {
