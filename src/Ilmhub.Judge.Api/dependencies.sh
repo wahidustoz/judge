@@ -22,7 +22,7 @@ cd /tmp && git clone -b newnew  --depth 1 https://github.com/wahid-d/judger-proc
 mkdir build && cd build && cmake .. && make && make install && \
 
 # install .NET
-wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
 dpkg -i packages-microsoft-prod.deb && \
 rm packages-microsoft-prod.deb && \
 apt-get update && \
