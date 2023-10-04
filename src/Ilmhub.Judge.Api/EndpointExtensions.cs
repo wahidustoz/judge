@@ -20,6 +20,7 @@ public static class EndpointExtensions
                 languageId: dto.LanguageId,
                 source: dto.Source,
                 testCases: dto.TestCases,
+                usestrictMode: dto.UseStrictMode,
                 maxCpu: dto.MaxCpu ?? -1,
                 maxMemory: dto.MaxMemory ?? -1,
                 cancellationToken: cancellationToken)
@@ -27,6 +28,7 @@ public static class EndpointExtensions
                 languageId: dto.LanguageId,
                 source: dto.Source,
                 testCaseId: dto.TestCaseId.Value,
+                usestrictMode: dto.UseStrictMode,
                 maxCpu: dto.MaxCpu ?? -1,
                 maxMemory: dto.MaxMemory ?? -1,
                 cancellationToken: cancellationToken);
