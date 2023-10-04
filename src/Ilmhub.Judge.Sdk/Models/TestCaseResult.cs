@@ -7,11 +7,13 @@ namespace Ilmhub.Judge.Sdk.Models;
 
 public class TestCaseResult : ITestCaseResult
 {
-    public TestCaseResult(string id, string expectedOutput, IRunnerResult execution)
+    private bool? useStrictMode { get; }
+    public TestCaseResult(string id, string expectedOutput, IRunnerResult execution, bool? usestrictMode = default)
     {
         Id = id;
         ExpectedOutput = expectedOutput;
         Execution = execution;
+        useStrictMode = usestrictMode;
     }
 
     public string Id { get; }
@@ -24,9 +26,9 @@ public class TestCaseResult : ITestCaseResult
 
     private ETestCaseStatus GetStatus() => Execution.IsSuccess switch
     {
-        true when string.Equals(OutputMd5, ExpectedOutputMd5, StringComparison.OrdinalIgnoreCase) 
+        true when OutputMatches(strict: useStrictMode)
             => ETestCaseStatus.Success,
-        true when string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5(), StringComparison.OrdinalIgnoreCase) 
+        true when useStrictMode is true && OutputMatches(strict: false)
             => ETestCaseStatus.PresentationError,
         true => ETestCaseStatus.WrongAnswer,
         false when Execution.Execution.Status is EExecutionResult.CpuTimeLimitExceeded
@@ -39,4 +41,9 @@ public class TestCaseResult : ITestCaseResult
             => ETestCaseStatus.RuntimeError,
         _ => ETestCaseStatus.SystemError
     };
+
+    private bool OutputMatches(bool? strict)
+        => strict is true
+        ? string.Equals(Output.Md5(), ExpectedOutputMd5)
+        : string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5());
 }
