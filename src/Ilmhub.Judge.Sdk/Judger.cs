@@ -46,7 +46,7 @@ public class Judger : IJudger
         int languageId,
         string source,
         IEnumerable<ITestCase> testCases,
-        bool? usestrictMode = default,
+        bool? useStrictMode = default,
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
@@ -64,7 +64,7 @@ public class Judger : IJudger
             var testcasesFolder = Path.Combine(environmentFolder, TESTCASES_FOLDER);
             Directory.CreateDirectory(testcasesFolder);
             await WriteTestCasesAsync(testcasesFolder, testCases, cancellationToken);
-            return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testcasesFolder, usestrictMode, environmentFolder, cancellationToken);
+            return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testcasesFolder, useStrictMode, environmentFolder, cancellationToken);
         }
         catch(Exception ex) when (ex is not JudgeFailedException)
         {
@@ -85,7 +85,7 @@ public class Judger : IJudger
         int languageId,
         string source,
         Guid testCaseId,
-        bool? usestrictMode = default,
+        bool? useStrictMode = default,
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
@@ -95,7 +95,7 @@ public class Judger : IJudger
             throw new TestCaseNotFoundException(testCaseId);
 
         var testCasesFolder = GetTestCaseFolder(testCaseId);
-        return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testCasesFolder, usestrictMode, environmentFolder, cancellationToken);
+        return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testCasesFolder, useStrictMode, environmentFolder, cancellationToken);
     }
 
     async ValueTask<IJudgeResult> JudgeInternalAsync(
@@ -104,7 +104,7 @@ public class Judger : IJudger
         long maxCpu,
         long maxMemory,
         string testCasesFolder,
-        bool? usestrictMode = default,
+        bool? useStrictMode = default,
         string environmentFolder = default,
         CancellationToken cancellationToken = default)
     {
@@ -172,7 +172,7 @@ public class Judger : IJudger
                         JsonSerializer.Serialize(compilationResult, new JsonSerializerOptions { WriteIndented = true }));
                 }
 
-                testCaseResults.Add(new TestCaseResult(Id, await outputTask, runnerResult, usestrictMode));
+                testCaseResults.Add(new TestCaseResult(Id, await outputTask, runnerResult, useStrictMode));
             }
 
             logger.LogInformation("Completed Judge process 🎉");
