@@ -7,12 +7,13 @@ namespace Ilmhub.Judge.Sdk.Models;
 
 public class TestCaseResult : ITestCaseResult
 {
+    private bool? useStrictMode { get; }
     public TestCaseResult(string id, string expectedOutput, IRunnerResult execution, bool? usestrictMode = default)
     {
         Id = id;
         ExpectedOutput = expectedOutput;
         Execution = execution;
-        UseStrictMode = usestrictMode;
+        useStrictMode = usestrictMode;
     }
 
     public string Id { get; }
@@ -22,15 +23,12 @@ public class TestCaseResult : ITestCaseResult
     public string Output => Execution.Output;
     public IRunnerResult Execution { get; }
     public ETestCaseStatus Status => GetStatus();
-    private bool? UseStrictMode { get; }
 
     private ETestCaseStatus GetStatus() => Execution.IsSuccess switch
     {
-        true when UseStrictMode is true && string.Equals(OutputMd5, ExpectedOutputMd5, StringComparison.OrdinalIgnoreCase) 
+        true when OutputMatches(strict: useStrictMode)
             => ETestCaseStatus.Success,
-        true when (UseStrictMode is false || UseStrictMode is null) && string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5(), StringComparison.OrdinalIgnoreCase)
-            => ETestCaseStatus.Success,
-        true when string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5(), StringComparison.OrdinalIgnoreCase) 
+        true when useStrictMode is true && OutputMatches(strict: false)
             => ETestCaseStatus.PresentationError,
         true => ETestCaseStatus.WrongAnswer,
         false when Execution.Execution.Status is EExecutionResult.CpuTimeLimitExceeded
@@ -43,4 +41,9 @@ public class TestCaseResult : ITestCaseResult
             => ETestCaseStatus.RuntimeError,
         _ => ETestCaseStatus.SystemError
     };
+
+    private bool OutputMatches(bool? strict)
+        => strict is true
+        ? string.Equals(Output.Md5(), ExpectedOutputMd5)
+        : string.Equals(Output.Trim().Md5(), ExpectedOutput.Trim().Md5());
 }
