@@ -14,13 +14,13 @@ public class FluentAsynValidationFilter<T> : IEndpointFilter where T : class
 
     public async ValueTask<object> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        logger.LogInformation("Executing FluentAsynValidationFilter...");
+        logger.LogTrace("Executing FluentAsynValidationFilter...");
         var argumentOrNull = context.Arguments.FirstOrDefault(a => a is T);
         IValidator<T> validator = context.HttpContext.RequestServices.GetService<IValidator<T>>();
 
         if(argumentOrNull is T argumentToValidate is false)
         {
-            logger.LogError("Request is missing required object.");
+            logger.LogInformation("Request is missing required object.");
             return Results.BadRequest("Request is missing required object.");
         }      
 
@@ -29,13 +29,13 @@ public class FluentAsynValidationFilter<T> : IEndpointFilter where T : class
             var validationResult = await validator.ValidateAsync(argumentToValidate);
             if(validationResult.IsValid is false)
             {
-                logger.LogError("Validation failed: {Errors}", validationResult.Errors);
+                logger.LogInformation("Validation failed: {Errors}", validationResult.Errors);
                 return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: (int)HttpStatusCode.UnprocessableEntity);
             }
         }
 
         var result = await next.Invoke(context);
-        logger.LogInformation("FluentAsynValidationFilter executed successfully.");
+        logger.LogTrace("FluentAsynValidationFilter executed successfully.");
         return result;
     }
 }
