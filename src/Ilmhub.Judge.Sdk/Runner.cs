@@ -106,6 +106,19 @@ public class Runner : IRunner
                 cancellationToken: cancellationToken);
         
         List<string> outputs = new();
+
+        if(inputs is null || inputs.Count() == 0)
+        {
+            var result = await RunAsync(
+                languageId,
+                compilationResult.ExecutableFilePath,
+                maxCpu,
+                maxMemory,
+                cancellationToken: cancellationToken);
+
+            outputs.Add(result.Output);
+            return outputs;    
+        }
         foreach(var input in inputs)
         {
             var result = await RunAsync(
