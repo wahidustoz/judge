@@ -103,6 +103,21 @@ public static class EndpointExtensions
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCase-Files");
 
+        app.MapPost("/run", async(
+            IRunner runner,
+            RunRequestDto dto,
+            CancellationToken cancellationToken) => 
+            {
+                return Results.Ok(await runner.RunCodeAsync(
+                    languageId: dto.LanguageId,
+                    source: dto.Source,
+                    maxCpu: dto.MaxCpu ?? -1,
+                    maxMemory: dto.MaxMemory ?? -1,
+                    inputs: dto.Inputs,
+                    cancellationToken: cancellationToken
+                ));
+            });
+
         return app;
     }
 }

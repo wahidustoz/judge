@@ -18,6 +18,7 @@ public class Runner : IRunner
     private readonly ILogger<Runner> logger;
     private readonly ILinuxCommandLine cli;
     private readonly IJudgeWrapper judgeWrapper;
+    private readonly ICompilationHandler compiler;
     private readonly ILanguageService languageService;
     private readonly IJudgeUsersOption judgeUsers;
     private bool shouldCleanUpEnvironmentFolder = false;
@@ -26,12 +27,14 @@ public class Runner : IRunner
         ILogger<Runner> logger, 
         ILinuxCommandLine cli,
         IJudgeWrapper judgeWrapper,
+        ICompilationHandler compiler,
         ILanguageService languageService,
         IIlmhubJudgeOptions options)
     {
         this.logger = logger;
         this.cli = cli;
         this.judgeWrapper = judgeWrapper;
+        this.compiler = compiler;
         this.languageService = languageService;
         this.judgeUsers = options.SystemUsers;
     }
@@ -84,6 +87,52 @@ public class Runner : IRunner
             cancellationToken);
     }
 
+    public async ValueTask<IEnumerable<string>> RunCodeAsync(
+        int languageId,
+        string source,
+        long maxCpu,
+        long maxMemory,
+        IEnumerable<string> inputs,
+        string environmentFolder = default,
+        CancellationToken cancellationToken = default)
+    {
+        if(IOUtilities.IsValidPath(environmentFolder) is false)
+            environmentFolder = await CreateTemporaryFolderAsync(cancellationToken);
+            
+        var compilationResult = await compiler.CompileAsync(
+                source: source,
+                languageId: languageId,
+                environmentFolder: environmentFolder,
+                cancellationToken: cancellationToken);
+        
+        List<string> outputs = new();
+
+        if(inputs is null || inputs.Count() == 0)
+        {
+            var result = await RunAsync(
+                languageId,
+                compilationResult.ExecutableFilePath,
+                maxCpu,
+                maxMemory,
+                cancellationToken: cancellationToken);
+
+            outputs.Add(result.Output);
+            return outputs;    
+        }
+        foreach(var input in inputs)
+        {
+            var result = await RunAsync(
+                languageId,
+                compilationResult.ExecutableFilePath,
+                maxCpu,
+                maxMemory,
+                input,
+                cancellationToken: cancellationToken);
+            
+            outputs.Add(result.Output);
+        }
+        return outputs;
+    }
     private async ValueTask<IRunnerResult> RunInternalAsync(
         int languageId, 
         string inputFilePath, 
