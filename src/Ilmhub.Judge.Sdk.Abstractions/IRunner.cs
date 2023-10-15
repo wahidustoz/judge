@@ -21,4 +21,14 @@ public interface IRunner
         long maxMemory,
         string environmentFolder = default,
         CancellationToken cancellationToken = default);
+
+        ValueTask<IEnumerable<string>> RunCodeAsync(
+        int languageId,
+        string source,
+        long maxCpu,
+        long maxMemory,
+        IEnumerable<string> inputs,
+        string environmentFolder = default,
+        CancellationToken cancellationToken = default
+        );
 }
