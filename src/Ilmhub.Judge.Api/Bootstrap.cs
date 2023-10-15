@@ -27,14 +27,19 @@ public static class ServiceCollectionExtensions
             options.ParseStateValues = true;
             options.IncludeFormattedMessage = true;
             options.IncludeScopes = true;
-
-            options.AddConsoleExporter();
             options.AddLogRecordProcessor();
+            options.AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug);
+            options.AddOtlpExporter(o => 
+            {
+                var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
+                if(string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
+                    o.Endpoint = new Uri(jaegerEndpoint);
+            });
         });
         return builder;
     }
 
-    public static IServiceCollection ConfigureOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
     {
         if (configuration.GetValue("OpenTelemetry:Driver", "None") == "None")
             return services;
@@ -45,13 +50,12 @@ public static class ServiceCollectionExtensions
                 builder.SetSampler(new AlwaysOnSampler());
 
                 builder
+                    .AddSource(configuration["OpenTelemetry:ServiceName"])
                     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(configuration["OpenTelemetry:ServiceName"]))
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug);
-
-                if (configuration["OpenTelemetry:Driver"] == "Jaeger")
-                    builder.AddOtlpExporter(options => 
+                    .AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug)
+                    .AddOtlpExporter(options => 
                     {
                         var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
                         if(string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
@@ -60,24 +64,6 @@ public static class ServiceCollectionExtensions
             });
 
         return services;
-    }
-
-    public static IServiceCollection SetupHealthChecks(this IServiceCollection services)
-    {
-        services.AddHealthChecks().AddCheck<CompilerHealthChecks>("Compilers");
-        return services;
-    }
-
-    public static WebApplication ConfigureHealthChecks(this WebApplication app)
-    {
-        app.UseHealthChecks("/health", new HealthCheckOptions { Predicate = _ => true });
-        app.UseHealthChecks("/healthz", new HealthCheckOptions
-        {
-            Predicate = _ => true,
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
-
-        return app;
     }
 
     public static IServiceCollection AddRateLimiting(this IServiceCollection services, IConfiguration configuration)
@@ -103,5 +89,20 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IValidator<IEnumerable<TestCaseDto>>, TestCaseRequestValidator>();
 
         return services;
+    }
+}
+
+public static class WebApplicationExtensions
+{
+    public static WebApplication ConfigureHealthChecks(this WebApplication app)
+    {
+        app.UseHealthChecks("/health", new HealthCheckOptions { Predicate = _ => true });
+        app.UseHealthChecks("/healthz", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+
+        return app;
     }
 }

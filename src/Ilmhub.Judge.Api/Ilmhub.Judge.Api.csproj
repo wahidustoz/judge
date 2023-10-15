@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj" />
+    <ProjectReference Include="..\Ilmhub.Judge.Messaging\Ilmhub.Judge.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
