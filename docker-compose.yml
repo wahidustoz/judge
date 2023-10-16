@@ -12,6 +12,12 @@ services:
             - "4000:5000"
         environment:
             - JAEGER_ENDPOINT=http://jaeger:4317
+            - MESSAGING__RABBITMQ__HOST=rabbitmq
+        depends_on:
+            rabbitmq: 
+                condition: service_started
+            jaeger:
+                condition: service_started
     
     jaeger:
         restart: always
@@ -27,3 +33,19 @@ services:
         - 5778:5778
         - 4317:4317
         - 4318:4318
+    
+    rabbitmq:
+        container_name: rabbitmq
+        image: heidiks/rabbitmq-delayed-message-exchange:latest
+        restart: always
+        ports:
+            - 5672:5672
+            - 15672:15672
+        volumes:
+            - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+            - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+        healthcheck:
+            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+            interval: 5s
+            timeout: 15s
+            retries: 1

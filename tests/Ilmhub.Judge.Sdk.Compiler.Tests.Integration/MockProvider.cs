@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Ilmhub.Judge.Sdk.Abstractions;
-using Ilmhub.Judge.Sdk.Abstractions.Models;
-using Ilmhub.Judge.Sdk.Models;
-using Microsoft.Extensions.Logging;
+using Ilmhub.Judge.Abstractions.Models;
+using Ilmhub.Judge.Abstractions.Options;
+using Ilmhub.Judge.Options;
+using Ilmhub.Judge.Models;
 
 namespace Ilmhub.Judge.Sdk.Compiler.Tests.Integration;
 

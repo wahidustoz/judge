@@ -1,4 +1,4 @@
-﻿namespace Ilmhub.Judge.Wrapper;
+﻿namespace Ilmhub.Judge.Wrapper.Exceptions;
 
 public class LinuxCommandFailedException : Exception
 {

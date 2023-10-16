@@ -26,7 +26,6 @@ public class LogRecordProcessor : BaseProcessor<LogRecord>
                     { nameof(data.SpanId), data.SpanId },
                     { nameof(data.Attributes), data.Attributes },
                     { nameof(data.Timestamp), data.Timestamp },
-                    { nameof(data.TraceFlags), data.TraceFlags },
                     { nameof(data.TraceId), data.TraceId },
                     { nameof(data.TraceState), data.TraceState },
                     { nameof(data.FormattedMessage), data.FormattedMessage }

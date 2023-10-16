@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using Ilmhub.Demo.Sdk;
-using Ilmhub.Judge.Sdk;
-using Ilmhub.Judge.Sdk.Abstractions;
+using Ilmhub.Judge;
+using Ilmhub.Judge.Abstractions;
+using Ilmhub.Judge.Abstractions.Options;
 using Ilmhub.Judge.Wrapper.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);

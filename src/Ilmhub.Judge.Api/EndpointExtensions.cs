@@ -1,13 +1,15 @@
 ﻿using FluentValidation;
+using Ilmhub.Judge.Abstractions;
+using Ilmhub.Judge.Abstractions.Models;
+using Ilmhub.Judge.Abstractions.Options;
 using Ilmhub.Judge.Api.Dtos;
-using Ilmhub.Judge.Sdk.Abstractions;
-using Ilmhub.Judge.Sdk.Models;
+using Ilmhub.Judge.Models;
 
 namespace Ilmhub.Judge.Api;
 
 public static class EndpointExtensions
 {
-    public static WebApplication AddEndpoints(this WebApplication app)
+    public static WebApplication UseEndpoints(this WebApplication app)
     {
         app.MapPost("/judge", async (
             IJudger judger,

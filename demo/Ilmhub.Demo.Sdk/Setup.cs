@@ -1,7 +1,7 @@
-﻿using Ilmhub.Judge.Sdk;
-using Ilmhub.Judge.Sdk.Abstractions;
-using Ilmhub.Judge.Sdk.Abstractions.Models;
-using Ilmhub.Judge.Sdk.Models;
+﻿using Ilmhub.Judge.Abstractions.Models;
+using Ilmhub.Judge.Abstractions.Options;
+using Ilmhub.Judge.Models;
+using Ilmhub.Judge.Options;
 
 namespace Ilmhub.Demo.Sdk;
 

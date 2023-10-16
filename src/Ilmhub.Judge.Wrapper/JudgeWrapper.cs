@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using Ilmhub.Judge.Wrapper.Abstractions;
 using Ilmhub.Judge.Wrapper.Abstractions.Models;
+using Ilmhub.Judge.Wrapper.Exceptions;
+using Ilmhub.Judge.Wrapper.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge.Wrapper;

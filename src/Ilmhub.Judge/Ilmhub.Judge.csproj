@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ilmhub.Judge.Abstractions\Ilmhub.Judge.Abstractions.csproj" />
+    <ProjectReference Include="..\Ilmhub.Judge.Wrapper\Ilmhub.Judge.Wrapper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="microsoft.extensions.configuration.abstractions" Version="7.0.0" />
+    <PackageReference Include="microsoft.extensions.dependencyinjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.http" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

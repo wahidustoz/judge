@@ -1,4 +1,4 @@
-using Ilmhub.Judge.Sdk.Models;
+using Ilmhub.Judge.Models;
 
 namespace Ilmhub.Judge.Api.Dtos;
 

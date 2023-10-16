@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{624BCC62-8BB1-4C65-AD63-82431EE8C8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge", "src\Ilmhub.Judge\Ilmhub.Judge.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Abstractions", "src\Ilmhub.Judge.Sdk.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Abstractions", "src\Ilmhub.Judge.Abstractions\Ilmhub.Judge.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Wrapper.Abstractions", "src\Ilmhub.Judge.Wrapper.Abstractions\Ilmhub.Judge.Wrapper.Abstractions.csproj", "{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}"
 EndProject
@@ -24,6 +24,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Compiler.Tests.Integration", "tests\Ilmhub.Judge.Sdk.Compiler.Tests.Integration\Ilmhub.Judge.Sdk.Compiler.Tests.Integration.csproj", "{2C2218D2-AD23-4421-A26E-64140FA605FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Api", "src\Ilmhub.Judge.Api\Ilmhub.Judge.Api.csproj", "{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Messaging", "src\Ilmhub.Judge.Messaging\Ilmhub.Judge.Messaging.csproj", "{48D1F524-E9F4-48A9-A422-5084EEAB48C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Messaging.Demo", "demo\Ilmhub.Judge.Messaging.Demo\Ilmhub.Judge.Messaging.Demo.csproj", "{4E152B2A-0748-4A6A-96F8-8DB23BC322C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj", "{E02E6791-DF24-4B1F-AD48-49EF041508C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Messaging.Shared", "src\Ilmhub.Judge.Messaging.Shared\Ilmhub.Judge.Messaging.Shared.csproj", "{B528A0A2-4890-4C66-B264-6F9F52EDBD5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +71,22 @@ Global
 		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48D1F524-E9F4-48A9-A422-5084EEAB48C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D1F524-E9F4-48A9-A422-5084EEAB48C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D1F524-E9F4-48A9-A422-5084EEAB48C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D1F524-E9F4-48A9-A422-5084EEAB48C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E152B2A-0748-4A6A-96F8-8DB23BC322C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E152B2A-0748-4A6A-96F8-8DB23BC322C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E152B2A-0748-4A6A-96F8-8DB23BC322C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E152B2A-0748-4A6A-96F8-8DB23BC322C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E02E6791-DF24-4B1F-AD48-49EF041508C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E02E6791-DF24-4B1F-AD48-49EF041508C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E02E6791-DF24-4B1F-AD48-49EF041508C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E02E6791-DF24-4B1F-AD48-49EF041508C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B528A0A2-4890-4C66-B264-6F9F52EDBD5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B528A0A2-4890-4C66-B264-6F9F52EDBD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B528A0A2-4890-4C66-B264-6F9F52EDBD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B528A0A2-4890-4C66-B264-6F9F52EDBD5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,5 +100,9 @@ Global
 		{84B78978-61A1-4A65-BE5D-DC3523C6DCAD} = {D92A737C-7AE5-44D3-A6EC-DFE4F8711D51}
 		{2C2218D2-AD23-4421-A26E-64140FA605FF} = {E087AE54-8829-4655-9FB9-9C71BF53D9A9}
 		{A3A12F7A-0BC5-47E7-A3B3-BAA5BEC3C8DE} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{48D1F524-E9F4-48A9-A422-5084EEAB48C8} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{4E152B2A-0748-4A6A-96F8-8DB23BC322C9} = {D92A737C-7AE5-44D3-A6EC-DFE4F8711D51}
+		{E02E6791-DF24-4B1F-AD48-49EF041508C0} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
+		{B528A0A2-4890-4C66-B264-6F9F52EDBD5B} = {624BCC62-8BB1-4C65-AD63-82431EE8C8B6}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ilmhub.Judge.Messaging.Shared\Ilmhub.Judge.Messaging.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="masstransit" Version="8.1.1" />
+    <PackageReference Include="masstransit.rabbitmq" Version="8.1.1" />
+    <PackageReference Include="microsoft.extensions.configuration" Version="7.0.0" />
+    <PackageReference Include="microsoft.extensions.configuration.binder" Version="7.0.4" />
+    <PackageReference Include="microsoft.extensions.dependencyinjection" Version="7.0.0" />
+    <PackageReference Include="polly" Version="8.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
