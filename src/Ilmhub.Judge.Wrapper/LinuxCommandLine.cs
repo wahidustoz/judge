@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Ilmhub.Judge.Wrapper.Abstractions;
+using Ilmhub.Judge.Wrapper.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge.Wrapper;

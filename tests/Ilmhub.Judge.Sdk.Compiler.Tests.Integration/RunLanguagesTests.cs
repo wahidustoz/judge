@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Ilmhub.Judge.Sdk.Abstractions;
+using Ilmhub.Judge.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

@@ -1,7 +1,6 @@
 ﻿using Ilmhub.Judge.Messaging;
 using Ilmhub.Judge.Messaging.Shared.Commands;
 using Ilmhub.Judge.Messaging.Shared.Events;
-using Ilmhub.Judge.Sdk;
 
 namespace Ilmhub.Judge.Api;
 public class RunCommandHandler : ICommandHandler<RunCommand>

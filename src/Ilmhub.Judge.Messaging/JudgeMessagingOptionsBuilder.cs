@@ -1,4 +1,5 @@
 ﻿using Ilmhub.Judge.Messaging.Shared;
+using Ilmhub.Judge.Messaging.Shared.Converters;
 using Ilmhub.Judge.Messaging.Shared.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ilmhub.Judge.Sdk.Messaging\Ilmhub.Judge.Sdk.Messaging.csproj" />
+    <ProjectReference Include="..\..\src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj" />
   </ItemGroup>
 
 </Project>

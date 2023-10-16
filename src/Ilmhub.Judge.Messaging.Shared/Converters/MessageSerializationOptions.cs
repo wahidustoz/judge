@@ -2,7 +2,7 @@
 using Ilmhub.Judge.Messaging.Shared.Events;
 using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
-namespace Ilmhub.Judge.Messaging.Shared;
+namespace Ilmhub.Judge.Messaging.Shared.Converters;
 
 public static class MessageSerializationOptions
 {

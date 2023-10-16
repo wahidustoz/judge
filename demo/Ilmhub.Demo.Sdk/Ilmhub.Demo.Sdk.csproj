@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Ilmhub.Judge\Ilmhub.Judge.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

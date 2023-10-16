@@ -1,7 +1,7 @@
-﻿namespace Ilmhub.Judge.Wrapper;
+﻿namespace Ilmhub.Judge.Wrapper.Exceptions;
 
 public class JudgeProcessFailedException : Exception
 {
-    public JudgeProcessFailedException(string message, Exception innerException) 
+    public JudgeProcessFailedException(string message, Exception innerException)
         : base(message, innerException: innerException) { }
 }

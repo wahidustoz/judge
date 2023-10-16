@@ -1,6 +1,6 @@
 using Ilmhub.Judge.Messaging.Demo;
 using Ilmhub.Judge.Messaging.Shared.Events;
-using Ilmhub.Judge.Sdk.Messaging;
+using Ilmhub.Judge.Sdk;
 using Microsoft.Extensions.Logging;
 
 public class JudgeEventHandler : IJudgeEventHandler

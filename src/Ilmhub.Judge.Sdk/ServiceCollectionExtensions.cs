@@ -1,41 +1,18 @@
-﻿using Ilmhub.Judge.Sdk.Abstractions;
-using Ilmhub.Judge.Sdk.Models;
-using Ilmhub.Judge.Sdk.Options;
-using Ilmhub.Judge.Wrapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Ilmhub.Judge.Sdk;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, IConfigurationSection judgeSection)
+    public static IServiceCollection AddIlmhubJudge(
+        this IServiceCollection services,
+        Action<JudgeSdkBuilder> configurator = null)
     {
-        services.AddIlmhubJudge(options =>
-        {
-            var languages = new List<LanguageConfiguration>();
-            judgeSection.Bind(options);
-            judgeSection.Bind("LanguageConfigurations", languages);
+        services.AddTransient<IJudgeCommandPublisher, JudgeCommandPublisher>();
 
-            options.LanguageConfigurations = languages;
-        });
-        return services;
-    }
-
-    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, Action<IIlmhubJudgeOptions> configure)
-    {
-        var options = new IlmhubJudgeOptions();
-        configure(options);
-        // TODO: implement fluent validation for options here
-        services.AddSingleton<IIlmhubJudgeOptions>(options);
-
-        services.AddIlmhubJudgeWrapper();
-        services.AddTransient<IJudger, Judger>();
-        services.AddTransient<ICompiler, Compiler>();
-        services.AddTransient<ICompiler, DotnetCompiler>();
-        services.AddTransient<ICompilationHandler, CompilationHandler>();
-        services.AddTransient<IRunner, Runner>();
-        services.AddTransient<ILanguageService, LanguageService>();
+        var settings = new JudgeSettings();
+        var builder = new JudgeSdkBuilder(services, settings);
+        configurator?.Invoke(builder);
 
         return services;
     }

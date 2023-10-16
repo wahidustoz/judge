@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Ilmhub.Judge.Wrapper.Abstractions.Models;
 
-namespace Ilmhub.Judge.Wrapper;
+namespace Ilmhub.Judge.Wrapper.Models;
 
 public class ExecutionResult : IExecutionResult
 {

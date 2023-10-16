@@ -1,8 +1,8 @@
 namespace Ilmhub.Judge.Api.Validators;
 using FluentValidation;
+using Ilmhub.Judge.Abstractions;
 using Ilmhub.Judge.Api.Dtos;
-using Ilmhub.Judge.Sdk.Abstractions;
-using Ilmhub.Judge.Sdk.Models;
+using Ilmhub.Judge.Models;
 
 public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
 {

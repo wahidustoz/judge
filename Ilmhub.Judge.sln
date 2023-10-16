@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{624BCC62-8BB1-4C65-AD63-82431EE8C8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge", "src\Ilmhub.Judge\Ilmhub.Judge.csproj", "{890EC7B3-7C37-42BA-B434-0E0819E53389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Abstractions", "src\Ilmhub.Judge.Sdk.Abstractions\Ilmhub.Judge.Sdk.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Abstractions", "src\Ilmhub.Judge.Abstractions\Ilmhub.Judge.Abstractions.csproj", "{D5927E60-5151-43F5-8A32-C826592F7B23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Wrapper.Abstractions", "src\Ilmhub.Judge.Wrapper.Abstractions\Ilmhub.Judge.Wrapper.Abstractions.csproj", "{0B6CFF62-429F-4BD4-A213-6E8C8B3CC20A}"
 EndProject
@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Messaging", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Messaging.Demo", "demo\Ilmhub.Judge.Messaging.Demo\Ilmhub.Judge.Messaging.Demo.csproj", "{4E152B2A-0748-4A6A-96F8-8DB23BC322C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk.Messaging", "src\Ilmhub.Judge.Sdk.Messaging\Ilmhub.Judge.Sdk.Messaging.csproj", "{E02E6791-DF24-4B1F-AD48-49EF041508C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Sdk", "src\Ilmhub.Judge.Sdk\Ilmhub.Judge.Sdk.csproj", "{E02E6791-DF24-4B1F-AD48-49EF041508C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ilmhub.Judge.Messaging.Shared", "src\Ilmhub.Judge.Messaging.Shared\Ilmhub.Judge.Messaging.Shared.csproj", "{B528A0A2-4890-4C66-B264-6F9F52EDBD5B}"
 EndProject

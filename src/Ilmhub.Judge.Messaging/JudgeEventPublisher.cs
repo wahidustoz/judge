@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Ilmhub.Judge.Messaging.Exceptions;
 using Ilmhub.Judge.Messaging.Shared;
 using Ilmhub.Judge.Messaging.Shared.Interfaces;
 using MassTransit;

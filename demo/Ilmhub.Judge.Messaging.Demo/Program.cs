@@ -1,5 +1,5 @@
 ﻿using Ilmhub.Judge.Messaging.Demo;
-using Ilmhub.Judge.Sdk.Messaging;
+using Ilmhub.Judge.Sdk;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

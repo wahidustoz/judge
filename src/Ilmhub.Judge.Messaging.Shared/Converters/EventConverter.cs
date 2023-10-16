@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Ilmhub.Judge.Messaging.Shared.Events;
 using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
-namespace Ilmhub.Judge.Messaging.Shared;
+namespace Ilmhub.Judge.Messaging.Shared.Converters;
 
 public class EventConverter : JsonConverter<IJudgeEvent>
 {
@@ -21,7 +21,7 @@ public class EventConverter : JsonConverter<IJudgeEvent>
 
     public override IJudgeEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if(reader.TokenType is not JsonTokenType.StartObject)
+        if (reader.TokenType is not JsonTokenType.StartObject)
             throw new JsonException();
 
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
@@ -36,7 +36,7 @@ public class EventConverter : JsonConverter<IJudgeEvent>
         var result = (IJudgeEvent)JsonSerializer.Deserialize(jsonObject, type);
 
         return result;
-    }   
+    }
 
     public override void Write(Utf8JsonWriter writer, IJudgeEvent value, JsonSerializerOptions options)
     {

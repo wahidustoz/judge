@@ -1,4 +1,4 @@
-﻿namespace Ilmhub.Judge.Messaging;
+﻿namespace Ilmhub.Judge.Messaging.Exceptions;
 
 [Serializable]
 public class FailedToPublishJudgeEventException : Exception

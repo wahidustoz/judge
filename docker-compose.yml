@@ -14,8 +14,10 @@ services:
             - JAEGER_ENDPOINT=http://jaeger:4317
             - MESSAGING__RABBITMQ__HOST=rabbitmq
         depends_on:
-            - jaeger
-            - rabbitmq
+            rabbitmq: 
+                condition: service_started
+            jaeger:
+                condition: service_started
     
     jaeger:
         restart: always

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Ilmhub.Judge.Messaging.Shared.Commands;
 using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
-namespace Ilmhub.Judge.Messaging.Shared;
+namespace Ilmhub.Judge.Messaging.Shared.Converters;
 
 public class CommandConverter : JsonConverter<ICommand>
 {
@@ -19,7 +19,7 @@ public class CommandConverter : JsonConverter<ICommand>
 
     public override ICommand Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if(reader.TokenType is not JsonTokenType.StartObject)
+        if (reader.TokenType is not JsonTokenType.StartObject)
             throw new JsonException();
 
         using var jsonDocument = JsonDocument.ParseValue(ref reader);
@@ -34,7 +34,7 @@ public class CommandConverter : JsonConverter<ICommand>
         var result = (ICommand)JsonSerializer.Deserialize(jsonObject, type);
 
         return result;
-    }   
+    }
 
     public override void Write(Utf8JsonWriter writer, ICommand value, JsonSerializerOptions options)
     {
