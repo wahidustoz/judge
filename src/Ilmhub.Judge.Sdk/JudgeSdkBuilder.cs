@@ -10,12 +10,12 @@ public class JudgeSdkBuilder
 {
     private readonly IServiceCollection services;
 
-    public JudgeSettings Settings { get; set; }
+    public JudgeMessagingSettings Messaging { get; set; }
 
-    public JudgeSdkBuilder(IServiceCollection services, JudgeSettings settings)
+    public JudgeSdkBuilder(IServiceCollection services, JudgeMessagingSettings messaging)
     {
         this.services = services;
-        Settings = settings;
+        Messaging = messaging;
     }
 
     public JudgeSdkBuilder AddJudgeEventHandler<TJudgeEventHandler>(TJudgeEventHandler eventHandler)
@@ -69,11 +69,11 @@ public class JudgeSdkBuilder
     {
         services.AddMassTransit<IJudgeEventsBus>(x =>
         {
-            if (Settings.Messaging.Driver == "RabbitMQ")
+            if (Messaging.Driver == "RabbitMQ")
             {
-                var host = Settings.Messaging.RabbitMQ.Host;
-                var username = Settings.Messaging.RabbitMQ.Username;
-                var password = Settings.Messaging.RabbitMQ.Password;
+                var host = Messaging.RabbitMQ.Host;
+                var username = Messaging.RabbitMQ.Username;
+                var password = Messaging.RabbitMQ.Password;
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -92,7 +92,7 @@ public class JudgeSdkBuilder
                 });
             }
             else
-                throw new NotSupportedException("Unsupported messaging driver: " + Settings.Messaging.Driver);
+                throw new NotSupportedException("Unsupported messaging driver: " + Messaging.Driver);
         });
     }
 }

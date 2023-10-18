@@ -1,19 +1,14 @@
 namespace Ilmhub.Judge.Sdk;
 
-public class JudgeSettings
+public class JudgeMessagingSettings
 {
-    public JudgeMessagingSettings Messaging { get; set; }
+    public string Driver { get; set; } = "RabbitMQ";
+    public RabbitMQSettings RabbitMQ { get; set; }
 
-    public class JudgeMessagingSettings
+    public class RabbitMQSettings
     {
-        public string Driver { get; set; } = "RabbitMQ";
-        public RabbitMQSettings RabbitMQ { get; set; }
-
-        public class RabbitMQSettings
-        {
-            public string Host { get; set; }
-            public string Username { get; set; }
-            public string Password { get; set; }
-        }
+        public string Host { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
