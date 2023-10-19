@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies 📂
         run: dotnet restore
 
-      - name: Check coden formatting 📏
+      - name: Check formatting 📏
         run: dotnet format --verify-no-changes --no-restore
 
       - name: Build 🧱
