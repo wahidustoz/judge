@@ -9,13 +9,29 @@ namespace Ilmhub.Judge.Sdk;
 public class JudgeSdkBuilder
 {
     private readonly IServiceCollection services;
+    private readonly JudgeSdkSettings settings;
+    public JudgeMessagingSettings Messaging => settings.Messaging;
 
-    public JudgeMessagingSettings Messaging { get; set; }
-
-    public JudgeSdkBuilder(IServiceCollection services, JudgeMessagingSettings messaging)
+    public JudgeSdkBuilder(IServiceCollection services, JudgeSdkSettings settings)
     {
         this.services = services;
-        Messaging = messaging;
+        this.settings = settings;
+    }
+
+    public JudgeSdkBuilder AddCommandPublisher()
+    {
+        services.AddTransient<IJudgeCommandPublisher, JudgeCommandPublisher>();
+        return this;
+    }
+
+    public JudgeSdkBuilder AddJudgeClient()
+    {
+        // TODO: Add judge client
+        services.AddHttpClient<IJudgeClient, JudgeClient>(builder => 
+        {
+            builder.BaseAddress = new Uri(settings.Endpoint);
+        });
+        return this;
     }
 
     public JudgeSdkBuilder AddJudgeEventHandler<TJudgeEventHandler>(TJudgeEventHandler eventHandler)
