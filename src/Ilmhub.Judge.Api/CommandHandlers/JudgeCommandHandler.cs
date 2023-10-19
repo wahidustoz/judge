@@ -29,6 +29,8 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
 
         try
         {
+            logger.LogTrace("Judge command started");
+
             var result = await judger.JudgeAsync(
                 languageId: command.LanguageId,
                 source: command.SourceCode,
@@ -38,6 +40,9 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 maxMemory: command.MaxMemory ?? -1,
                 cancellationToken: cancellationToken);
             
+            logger.LogTrace("Judge command result {resultStatus}", result.IsSuccess);
+            logger.LogTrace("Publishing judge started with result {resultStatus}", result.Status);
+
             await publisher.PublishAsync(new JudgeCompleted
             {
                 RequestId = command.RequestId,
@@ -64,10 +69,12 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 })
             }, cancellationToken);
 
+            logger.LogInformation("Judge command {command} completed", command);
         }
         catch(Exception ex)
         {
-            logger.LogWarning(ex, "Judge failed");
+            logger.LogError(ex, "Judge failed for command {command}", command);
+            logger.LogTrace("Publishing judge failed started");
 
             await publisher.PublishAsync(new JudgeFailed
             {
@@ -78,6 +85,5 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 Error = ex.Message
             }, cancellationToken);
         }
-
     }
 }

@@ -16,14 +16,26 @@ public class RunCommandHandler : ICommandHandler<RunCommand>
 
     public async ValueTask HandleAsync(RunCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Received run command {command}", command);
-        await publisher.PublishAsync(new RunFailed
+        logger.LogInformation("Received Run command {command}", command);
+        
+        try
         {
-            RequestId = command.RequestId,
-            SourceId = command.SourceId,
-            SourceContext = command.SourceContext,
-            Source = command.Source,
-            Error = "Run command not implemented yet."
-        }, cancellationToken);
+            logger.LogTrace("Run command started");
+
+            await publisher.PublishAsync(new RunFailed
+            {
+                RequestId = command.RequestId,
+                SourceId = command.SourceId,
+                SourceContext = command.SourceContext,
+                Source = command.Source,
+                Error = "Run command not implemented yet."
+            }, cancellationToken);
+
+            logger.LogTrace("Publishing run failed with error {error}", "Run command not implemented yet.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Run command failed.");
+        }
     }
 }
