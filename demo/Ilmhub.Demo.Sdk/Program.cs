@@ -6,10 +6,7 @@ using Ilmhub.Judge.Abstractions.Options;
 using Ilmhub.Judge.Wrapper.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddLogging(configure => 
-{
-    configure.AddFilter("Ilmhub.Judge.*", LogLevel.Trace);
-});
+builder.Services.AddLogging(configure => configure.AddFilter("Ilmhub.Judge.*", LogLevel.Trace));
 builder.Services.AddIlmhubJudge(Setup.ConfigureLanguages);
 
 var app = builder.Build();

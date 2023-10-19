@@ -74,7 +74,7 @@ public static class EndpointExtensions
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("Languages");
 
-        app.MapPost("/testcase", async (
+        app.MapPost("/v1/testcases", async (
             IJudger judger,
             List<TestCaseDto> dto,
             CancellationToken cancellationToken) =>
@@ -97,10 +97,8 @@ public static class EndpointExtensions
         app.MapPost("/testcase-files", (
             IJudger judger,
             IFormFile testcases,
-            CancellationToken cancellationToken) =>
-            {
-                return Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream()));
-            })
+            CancellationToken cancellationToken) 
+            => Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream())))
         .WithAsyncValidation<IFormFile>()
         .WithRateLimiting("fixed", app.Configuration)
         .WithName("TestCase-Files");

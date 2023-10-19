@@ -1,9 +1,9 @@
 ﻿using Ilmhub.Judge.Messaging.Demo;
 using Ilmhub.Judge.Sdk;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
-var builder = Host.CreateApplicationBuilder();
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddIlmhubJudge(builder.Configuration, o => o
     .AddCommandPublisher()
@@ -13,4 +13,4 @@ builder.Services.AddHostedService<PeriodicJudgeCommandSender>();
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();
