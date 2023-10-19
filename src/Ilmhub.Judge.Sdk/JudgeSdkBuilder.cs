@@ -1,8 +1,13 @@
+using System.Net;
 using Ilmhub.Judge.Messaging.Shared;
 using Ilmhub.Judge.Messaging.Shared.Converters;
 using Ilmhub.Judge.Messaging.Shared.Events;
+using Ilmhub.Judge.Sdk.Extensions;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Telemetry;
 
 namespace Ilmhub.Judge.Sdk;
 
@@ -28,9 +33,30 @@ public class JudgeSdkBuilder
     {
         // TODO: Add judge client
         services.AddHttpClient<IJudgeClient, JudgeClient>(builder => 
+            builder.BaseAddress = new Uri(settings.Endpoint));
+        services.AddResiliencePipeline(nameof(JudgeClient), (builder, context) =>
         {
-            builder.BaseAddress = new Uri(settings.Endpoint);
+            var loggerFactory = context.ServiceProvider.GetRequiredService<ILoggerFactory>();
+            builder.ConfigureTelemetry(new TelemetryOptions { });
+            builder.AddRetry(new Polly.Retry.RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder()
+                    .Handle<HttpRequestException>(ex => ex.IsClientError() is false),
+                BackoffType = DelayBackoffType.Exponential,
+                MaxRetryAttempts = 3,
+                Delay = TimeSpan.FromSeconds(1),
+                OnRetry = args =>
+                {
+                    var logger = loggerFactory.CreateLogger<JudgeClient>();
+                    logger.LogTrace(
+                        args.Outcome.Exception, 
+                        "Retrying JudgeClient error for attempt: {attemptNumber}",
+                        args.AttemptNumber);
+                    return ValueTask.CompletedTask;
+                }
+            });
         });
+
         return this;
     }
 
@@ -81,9 +107,9 @@ public class JudgeSdkBuilder
         });
     }
 
-    private void AddMasstransitJudgeEventHandlers(Action<IReceiveEndpointConfigurator, IBusRegistrationContext> configurator)
+    private IServiceCollection AddMasstransitJudgeEventHandlers(Action<IReceiveEndpointConfigurator, IBusRegistrationContext> configurator)
     {
-        services.AddMassTransit<IJudgeEventsBus>(x =>
+        return services.AddMassTransit<IJudgeEventsBus>(x =>
         {
             if (Messaging.Driver == "RabbitMQ")
             {

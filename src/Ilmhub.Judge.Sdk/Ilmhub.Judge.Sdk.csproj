@@ -12,10 +12,15 @@
     <PackageReference Include="microsoft.extensions.dependencyinjection" Version="7.0.0" />
     <PackageReference Include="microsoft.extensions.http" Version="7.0.0" />
     <PackageReference Include="polly" Version="8.0.0" />
+    <PackageReference Include="Polly.Extensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Ilmhub.Judge.Messaging.Shared\Ilmhub.Judge.Messaging.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>
