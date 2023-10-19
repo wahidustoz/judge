@@ -5,7 +5,10 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder();
 
-builder.Services.AddIlmhubJudge(builder.Configuration, o => o.AddJudgeEventHandler<JudgeEventHandler>());
+builder.Services.AddIlmhubJudge(builder.Configuration, o => o
+    .AddCommandPublisher()
+    .AddJudgeEventHandler<JudgeEventHandler>()
+    .AddJudgeClient());
 builder.Services.AddHostedService<PeriodicJudgeCommandSender>();
 
 var app = builder.Build();

@@ -10,11 +10,9 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration,
         Action<JudgeSdkBuilder> configurator = null)
     {
-        services.AddTransient<IJudgeCommandPublisher, JudgeCommandPublisher>();
-
-        var messaging = new JudgeMessagingSettings();
-        configuration.GetSection("Messaging").Bind(messaging);
-        var builder = new JudgeSdkBuilder(services, messaging);
+        var settings = new JudgeSdkSettings();
+        configuration.GetSection("Judge").Bind(settings);
+        var builder = new JudgeSdkBuilder(services, settings);
         configurator?.Invoke(builder);
 
         return services;
