@@ -30,7 +30,6 @@ public class JudgeSdkBuilder
 
     public JudgeSdkBuilder AddJudgeClient()
     {
-        // TODO: Add judge client
         services.AddHttpClient<IJudgeClient, JudgeClient>(b => b.BaseAddress = new Uri(settings.Endpoint));
         services.AddResiliencePipeline(nameof(JudgeClient), (options, context) =>
         {
@@ -46,7 +45,7 @@ public class JudgeSdkBuilder
                 {
                     var logger = context.ServiceProvider.GetRequiredService<ILogger<JudgeClient>>();
                     logger.LogTrace(
-                        args.Outcome.Exception, 
+                        args.Outcome.Exception,
                         "Retrying JudgeClient error for attempt: {attemptNumber}",
                         args.AttemptNumber);
                     return ValueTask.CompletedTask;
