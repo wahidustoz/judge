@@ -4,11 +4,9 @@ using Ilmhub.Utilities;
 
 namespace Ilmhub.Judge.Models;
 
-public class TestCaseResult : ITestCaseResult
-{
+public class TestCaseResult : ITestCaseResult {
     private bool? useStrictMode { get; }
-    public TestCaseResult(string id, string expectedOutput, IRunnerResult execution, bool? usestrictMode = default)
-    {
+    public TestCaseResult(string id, string expectedOutput, IRunnerResult execution, bool? usestrictMode = default) {
         Id = id;
         ExpectedOutput = expectedOutput;
         Execution = execution;
@@ -23,8 +21,7 @@ public class TestCaseResult : ITestCaseResult
     public IRunnerResult Execution { get; }
     public ETestCaseStatus Status => GetStatus();
 
-    private ETestCaseStatus GetStatus() => Execution.IsSuccess switch
-    {
+    private ETestCaseStatus GetStatus() => Execution.IsSuccess switch {
         true when OutputMatches(strict: useStrictMode)
             => ETestCaseStatus.Success,
         true when useStrictMode is true && OutputMatches(strict: false)

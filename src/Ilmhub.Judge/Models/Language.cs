@@ -3,10 +3,8 @@ using Ilmhub.Judge.Abstractions.Models;
 
 namespace Ilmhub.Judge.Models;
 
-public class Language : ILanguage
-{
-    public Language(int id, string name)
-    {
+public class Language : ILanguage {
+    public Language(int id, string name) {
         Id = id;
         Name = name;
     }

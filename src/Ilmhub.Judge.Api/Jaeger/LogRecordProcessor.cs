@@ -4,19 +4,13 @@ using OpenTelemetry.Logs;
 
 namespace Ilmhub.Judge.Api.Jaeger;
 
-public class LogRecordProcessor : BaseProcessor<LogRecord>
-{
+public class LogRecordProcessor : BaseProcessor<LogRecord> {
     private readonly LogRecordProcessorOptions options;
 
-    public LogRecordProcessor(LogRecordProcessorOptions options)
-    {
-        this.options = options ?? new LogRecordProcessorOptions();
-    }
+    public LogRecordProcessor(LogRecordProcessorOptions options) => this.options = options ?? new LogRecordProcessorOptions();
 
-    public override void OnEnd(LogRecord data)
-    {
-        if (Activity.Current != null)
-        {
+    public override void OnEnd(LogRecord data) {
+        if (Activity.Current != null) {
             var tags = new ActivityTagsCollection
                 {
                     { nameof(data.CategoryName), data.CategoryName },

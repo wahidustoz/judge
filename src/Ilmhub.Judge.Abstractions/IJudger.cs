@@ -2,8 +2,7 @@
 
 namespace Ilmhub.Judge.Abstractions;
 
-public interface IJudger
-{
+public interface IJudger {
     bool TestCaseExists(Guid testCaseId);
     string GetTestCaseFolder(Guid testCaseId);
     ValueTask<IJudgeResult> JudgeAsync(

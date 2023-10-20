@@ -1,6 +1,5 @@
 ﻿namespace Ilmhub.Judge.Messaging.Shared.Interfaces;
 
-public interface IHasRequestId
-{
+public interface IHasRequestId {
     Guid RequestId { get; set; }
 }

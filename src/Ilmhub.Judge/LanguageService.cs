@@ -7,21 +7,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge;
 
-public class LanguageService : ILanguageService
-{
+public class LanguageService : ILanguageService {
     private readonly int[] supportedDotnetVersions = { 6, 7 };
     private readonly ILogger<LanguageService> logger;
-    private IEnumerable<ILanguageConfiguration> languageConfigurationOptions;
+    private readonly IEnumerable<ILanguageConfiguration> languageConfigurationOptions;
 
     public LanguageService(
         ILogger<LanguageService> logger,
-        IIlmhubJudgeOptions options)
-    {
+        IIlmhubJudgeOptions options) {
         this.logger = logger;
         languageConfigurationOptions = options.LanguageConfigurations;
     }
-    public ValueTask<IEnumerable<ILanguageConfiguration>> GetLangaugeConfigurationsAsync(CancellationToken cancellationToken = default)
-    {
+    public ValueTask<IEnumerable<ILanguageConfiguration>> GetLangaugeConfigurationsAsync(CancellationToken cancellationToken = default) {
         logger.LogInformation("Getting language configurations from .NET configuration options.");
         return ValueTask.FromResult(languageConfigurationOptions);
     }
@@ -29,8 +26,7 @@ public class LanguageService : ILanguageService
     public async ValueTask<ILanguageConfiguration> GetLanguageConfigurationOrDefaultAsync(int languageId, CancellationToken cancellationToken = default)
         => (await GetLangaugeConfigurationsAsync(cancellationToken)).FirstOrDefault(x => x.Id == languageId);
 
-    public async ValueTask<ILanguageConfiguration> GetLanguageConfigurationAsync(int languageId, CancellationToken cancellationToken = default)
-    {
+    public async ValueTask<ILanguageConfiguration> GetLanguageConfigurationAsync(int languageId, CancellationToken cancellationToken = default) {
         var languageConfiguration = (await GetLangaugeConfigurationsAsync(cancellationToken))
             .FirstOrDefault(x => x.Id == languageId);
 

@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Sdk.Models;
 
-public enum EJudgeStatus
-{
+public enum EJudgeStatus {
     Accepted,
     PartialAccepted,
     NotAccepted,

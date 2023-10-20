@@ -2,8 +2,7 @@ using Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 namespace Ilmhub.Judge.Wrapper.Models;
 
-public class ExecutionRequest : IExecutionRequest
-{
+public class ExecutionRequest : IExecutionRequest {
     public string ExecutablePath { get; set; }
     public string InputPath { get; set; }
     public string OutputPath { get; set; }

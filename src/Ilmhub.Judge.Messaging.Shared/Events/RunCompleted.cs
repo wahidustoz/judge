@@ -4,8 +4,7 @@ using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
 namespace Ilmhub.Judge.Messaging.Shared.Events;
 
-public record RunCompleted : IRunCompleted
-{
+public record RunCompleted : IRunCompleted {
     [JsonConverter(typeof(AbstractConverter<ICompilationResult, CompilationResult>))]
     public ICompilationResult CompilationResult { get; set; }
     [JsonConverter(typeof(AbstractConverter<IEnumerable<IRunResult>, List<RunResult>>))]

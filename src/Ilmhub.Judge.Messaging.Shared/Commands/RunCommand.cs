@@ -2,8 +2,7 @@
 
 namespace Ilmhub.Judge.Messaging.Shared.Commands;
 
-public record RunCommand : IRunCommand
-{
+public record RunCommand : IRunCommand {
     public int LanguageId { get; set; }
     public string SourceCode { get; set; }
     public IEnumerable<string> Inputs { get; set; }

@@ -2,10 +2,8 @@ using Xunit;
 
 namespace Ilmhub.Judge.Sdk.Compiler.Tests.Integration;
 
-public class LanguageTheoryData : TheoryData<string, int, string>
-{
-    public LanguageTheoryData()
-    {
+public class LanguageTheoryData : TheoryData<string, int, string> {
+    public LanguageTheoryData() {
         Add("C", 1,
             @"
                 #include <stdio.h>

@@ -3,8 +3,7 @@ using Ilmhub.Judge.Abstractions.Options;
 
 namespace Ilmhub.Judge.Options;
 
-public class IlmhubJudgeOptions : IIlmhubJudgeOptions
-{
+public class IlmhubJudgeOptions : IIlmhubJudgeOptions {
     public static string Name => "Judger";
     public string RootFolder { get; set; } = "/judger";
     public IJudgeUsersOption SystemUsers { get; set; } = new JudgeUsersOption();

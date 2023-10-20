@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
-public interface IExecutionResult
-{
+public interface IExecutionResult {
     bool IsSuccess { get; }
     string Output { get; set; }
     string ErrorMessage { get; set; }
@@ -13,4 +12,3 @@ public interface IExecutionResult
     EExecutionError Error { get; set; }
     EExecutionResult Status { get; set; }
 }
-

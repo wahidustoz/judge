@@ -2,8 +2,7 @@
 
 namespace Ilmhub.Judge.Abstractions;
 
-public interface ICompiler
-{
+public interface ICompiler {
     bool CanHandle(int languageId);
     ValueTask<ICompilationResult> CompileAsync(
         string source,

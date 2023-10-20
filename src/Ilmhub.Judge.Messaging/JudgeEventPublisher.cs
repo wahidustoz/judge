@@ -9,29 +9,25 @@ using Polly.Retry;
 
 namespace Ilmhub.Judge.Messaging;
 
-public class JudgeEventPublisher : IJudgeEventPublisher
-{
+public class JudgeEventPublisher : IJudgeEventPublisher {
     private readonly ILogger<JudgeEventPublisher> logger;
     private readonly IBus bus;
 
     public JudgeEventPublisher(
         ILogger<JudgeEventPublisher> logger,
-        IBus bus)
-    {
+        IBus bus) {
         this.logger = logger;
         this.bus = bus;
     }
 
     public async ValueTask PublishAsync<TEvent>(TEvent judgeEvent, CancellationToken cancellationToken)
         where TEvent : class, IJudgeEvent
-        => await GetRetryPolicy().ExecuteAsync(async () 
+        => await GetRetryPolicy().ExecuteAsync(async ()
             => await ExecutePublishAsync(judgeEvent, cancellationToken));
 
     private async ValueTask ExecutePublishAsync<TEvent>(TEvent judgeEvent, CancellationToken cancellationToken)
-        where TEvent : class, IJudgeEvent
-    {
-        try
-        {
+        where TEvent : class, IJudgeEvent {
+        try {
             string prefix = null;
             if (bus.Topology is IRabbitMqBusTopology)
                 prefix = "exchange";
@@ -43,13 +39,9 @@ public class JudgeEventPublisher : IJudgeEventPublisher
                 source = eventWithSource.Source;
 
             var endpoint = await bus.GetSendEndpoint(new Uri($"{prefix}:{Queues.JudgeEvents}"));
-            await endpoint.Send(judgeEvent, context =>
-            {
-                context.Headers.Set("source", source);
-            }, cancellationToken);
+            await endpoint.Send(judgeEvent, context => context.Headers.Set("source", source), cancellationToken);
         }
-        catch (Exception ex) when (ex is not JsonException)
-        {
+        catch (Exception ex) when (ex is not JsonException) {
             throw new FailedToPublishJudgeEventException(judgeEvent.GetType(), ex);
         }
     }
@@ -62,12 +54,11 @@ public class JudgeEventPublisher : IJudgeEventPublisher
             TimeSpan.FromSeconds(5),
             TimeSpan.FromSeconds(10)
         },
-        onRetry: (exception, timeSince, retryCount, ctx) =>
-        {
+        onRetry: (exception, timeSince, retryCount, ctx) => {
             logger.LogInformation(
-                exception, 
-                "Retrying to send message to queue {queue} count: {retryCount}", 
-                Queues.JudgeEvents, 
+                exception,
+                "Retrying to send message to queue {queue} count: {retryCount}",
+                Queues.JudgeEvents,
                 retryCount);
         });
 }

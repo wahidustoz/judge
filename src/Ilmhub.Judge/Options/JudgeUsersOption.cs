@@ -4,8 +4,7 @@ using Ilmhub.Judge.Models;
 
 namespace Ilmhub.Judge.Options;
 
-public class JudgeUsersOption : IJudgeUsersOption
-{
+public class JudgeUsersOption : IJudgeUsersOption {
     public IJudgeSystemUser Compiler { get; set; } = new JudgeSystemUser();
     public IJudgeSystemUser Runner { get; set; } = new JudgeSystemUser();
 }

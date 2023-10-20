@@ -5,12 +5,9 @@ using Ilmhub.Judge.Options;
 
 namespace Ilmhub.Demo.Sdk;
 
-public static class Setup
-{
-    public static void ConfigureLanguages(IIlmhubJudgeOptions options)
-    {
-        options.SystemUsers = new JudgeUsersOption
-        {
+public static class Setup {
+    public static void ConfigureLanguages(IIlmhubJudgeOptions options) {
+        options.SystemUsers = new JudgeUsersOption {
             Compiler = new JudgeSystemUser("testcompiler", 2000, 2000),
             Runner = new JudgeSystemUser("testrunner", 2001, 2001)
         };

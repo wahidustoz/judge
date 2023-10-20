@@ -4,12 +4,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Ilmhub.Judge.Api;
 
-public class CompilerHealthChecks : IHealthCheck
-{
+public class CompilerHealthChecks : IHealthCheck {
     private readonly ILinuxCommandLine cli;
     public CompilerHealthChecks(ILinuxCommandLine cli) => this.cli = cli;
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
-    {
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default) {
         var compilerOutputs = new Dictionary<string, (bool IsSuccess, string Output, string ErrorMessage)>
         {
             { "GCC", await cli.TryRunAsync("/usr/bin/gcc", "--version", cancellationToken) },
@@ -20,17 +18,16 @@ public class CompilerHealthChecks : IHealthCheck
             { "GO", await cli.TryRunAsync("/usr/bin/go", "version", cancellationToken) },
         };
 
-        var data = new ReadOnlyDictionary<string, object>(compilerOutputs.ToDictionary(x => x.Key, x => 
-            (object)new 
-            { 
-                x.Value.IsSuccess, 
-                x.Value.Output, 
-                x.Value.ErrorMessage 
+        var data = new ReadOnlyDictionary<string, object>(compilerOutputs.ToDictionary(x => x.Key, x =>
+            (object)new {
+                x.Value.IsSuccess,
+                x.Value.Output,
+                x.Value.ErrorMessage
             }));
 
-        if(compilerOutputs.All(x => x.Value.IsSuccess == false))
+        if (compilerOutputs.All(x => x.Value.IsSuccess == false))
             return new HealthCheckResult(HealthStatus.Unhealthy, data: data);
-        else if(compilerOutputs.All(x => x.Value.IsSuccess == true))
+        else if (compilerOutputs.All(x => x.Value.IsSuccess == true))
             return new HealthCheckResult(HealthStatus.Healthy, data: data);
         else
             return new HealthCheckResult(HealthStatus.Degraded, data: data);

@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Abstractions.Models;
 
-public enum ETestCaseStatus
-{
+public enum ETestCaseStatus {
     Success,
     WrongAnswer,
     /// <summary>

@@ -1,7 +1,6 @@
 ﻿namespace Ilmhub.Judge.Abstractions.Models;
 
-public interface ILanguageConfiguration
-{
+public interface ILanguageConfiguration {
     int Id { get; set; }
     string Name { get; set; }
     ICompileConfiguration Compile { get; set; }

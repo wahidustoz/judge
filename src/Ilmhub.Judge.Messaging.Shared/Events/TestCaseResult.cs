@@ -1,8 +1,7 @@
 using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
 namespace Ilmhub.Judge.Messaging.Shared.Events;
-public record TestCaseResult : ITestCaseResult
-{
+public record TestCaseResult : ITestCaseResult {
     public string Id { get; set; }
     public string Status { get; set; }
     public string Output { get; set; }

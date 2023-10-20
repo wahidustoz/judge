@@ -8,15 +8,13 @@ using Polly.Retry;
 
 namespace Ilmhub.Judge.Sdk;
 
-public class JudgeCommandPublisher : IJudgeCommandPublisher
-{
+public class JudgeCommandPublisher : IJudgeCommandPublisher {
     private readonly IJudgeEventsBus bus;
     private readonly ILogger<JudgeCommandPublisher> logger;
 
     public JudgeCommandPublisher(
         IJudgeEventsBus bus,
-        ILogger<JudgeCommandPublisher> logger)
-    {
+        ILogger<JudgeCommandPublisher> logger) {
         this.bus = bus;
         this.logger = logger;
     }
@@ -32,32 +30,26 @@ public class JudgeCommandPublisher : IJudgeCommandPublisher
             => await ExecuteScheduleAsync(command, delay, cancellationToken));
 
     private async ValueTask ExecuteScheduleAsync<TCommand>(TCommand command, TimeSpan delay, CancellationToken cancellationToken)
-        where TCommand : class, ICommand
-    {
-        try
-        {
+        where TCommand : class, ICommand {
+        try {
             var endpoint = new Uri($"queue:{Queues.JudgeOperations}");
             var scheduler = bus.CreateDelayedMessageScheduler();
             var when = DateTime.UtcNow.Add(delay);
             await scheduler.ScheduleSend(endpoint, when, command, cancellationToken);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogWarning(ex, "Failed to send Judge command for command type {type}", typeof(TCommand).Name);
             throw new FailedToPublishJudgeCommandException(ex);
         }
     }
 
     public async ValueTask ExecutePublishAsync<TCommand>(TCommand command, CancellationToken cancellationToken = default)
-        where TCommand : class, ICommand
-    {
-        try
-        {
+        where TCommand : class, ICommand {
+        try {
             var endpoint = await bus.GetSendEndpoint(new Uri($"queue:{Queues.JudgeOperations}"));
             await endpoint.Send(command, cancellationToken);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogWarning(ex, "Failed to send Judge command for command type {type}", typeof(TCommand).Name);
             throw new FailedToPublishJudgeCommandException(ex);
         }
@@ -71,8 +63,7 @@ public class JudgeCommandPublisher : IJudgeCommandPublisher
             TimeSpan.FromSeconds(5),
             TimeSpan.FromSeconds(10)
         },
-        onRetry: (exception, timeSince, retryCount, ctx) =>
-        {
+        onRetry: (exception, timeSince, retryCount, ctx) => {
             logger.LogInformation(
                 exception,
                 "Retrying to send message to queue {queue} count: {retryCount}",

@@ -11,8 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge;
 
-public class Runner : IRunner
-{
+public class Runner : IRunner {
     private const string INPUT_FILENAME = "input";
     private const string OUTPUT_FILENAME = "runner.output";
     private const string ERROR_FILENAME = "runner.error";
@@ -29,8 +28,7 @@ public class Runner : IRunner
         ILinuxCommandLine cli,
         IJudgeWrapper judgeWrapper,
         ILanguageService languageService,
-        IIlmhubJudgeOptions options)
-    {
+        IIlmhubJudgeOptions options) {
         this.logger = logger;
         this.cli = cli;
         this.judgeWrapper = judgeWrapper;
@@ -45,8 +43,7 @@ public class Runner : IRunner
         long maxMemory,
         string input = default,
         string environmentFolder = default,
-        CancellationToken cancellationToken = default)
-    {
+        CancellationToken cancellationToken = default) {
         if (IOUtilities.IsValidPath(environmentFolder) is false)
             environmentFolder = await CreateTemporaryFolderAsync(cancellationToken);
 
@@ -71,8 +68,7 @@ public class Runner : IRunner
         long maxCpu,
         long maxMemory,
         string environmentFolder = default,
-        CancellationToken cancellationToken = default)
-    {
+        CancellationToken cancellationToken = default) {
         if (IOUtilities.IsValidPath(environmentFolder) is false)
             environmentFolder = await CreateTemporaryFolderAsync(cancellationToken);
 
@@ -93,10 +89,8 @@ public class Runner : IRunner
         long maxCpu,
         long maxMemory,
         string environmentFolder,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
+        CancellationToken cancellationToken = default) {
+        try {
             var languageConfiguration = await languageService.GetLanguageConfigurationOrDefaultAsync(languageId, cancellationToken)
                 ?? throw new LanguageNotConfiguredException(languageId);
 
@@ -105,8 +99,7 @@ public class Runner : IRunner
             (string logPath, string outputPath, string errorPath) = await CreateInputOutputFilesAsync(environmentFolder, cancellationToken);
             var executableFolder = Path.GetDirectoryName(executableFilename);
             var arguments = languageConfiguration.Run.Arguments?
-                .Select(argument =>
-                {
+                .Select(argument => {
                     if (argument.Contains("{exe_dir}", StringComparison.OrdinalIgnoreCase))
                         return argument.Replace("{exe_dir}", executableFolder);
                     else if (argument.Contains("{exe_path}", StringComparison.OrdinalIgnoreCase))
@@ -124,8 +117,7 @@ public class Runner : IRunner
             : languageConfiguration.Run.Command;
 
             var processResult = await judgeWrapper.ExecuteJudgerAsync(
-                request: new ExecutionRequest
-                {
+                request: new ExecutionRequest {
                     ExecutablePath = executable,
                     InputPath = inputFilePath,
                     OutputPath = outputPath,
@@ -151,15 +143,12 @@ public class Runner : IRunner
                 error: error,
                 log: log);
         }
-        catch (Exception ex) when (ex is not LanguageNotConfiguredException)
-        {
+        catch (Exception ex) when (ex is not LanguageNotConfiguredException) {
             logger.LogError(ex, "Failed to execute compiler for language {languageId}.", languageId);
             throw new CompilationProcessFailedException($"Failed to execute compiler for language {languageId}.", ex);
         }
-        finally
-        {
-            if (shouldCleanUpEnvironmentFolder)
-            {
+        finally {
+            if (shouldCleanUpEnvironmentFolder) {
                 logger.LogInformation("Deleting temporary folder: {tempFolder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
@@ -168,15 +157,13 @@ public class Runner : IRunner
 
     private async ValueTask<(string logPath, string outputPath, string errorPath)> CreateInputOutputFilesAsync(
         string tempFolder,
-        CancellationToken cancellationToken)
-    {
+        CancellationToken cancellationToken) {
         var logPath = Path.Combine(tempFolder, LOG_FILENAME);
         var outputPath = Path.Combine(tempFolder, OUTPUT_FILENAME);
         var errorPath = Path.Combine(tempFolder, ERROR_FILENAME);
 
         var paths = new string[] { logPath, outputPath, errorPath };
-        foreach (var path in paths)
-        {
+        foreach (var path in paths) {
             IOUtilities.CreateEmptyFile(path);
             await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, path, cancellationToken: cancellationToken);
             await cli.ChangePathModeAsync(LinuxCommandLine.WRITE_MODE, path, cancellationToken: cancellationToken);
@@ -194,8 +181,7 @@ public class Runner : IRunner
     private async ValueTask<string> WriteInputFileAsync(
         string input,
         string environmentFolder,
-        CancellationToken cancellationToken)
-    {
+        CancellationToken cancellationToken) {
 
         var inputFilename = Path.Combine(environmentFolder, INPUT_FILENAME);
         await File.WriteAllTextAsync(inputFilename, input, cancellationToken);
@@ -206,8 +192,7 @@ public class Runner : IRunner
         return inputFilename;
     }
 
-    private async ValueTask<string> CreateTemporaryFolderAsync(CancellationToken cancellationToken)
-    {
+    private async ValueTask<string> CreateTemporaryFolderAsync(CancellationToken cancellationToken) {
         var folder = IOUtilities.CreateTemporaryDirectory();
         await cli.AddPathOwnerAsync(judgeUsers.Runner.Username, folder, cancellationToken: cancellationToken);
         logger.LogInformation("Created temporary folder: {tempFolder}", folder);

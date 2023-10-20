@@ -11,8 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge;
 
-public class Compiler : ICompiler
-{
+public class Compiler : ICompiler {
     private const string LOG_FILENAME = "compiler.log";
     private const string OUTPUT_FILENAME = "compiler.output";
     private const string ERROR_FILENAME = "compiler.error";
@@ -29,8 +28,7 @@ public class Compiler : ICompiler
         ILinuxCommandLine cli,
         IJudgeWrapper judgeWrapper,
         ILanguageService languageService,
-        IIlmhubJudgeOptions options)
-    {
+        IIlmhubJudgeOptions options) {
         this.logger = logger;
         this.cli = cli;
         this.judgeWrapper = judgeWrapper;
@@ -44,10 +42,8 @@ public class Compiler : ICompiler
         string source,
         int languageId,
         string environmentFolder = default,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
+        CancellationToken cancellationToken = default) {
+        try {
             var languageConfiguration = await languageService.GetLanguageConfigurationOrDefaultAsync(languageId, cancellationToken)
                 ?? throw new LanguageNotConfiguredException(languageId);
 
@@ -61,8 +57,7 @@ public class Compiler : ICompiler
             (string logPath, string outputPath, string errorPath) = await CreateInputOutputFilesAsync(environmentFolder, cancellationToken);
 
             var arguments = languageConfiguration.Compile.Arguments?
-                .Select(argument =>
-                {
+                .Select(argument => {
                     if (argument.Contains("{src_path}", StringComparison.OrdinalIgnoreCase))
                         return argument.Replace("{src_path}", sourceFilename);
                     else if (argument.Contains("{exe_path}", StringComparison.OrdinalIgnoreCase))
@@ -72,8 +67,7 @@ public class Compiler : ICompiler
                 });
 
             var processResult = await judgeWrapper.ExecuteJudgerAsync(
-                request: new ExecutionRequest
-                {
+                request: new ExecutionRequest {
                     ExecutablePath = languageConfiguration.Compile.Command,
                     OutputPath = outputPath,
                     LogPath = logPath,
@@ -89,23 +83,19 @@ public class Compiler : ICompiler
                 cancellationToken: cancellationToken);
             logger.LogInformation("Finished compilation session for language {languageId}", languageId);
 
-            return new CompilationResult(processResult)
-            {
+            return new CompilationResult(processResult) {
                 Log = await IOUtilities.GetAllTextOrDefaultAsync(logPath, cancellationToken),
                 Output = await IOUtilities.GetAllTextOrDefaultAsync(outputPath, cancellationToken),
                 Error = await IOUtilities.GetAllTextOrDefaultAsync(errorPath, cancellationToken),
                 ExecutableFilePath = executableFilename
             };
         }
-        catch (Exception ex) when (ex is not LanguageNotConfiguredException)
-        {
+        catch (Exception ex) when (ex is not LanguageNotConfiguredException) {
             logger.LogError(ex, "Failed to execute compiler for language {languageId}.", languageId);
             throw new CompilationProcessFailedException($"Failed to execute compiler for language {languageId}.", ex);
         }
-        finally
-        {
-            if (shouldCleanUpEnvironmentFolder)
-            {
+        finally {
+            if (shouldCleanUpEnvironmentFolder) {
                 logger.LogInformation("Deleting temporary folder: {tempFolder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
@@ -115,8 +105,7 @@ public class Compiler : ICompiler
     private async ValueTask<string> CreateExecutableFileAsync(
         string environmentFolder,
         string executableFilename,
-        CancellationToken cancellationToken = default)
-    {
+        CancellationToken cancellationToken = default) {
         var executableFilePath = Path.Combine(environmentFolder, executableFilename);
         IOUtilities.CreateEmptyFile(executableFilePath);
         await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, executableFilePath, cancellationToken: cancellationToken);
@@ -131,15 +120,13 @@ public class Compiler : ICompiler
 
     private async ValueTask<(string logPath, string outputPath, string errorPath)> CreateInputOutputFilesAsync(
         string tempFolder,
-        CancellationToken cancellationToken)
-    {
+        CancellationToken cancellationToken) {
         var logPath = Path.Combine(tempFolder, LOG_FILENAME);
         var outputPath = Path.Combine(tempFolder, OUTPUT_FILENAME);
         var errorPath = Path.Combine(tempFolder, ERROR_FILENAME);
 
         var paths = new string[] { logPath, outputPath, errorPath };
-        foreach (var path in paths)
-        {
+        foreach (var path in paths) {
             IOUtilities.CreateEmptyFile(path);
             await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, path, cancellationToken: cancellationToken);
             await cli.ChangePathModeAsync(LinuxCommandLine.WRITE_MODE, path, cancellationToken: cancellationToken);
@@ -158,8 +145,7 @@ public class Compiler : ICompiler
         string source,
         string environtmentFolder,
         ILanguageConfiguration languageConfiguration,
-        CancellationToken cancellationToken)
-    {
+        CancellationToken cancellationToken) {
         var sourceName = languageConfiguration.Compile.SourceName;
         if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(sourceName)) is false)
             throw new InvalidLanguageConfigurationException(languageConfiguration);
@@ -173,8 +159,7 @@ public class Compiler : ICompiler
         return sourceFilename;
     }
 
-    private async ValueTask<string> CreateTemporaryFolderAsync(CancellationToken cancellationToken)
-    {
+    private async ValueTask<string> CreateTemporaryFolderAsync(CancellationToken cancellationToken) {
         var folder = IOUtilities.CreateTemporaryDirectory();
         await cli.AddPathOwnerAsync(judgeUsers.Compiler.Username, folder, cancellationToken: cancellationToken);
         logger.LogInformation("Created temporary folder: {tempFolder}", folder);

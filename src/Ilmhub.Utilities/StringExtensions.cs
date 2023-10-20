@@ -3,11 +3,9 @@ using System.Text;
 
 namespace Ilmhub.Utilities;
 
-public static class StringExtensions
-{
-    public static string Md5(this string original)
-    {
-        if(string.IsNullOrWhiteSpace(original))
+public static class StringExtensions {
+    public static string Md5(this string original) {
+        if (string.IsNullOrWhiteSpace(original))
             return original;
 
         using MD5 hasher = MD5.Create();

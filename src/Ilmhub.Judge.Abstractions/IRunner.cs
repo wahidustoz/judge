@@ -2,8 +2,7 @@ using Ilmhub.Judge.Abstractions.Models;
 
 namespace Ilmhub.Judge.Abstractions;
 
-public interface IRunner
-{
+public interface IRunner {
     ValueTask<IRunnerResult> RunAsync(
         int languageId,
         string executableFilename,

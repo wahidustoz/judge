@@ -2,8 +2,7 @@
 
 namespace Ilmhub.Judge.Abstractions.Models;
 
-public interface ICompilationResult
-{
+public interface ICompilationResult {
     string ExecutableFilePath { get; }
     string Output { get; set; }
     string Log { get; set; }

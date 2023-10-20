@@ -4,10 +4,8 @@ using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
 namespace Ilmhub.Judge.Messaging.Shared.Converters;
 
-public static class MessageSerializationOptions
-{
-    public static JsonSerializerOptions AddJudgeMessageSerializationOptions(this JsonSerializerOptions options)
-    {
+public static class MessageSerializationOptions {
+    public static JsonSerializerOptions AddJudgeMessageSerializationOptions(this JsonSerializerOptions options) {
         options.Converters.Insert(0, new AbstractConverter<ICompilationResult, CompilationResult>());
         options.Converters.Insert(0, new AbstractConverter<IRunResult, RunResult>());
         options.Converters.Insert(0, new AbstractConverter<ITestCaseResult, TestCaseResult>());

@@ -4,17 +4,14 @@ using Ilmhub.Judge.Abstractions;
 using Ilmhub.Judge.Api.Dtos;
 using Ilmhub.Judge.Models;
 
-public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
-{
-    public JudgeRequestValidator(ILanguageService languageService, IJudger judger)
-    {
+public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto> {
+    public JudgeRequestValidator(ILanguageService languageService, IJudger judger) {
         RuleFor(x => x.Source)
             .NotEmpty()
             .MaximumLength(5000);
 
         RuleFor(x => x.LanguageId)
-            .MustAsync(async (request, ctx, cancellation) =>
-            {
+            .MustAsync(async (request, ctx, cancellation) => {
                 var languageConfiguration = await languageService.GetLanguageConfigurationOrDefaultAsync(request.LanguageId, cancellation);
                 return languageConfiguration is not null;
             })
@@ -39,8 +36,7 @@ public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
 
         RuleFor(x => x.TestCases)
             .NotEmpty()
-            .DependentRules(() =>
-            {
+            .DependentRules(() => {
                 RuleFor(x => x.TestCases.Count()).InclusiveBetween(1, 100);
                 RuleFor(x => x.TestCases)
                     .Must(HaveUniqueId)
@@ -51,14 +47,13 @@ public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
             .When(x => x.TestCaseId is not null)
             .WithMessage("{PropertyName} must be null when TestcaseId exists.");
 
-        RuleForEach(x => x.TestCases).ChildRules(testcase =>
-        {
+        RuleForEach(x => x.TestCases).ChildRules(testcase => {
             testcase.RuleFor(t => t.Id).NotEmpty();
             testcase.RuleFor(t => t.Output).NotEmpty().MaximumLength(5000);
             testcase.RuleFor(t => t.Input).MaximumLength(5000);
         });
     }
-    
-    private bool HaveUniqueId(IEnumerable<TestCase> testcases) 
+
+    private bool HaveUniqueId(IEnumerable<TestCase> testcases)
         => testcases.Select(x => x.Id).Distinct().Count() == testcases.Count();
 }

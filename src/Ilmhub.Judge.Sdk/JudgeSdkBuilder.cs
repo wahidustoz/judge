@@ -11,45 +11,38 @@ using Polly.Telemetry;
 
 namespace Ilmhub.Judge.Sdk;
 
-public class JudgeSdkBuilder
-{
+public class JudgeSdkBuilder {
     private readonly IServiceCollection services;
     private readonly JudgeSdkSettings settings;
     public JudgeMessagingSettings Messaging => settings.Messaging;
 
-    public JudgeSdkBuilder(IServiceCollection services, JudgeSdkSettings settings)
-    {
+    public JudgeSdkBuilder(IServiceCollection services, JudgeSdkSettings settings) {
         this.services = services;
         this.settings = settings;
     }
 
-    public JudgeSdkBuilder AddCommandPublisher()
-    {
+    public JudgeSdkBuilder AddCommandPublisher() {
         services.AddTransient<IJudgeCommandPublisher, JudgeCommandPublisher>();
         return this;
     }
 
-    public JudgeSdkBuilder AddJudgeClient()
-    {
+    public JudgeSdkBuilder AddJudgeClient() {
         // TODO: Add judge client
-        services.AddHttpClient<IJudgeClient, JudgeClient>(builder => 
+        services.AddHttpClient<IJudgeClient, JudgeClient>(builder =>
             builder.BaseAddress = new Uri(settings.Endpoint));
-        services.AddResiliencePipeline(nameof(JudgeClient), (builder, context) =>
-        {
+        services.AddResiliencePipeline(nameof(JudgeClient), (builder, context) => {
             var loggerFactory = context.ServiceProvider.GetRequiredService<ILoggerFactory>();
             builder.ConfigureTelemetry(new TelemetryOptions { });
-            builder.AddRetry(new Polly.Retry.RetryStrategyOptions
-            {
+            builder.AddRetry(new Polly.Retry.RetryStrategyOptions {
                 ShouldHandle = new PredicateBuilder()
                     .Handle<HttpRequestException>(ex => ex.IsClientError() is false),
                 BackoffType = DelayBackoffType.Exponential,
                 MaxRetryAttempts = 3,
                 Delay = TimeSpan.FromSeconds(1),
-                OnRetry = args =>
-                {
+                OnRetry = args => {
                     var logger = loggerFactory.CreateLogger<JudgeClient>();
                     logger.LogTrace(
-                        args.Outcome.Exception, 
+                        args.Outcome.Exception,
                         "Retrying JudgeClient error for attempt: {attemptNumber}",
                         args.AttemptNumber);
                     return ValueTask.CompletedTask;
@@ -61,45 +54,37 @@ public class JudgeSdkBuilder
     }
 
     public JudgeSdkBuilder AddJudgeEventHandler<TJudgeEventHandler>(TJudgeEventHandler eventHandler)
-        where TJudgeEventHandler : class, IJudgeEventHandler
-    {
+        where TJudgeEventHandler : class, IJudgeEventHandler {
         services.AddSingleton<IJudgeEventHandler>(eventHandler);
         RegisterSingleHandler();
         return this;
     }
 
     public JudgeSdkBuilder AddJudgeEventHandler<TJudgeEventHandler>()
-        where TJudgeEventHandler : class, IJudgeEventHandler
-    {
+        where TJudgeEventHandler : class, IJudgeEventHandler {
         services.AddTransient<IJudgeEventHandler, TJudgeEventHandler>();
         RegisterSingleHandler();
         return this;
     }
 
-    private void RegisterSingleHandler()
-    {
-        AddMasstransitJudgeEventHandlers((receiver, busContext) =>
-        {
-            receiver.Handler<JudgeCompleted>(async context =>
-            {
+    private void RegisterSingleHandler() {
+        AddMasstransitJudgeEventHandlers((receiver, busContext) => {
+            receiver.Handler<JudgeCompleted>(async context => {
                 using var scope = busContext.CreateScope();
                 var service = scope.ServiceProvider.GetRequiredService<IJudgeEventHandler>();
                 await service.HandleJudgeCompletedAsync(context.Message, context.CancellationToken);
             });
-            receiver.Handler<JudgeFailed>(async context =>
-            {
+            receiver.Handler<JudgeFailed>(async context => {
                 using var scope = busContext.CreateScope();
                 var service = scope.ServiceProvider.GetRequiredService<IJudgeEventHandler>();
                 await service.HandleJudgeFailedAsync(context.Message, context.CancellationToken);
             });
-            receiver.Handler<RunCompleted>(async context =>
-            {
+            receiver.Handler<RunCompleted>(async context => {
                 using var scope = busContext.CreateScope();
                 var service = scope.ServiceProvider.GetRequiredService<IJudgeEventHandler>();
                 await service.HandleRunCompletedAsync(context.Message, context.CancellationToken);
             });
-            receiver.Handler<RunFailed>(async context =>
-            {
+            receiver.Handler<RunFailed>(async context => {
                 using var scope = busContext.CreateScope();
                 var service = scope.ServiceProvider.GetRequiredService<IJudgeEventHandler>();
                 await service.HandleRunFailedAsync(context.Message, context.CancellationToken);
@@ -107,27 +92,21 @@ public class JudgeSdkBuilder
         });
     }
 
-    private IServiceCollection AddMasstransitJudgeEventHandlers(Action<IReceiveEndpointConfigurator, IBusRegistrationContext> configurator)
-    {
-        return services.AddMassTransit<IJudgeEventsBus>(x =>
-        {
-            if (Messaging.Driver == "RabbitMQ")
-            {
+    private IServiceCollection AddMasstransitJudgeEventHandlers(Action<IReceiveEndpointConfigurator, IBusRegistrationContext> configurator) {
+        return services.AddMassTransit<IJudgeEventsBus>(x => {
+            if (Messaging.Driver == "RabbitMQ") {
                 var host = Messaging.RabbitMQ.Host;
                 var username = Messaging.RabbitMQ.Username;
                 var password = Messaging.RabbitMQ.Password;
 
-                x.UsingRabbitMq((context, cfg) =>
-                {
+                x.UsingRabbitMq((context, cfg) => {
                     cfg.ConfigureJsonSerializerOptions(o => o.AddJudgeMessageSerializationOptions());
-                    cfg.Host(host, config =>
-                    {
+                    cfg.Host(host, config => {
                         config.Username(username);
                         config.Password(password);
                     });
 
-                    cfg.ReceiveEndpoint(Queues.JudgeEvents, (e) =>
-                    {
+                    cfg.ReceiveEndpoint(Queues.JudgeEvents, (e) => {
                         e.Bind(Queues.JudgeEvents);
                         configurator.Invoke(e, context);
                     });

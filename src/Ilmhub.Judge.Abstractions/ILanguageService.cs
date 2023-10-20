@@ -2,8 +2,7 @@
 
 namespace Ilmhub.Judge.Abstractions;
 
-public interface ILanguageService
-{
+public interface ILanguageService {
     ValueTask<IEnumerable<ILanguageConfiguration>> GetLangaugeConfigurationsAsync(CancellationToken cancellationToken = default);
     ValueTask<ILanguageConfiguration> GetLanguageConfigurationOrDefaultAsync(int languageId, CancellationToken cancellationToken = default);
     ValueTask<ILanguageConfiguration> GetLanguageConfigurationAsync(int languageId, CancellationToken cancellationToken = default);

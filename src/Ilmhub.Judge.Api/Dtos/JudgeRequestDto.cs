@@ -2,8 +2,7 @@ using Ilmhub.Judge.Models;
 
 namespace Ilmhub.Judge.Api.Dtos;
 
-public class JudgeRequestDto
-{
+public class JudgeRequestDto {
     public int LanguageId { get; set; }
     public string Source { get; set; }
     public long? MaxCpu { get; set; }

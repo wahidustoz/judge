@@ -2,11 +2,9 @@
 
 namespace Ilmhub.Judge.Models;
 
-public class JudgeSystemUser : IJudgeSystemUser
-{
+public class JudgeSystemUser : IJudgeSystemUser {
     public JudgeSystemUser() { }
-    public JudgeSystemUser(string username, long userId, long groupId)
-    {
+    public JudgeSystemUser(string username, long userId, long groupId) {
         Username = username;
         UserId = userId;
         GroupId = groupId;

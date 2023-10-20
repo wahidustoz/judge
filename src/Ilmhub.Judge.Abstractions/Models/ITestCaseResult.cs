@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Abstractions.Models;
 
-public interface ITestCaseResult
-{
+public interface ITestCaseResult {
     string Id { get; }
     ETestCaseStatus Status { get; }
     string ExpectedOutput { get; }

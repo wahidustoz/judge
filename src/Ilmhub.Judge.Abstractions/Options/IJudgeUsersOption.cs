@@ -2,8 +2,7 @@
 
 namespace Ilmhub.Judge.Abstractions.Options;
 
-public interface IJudgeUsersOption
-{
+public interface IJudgeUsersOption {
     IJudgeSystemUser Compiler { get; set; }
     IJudgeSystemUser Runner { get; set; }
 }

@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Sdk.Models;
 
-public enum EExecutionStatus
-{
+public enum EExecutionStatus {
     Success,
     CpuTimeLimitExceeded,
     RealTimeLimitExceeded,

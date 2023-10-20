@@ -5,10 +5,9 @@ using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
 namespace Ilmhub.Judge.Messaging.Shared.Converters;
 
-public class EventConverter : JsonConverter<IJudgeEvent>
-{
+public class EventConverter : JsonConverter<IJudgeEvent> {
     private const string DESCRIMINATOR = "$event";
-    private Type[] Types = new Type[]
+    private readonly Type[] Types = new Type[]
     {
         typeof(JudgeCompleted),
         typeof(JudgeFailed),
@@ -19,8 +18,7 @@ public class EventConverter : JsonConverter<IJudgeEvent>
     public override bool CanConvert(Type type)
         => typeof(IJudgeEvent).IsAssignableFrom(type);
 
-    public override IJudgeEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
+    public override IJudgeEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         if (reader.TokenType is not JsonTokenType.StartObject)
             throw new JsonException();
 
@@ -38,15 +36,12 @@ public class EventConverter : JsonConverter<IJudgeEvent>
         return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, IJudgeEvent value, JsonSerializerOptions options)
-    {
+    public override void Write(Utf8JsonWriter writer, IJudgeEvent value, JsonSerializerOptions options) {
         writer.WriteStartObject();
-        using (JsonDocument document = JsonDocument.Parse(JsonSerializer.Serialize(value, value.GetType())))
-        {
+        using (JsonDocument document = JsonDocument.Parse(JsonSerializer.Serialize(value, value.GetType()))) {
             writer.WritePropertyName(DESCRIMINATOR);
             writer.WriteStringValue(value.GetType().Name);
-            foreach (var property in document.RootElement.EnumerateObject())
-            {
+            foreach (var property in document.RootElement.EnumerateObject()) {
                 property.WriteTo(writer);
             }
 

@@ -5,13 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ilmhub.Judge.Messaging;
 
-public static class MasstransitExtensions
-{
+public static class MasstransitExtensions {
     public static IReceiveEndpointConfigurator RegisterConsumer<TCommand>(this IReceiveEndpointConfigurator e, IServiceProvider serviceProvider)
-        where TCommand : class, ICommand
-    {
-        e.Handler<TCommand>(async commandContext =>
-        {
+        where TCommand : class, ICommand {
+        e.Handler<TCommand>(async commandContext => {
             using var scope = serviceProvider.CreateScope();
             var commandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<TCommand>>();
 
@@ -22,4 +19,4 @@ public static class MasstransitExtensions
         });
         return e;
     }
-}    
+}

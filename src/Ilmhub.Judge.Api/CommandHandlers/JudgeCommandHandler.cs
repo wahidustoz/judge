@@ -7,28 +7,24 @@ using Ilmhub.Judge.Messaging.Shared.Events;
 
 namespace Ilmhub.Judge.Api;
 
-public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
-{
+public class JudgeCommandHandler : ICommandHandler<JudgeCommand> {
     private readonly IJudgeEventPublisher publisher;
     private readonly ILogger<RunCommandHandler> logger;
     private readonly IJudger judger;
 
     public JudgeCommandHandler(
-        IJudgeEventPublisher publisher, 
+        IJudgeEventPublisher publisher,
         ILogger<RunCommandHandler> logger,
-        IJudger judger)
-    {
+        IJudger judger) {
         this.publisher = publisher;
         this.logger = logger;
         this.judger = judger;
     }
 
-    public async ValueTask HandleAsync(JudgeCommand command, CancellationToken cancellationToken)
-    {
+    public async ValueTask HandleAsync(JudgeCommand command, CancellationToken cancellationToken) {
         logger.LogInformation("Received Judge command {command}", command);
 
-        try
-        {
+        try {
             logger.LogTrace("Judge command started");
 
             var result = await judger.JudgeAsync(
@@ -39,26 +35,23 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 maxCpu: command.MaxCpu ?? -1,
                 maxMemory: command.MaxMemory ?? -1,
                 cancellationToken: cancellationToken);
-            
+
             logger.LogTrace("Judge command result {resultStatus}", result.IsSuccess);
             logger.LogTrace("Publishing judge started with result {resultStatus}", result.Status);
 
-            await publisher.PublishAsync(new JudgeCompleted
-            {
+            await publisher.PublishAsync(new JudgeCompleted {
                 RequestId = command.RequestId,
                 SourceId = command.SourceId,
                 SourceContext = command.SourceContext,
                 Source = command.Source,
                 Status = result.Status.ToString(),
-                CompilationResult = new CompilationResult
-                {
+                CompilationResult = new CompilationResult {
                     IsSuccess = result.Compilation.IsSuccess,
                     Status = result.Compilation.Execution.Status.ToString(),
                     Output = result.Compilation.Output,
                     Error = result.Compilation.Error
                 },
-                TestCases = result.TestCases?.Select(t => new TestCaseResult
-                {
+                TestCases = result.TestCases?.Select(t => new TestCaseResult {
                     Id = t.Id,
                     Status = t.Status.ToString(),
                     Output = t.Output,
@@ -71,13 +64,11 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
 
             logger.LogInformation("Judge command {command} completed", command);
         }
-        catch(Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Judge failed for command {command}", command);
             logger.LogTrace("Publishing judge failed started");
 
-            await publisher.PublishAsync(new JudgeFailed
-            {
+            await publisher.PublishAsync(new JudgeFailed {
                 RequestId = command.RequestId,
                 SourceId = command.SourceId,
                 SourceContext = command.SourceContext,

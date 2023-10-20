@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Ilmhub.Judge.Abstractions.Models;
+﻿using Ilmhub.Judge.Abstractions.Models;
 using Ilmhub.Judge.Abstractions.Options;
-using Ilmhub.Judge.Options;
 using Ilmhub.Judge.Models;
+using Ilmhub.Judge.Options;
+using Microsoft.AspNetCore.Builder;
 
 namespace Ilmhub.Judge.Sdk.Compiler.Tests.Integration;
 
-public static class MockProvider
-{
-    public static IServiceProvider SetupServiceProvider()
-    {
+public static class MockProvider {
+    public static IServiceProvider SetupServiceProvider() {
         var builder = WebApplication.CreateBuilder();
 
         builder.Services.AddIlmhubJudge(ConfigureOptions);
@@ -20,10 +18,8 @@ public static class MockProvider
         return app.Services;
     }
 
-    private static void ConfigureOptions(IIlmhubJudgeOptions options)
-    {
-        options.SystemUsers = new JudgeUsersOption
-        {
+    private static void ConfigureOptions(IIlmhubJudgeOptions options) {
+        options.SystemUsers = new JudgeUsersOption {
             Compiler = new JudgeSystemUser("testcompiler", 2000, 2000),
             Runner = new JudgeSystemUser("testrunner", 2001, 2001)
         };
@@ -48,7 +44,7 @@ public static class MockProvider
                     Command = "{exe_path}",
                     SeccompRule = "c_cpp"
                 }
-            }, 
+            },
             new LanguageConfiguration
             {
                 Id = 2,
@@ -95,7 +91,7 @@ public static class MockProvider
             },
             new LanguageConfiguration
             {
-                Id = 4, 
+                Id = 4,
                 Name = "Python (3)",
                 Compile = new CompileConfiguration()
                 {

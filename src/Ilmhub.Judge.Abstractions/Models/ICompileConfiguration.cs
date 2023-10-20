@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Abstractions.Models;
 
-public interface ICompileConfiguration
-{
+public interface ICompileConfiguration {
     string SourceName { get; set; }
     string DotnetProjectPath { get; set; }
     string ExecutableName { get; set; }

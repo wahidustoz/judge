@@ -1,8 +1,7 @@
 namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
-public enum EExecutionError
-{
-    NoError = 0,              
+public enum EExecutionError {
+    NoError = 0,
     InvalidConfig = -1,
     ForkFailed = -2,
     PthreadFailed = -3,

@@ -3,7 +3,6 @@
 namespace Ilmhub.Judge.Messaging;
 
 public interface ICommandHandler<TCommand>
-    where TCommand : ICommand
-{
+    where TCommand : ICommand {
     ValueTask HandleAsync(TCommand command, CancellationToken cancellationToken);
 }

@@ -2,8 +2,7 @@ using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
 namespace Ilmhub.Judge.Messaging.Shared.Commands;
 
-public record JudgeCommand : IJudgeCommand
-{
+public record JudgeCommand : IJudgeCommand {
     public int LanguageId { get; set; }
     public string SourceCode { get; set; }
     public Guid TestCaseId { get; set; }

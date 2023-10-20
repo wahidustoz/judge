@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
-public interface IExecutionRequest
-{
+public interface IExecutionRequest {
     string ExecutablePath { get; set; }
     string InputPath { get; set; }
     string OutputPath { get; set; }
@@ -12,7 +11,7 @@ public interface IExecutionRequest
     IEnumerable<string> Environments { get; set; }
     bool MemoryLimitCheckOnly { get; set; }
     long CpuTime { get; set; }
-    long RealTime { get; set; } 
+    long RealTime { get; set; }
     long Memory { get; set; }
     long Stack { get; set; }
     long ProcessNumber { get; set; }

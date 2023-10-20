@@ -4,10 +4,8 @@ using Ilmhub.Utilities;
 
 namespace Ilmhub.Judge.Models;
 
-public class RunnerResult : IRunnerResult
-{
-    public RunnerResult(IExecutionResult execution, string output, string error, string log)
-    {
+public class RunnerResult : IRunnerResult {
+    public RunnerResult(IExecutionResult execution, string output, string error, string log) {
         Execution = execution;
         Output = output;
         Error = error;

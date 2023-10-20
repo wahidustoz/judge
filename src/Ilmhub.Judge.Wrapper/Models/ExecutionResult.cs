@@ -3,8 +3,7 @@ using Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 namespace Ilmhub.Judge.Wrapper.Models;
 
-public class ExecutionResult : IExecutionResult
-{
+public class ExecutionResult : IExecutionResult {
     public bool IsSuccess => Status is EExecutionResult.Success && Error is EExecutionError.NoError;
     [JsonPropertyName("cpu_time")]
     public int CpuTime { get; set; }

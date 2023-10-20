@@ -5,10 +5,9 @@ using Ilmhub.Judge.Messaging.Shared.Interfaces;
 
 namespace Ilmhub.Judge.Messaging.Shared.Converters;
 
-public class CommandConverter : JsonConverter<ICommand>
-{
+public class CommandConverter : JsonConverter<ICommand> {
     private const string DESCRIMINATOR = "$command";
-    private Type[] Types = new Type[]
+    private readonly Type[] Types = new Type[]
     {
         typeof(JudgeCommand),
         typeof(RunCommand)
@@ -17,8 +16,7 @@ public class CommandConverter : JsonConverter<ICommand>
     public override bool CanConvert(Type type)
         => typeof(ICommand).IsAssignableFrom(type);
 
-    public override ICommand Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
+    public override ICommand Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         if (reader.TokenType is not JsonTokenType.StartObject)
             throw new JsonException();
 
@@ -36,15 +34,12 @@ public class CommandConverter : JsonConverter<ICommand>
         return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, ICommand value, JsonSerializerOptions options)
-    {
+    public override void Write(Utf8JsonWriter writer, ICommand value, JsonSerializerOptions options) {
         writer.WriteStartObject();
-        using (JsonDocument document = JsonDocument.Parse(JsonSerializer.Serialize(value, value.GetType())))
-        {
+        using (JsonDocument document = JsonDocument.Parse(JsonSerializer.Serialize(value, value.GetType()))) {
             writer.WritePropertyName(DESCRIMINATOR);
             writer.WriteStringValue(value.GetType().Name);
-            foreach (var property in document.RootElement.EnumerateObject())
-            {
+            foreach (var property in document.RootElement.EnumerateObject()) {
                 property.WriteTo(writer);
             }
 

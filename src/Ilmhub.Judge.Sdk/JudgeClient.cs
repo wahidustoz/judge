@@ -9,8 +9,7 @@ using Polly.Registry;
 
 namespace Ilmhub.Judge.Sdk;
 
-public class JudgeClient : IJudgeClient
-{
+public class JudgeClient : IJudgeClient {
     private readonly ResiliencePipeline pipeline;
     private readonly ILogger<JudgeClient> logger;
     private readonly HttpClient httpClient;
@@ -18,32 +17,26 @@ public class JudgeClient : IJudgeClient
     public JudgeClient(
         ILogger<JudgeClient> logger,
         HttpClient httpClient,
-        ResiliencePipelineProvider<string> pipelineProvider)
-    {
+        ResiliencePipelineProvider<string> pipelineProvider) {
         this.pipeline = pipelineProvider.GetPipeline(nameof(JudgeClient));
         this.logger = logger;
         this.httpClient = httpClient;
     }
     public async ValueTask<Guid> AddTestCasesAsync(
-        IEnumerable<TestCase> testCases, 
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            return await pipeline.ExecuteAsync(async context =>
-            {
+        IEnumerable<TestCase> testCases,
+        CancellationToken cancellationToken = default) {
+        try {
+            return await pipeline.ExecuteAsync(async context => {
                 var response = await httpClient.PostAsJsonAsync("/v1/testcases", testCases, cancellationToken);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadFromJsonAsync<Guid>();
             });
         }
-        catch(HttpRequestException ex) when (ex.IsClientError())
-        {
+        catch (HttpRequestException ex) when (ex.IsClientError()) {
             logger.LogTrace(ex, "JudgeClient: request failed due to client error.");
             throw new JudgeClientRequestValidationException(ex);
         }
-        catch(Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogException(ex);
             throw new JudgeClientException(ex);
         }

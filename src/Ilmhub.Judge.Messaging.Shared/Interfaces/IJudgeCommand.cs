@@ -1,7 +1,6 @@
 namespace Ilmhub.Judge.Messaging.Shared.Interfaces;
 
-public interface IJudgeCommand : ICommand
-{
+public interface IJudgeCommand : ICommand {
     int LanguageId { get; set; }
     string SourceCode { get; set; }
     Guid TestCaseId { get; set; }

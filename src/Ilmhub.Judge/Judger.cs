@@ -12,8 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge;
 
-public class Judger : IJudger
-{
+public class Judger : IJudger {
     private const string TESTCASES_FOLDER = "testcases";
     private const string INPUT_EXTENSION = ".in";
     private const string OUTPUT_EXTENSION = ".out";
@@ -29,8 +28,7 @@ public class Judger : IJudger
         ILinuxCommandLine cli,
         ICompilationHandler compiler,
         IRunner runner,
-        IIlmhubJudgeOptions options)
-    {
+        IIlmhubJudgeOptions options) {
         this.logger = logger;
         this.cli = cli;
         this.compiler = compiler;
@@ -50,13 +48,10 @@ public class Judger : IJudger
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
-        CancellationToken cancellationToken = default)
-    {
+        CancellationToken cancellationToken = default) {
         var shouldDestroyTemporaryFolder = false;
-        try
-        {
-            if (IOUtilities.IsValidPath(environmentFolder) is false)
-            {
+        try {
+            if (IOUtilities.IsValidPath(environmentFolder) is false) {
                 environmentFolder = IOUtilities.CreateTemporaryDirectory();
                 shouldDestroyTemporaryFolder = true;
             }
@@ -66,15 +61,12 @@ public class Judger : IJudger
             await WriteTestCasesAsync(testcasesFolder, testCases, cancellationToken);
             return await JudgeInternalAsync(languageId, source, maxCpu, maxMemory, testcasesFolder, useStrictMode, environmentFolder, cancellationToken);
         }
-        catch (Exception ex) when (ex is not JudgeFailedException)
-        {
+        catch (Exception ex) when (ex is not JudgeFailedException) {
             logger.LogError(ex, "Judge operation failed.");
             throw new JudgeFailedException("Judge failed with unknown issue.", ex);
         }
-        finally
-        {
-            if (shouldDestroyTemporaryFolder)
-            {
+        finally {
+            if (shouldDestroyTemporaryFolder) {
                 logger.LogInformation("Removing temporary judge environment folder: {folder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
@@ -89,8 +81,7 @@ public class Judger : IJudger
         long maxCpu = -1,
         long maxMemory = -1,
         string environmentFolder = default,
-        CancellationToken cancellationToken = default)
-    {
+        CancellationToken cancellationToken = default) {
         if (TestCaseExists(testCaseId) is false)
             throw new TestCaseNotFoundException(testCaseId);
 
@@ -106,25 +97,21 @@ public class Judger : IJudger
         string testCasesFolder,
         bool? useStrictMode = default,
         string environmentFolder = default,
-        CancellationToken cancellationToken = default)
-    {
+        CancellationToken cancellationToken = default) {
         var shouldDestroyTemporaryFolder = false;
-        if (IOUtilities.IsValidPath(environmentFolder) is false)
-        {
+        if (IOUtilities.IsValidPath(environmentFolder) is false) {
             environmentFolder = IOUtilities.CreateTemporaryDirectory();
             shouldDestroyTemporaryFolder = true;
         }
 
-        try
-        {
+        try {
             var compilationResult = await compiler.CompileAsync(
                 source: source,
                 languageId: languageId,
                 environmentFolder: environmentFolder,
                 cancellationToken: cancellationToken);
 
-            if (compilationResult.IsSuccess is false)
-            {
+            if (compilationResult.IsSuccess is false) {
                 logger.LogError(
                     "Compilation failed for language {id}. Result: {result}. ABORTING....",
                     languageId,
@@ -137,12 +124,10 @@ public class Judger : IJudger
             await cli.ChangePathModeAsync(LinuxCommandLine.EXECUTE_MODE, testCasesFolder, true, cancellationToken);
 
             var testCaseResults = new List<TestCaseResult>();
-            foreach (var (InputFilePath, OutputFilePath, Id) in testCases)
-            {
+            foreach (var (InputFilePath, OutputFilePath, Id) in testCases) {
                 var outputTask = IOUtilities.GetAllTextOrDefaultAsync(OutputFilePath, cancellationToken);
                 IRunnerResult runnerResult = default;
-                if (string.IsNullOrWhiteSpace(InputFilePath))
-                {
+                if (string.IsNullOrWhiteSpace(InputFilePath)) {
                     runnerResult = await runner.RunAsync(
                         languageId,
                         compilationResult.ExecutableFilePath,
@@ -151,8 +136,7 @@ public class Judger : IJudger
                         environmentFolder,
                         cancellationToken: cancellationToken);
                 }
-                else
-                {
+                else {
                     runnerResult = await runner.RunAsync(
                         languageId,
                         InputFilePath,
@@ -163,8 +147,7 @@ public class Judger : IJudger
                         cancellationToken);
                 }
 
-                if (runnerResult.IsSuccess is false)
-                {
+                if (runnerResult.IsSuccess is false) {
                     logger.LogError(
                         "Runner failed for language {id} at test case {testcaseId}. Result: {result}. ABORTING....",
                         languageId,
@@ -178,25 +161,20 @@ public class Judger : IJudger
             logger.LogInformation("Completed Judge process 🎉");
             return new JudgeResult(compilationResult, testCaseResults);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Judge operation failed.");
             throw new JudgeFailedException("Judge failed with unknown issue.", ex);
         }
-        finally
-        {
-            if (shouldDestroyTemporaryFolder)
-            {
+        finally {
+            if (shouldDestroyTemporaryFolder) {
                 logger.LogInformation("Removing temporary judge environment folder: {folder}", environmentFolder);
                 await cli.RemoveFolderAsync(environmentFolder, cancellationToken);
             }
         }
     }
 
-    private async ValueTask WriteTestCasesAsync(string testcasesFolder, IEnumerable<ITestCase> testCases, CancellationToken cancellationToken)
-    {
-        foreach (var testCase in testCases)
-        {
+    private async ValueTask WriteTestCasesAsync(string testcasesFolder, IEnumerable<ITestCase> testCases, CancellationToken cancellationToken) {
+        foreach (var testCase in testCases) {
             if (string.IsNullOrWhiteSpace(testCase.Input) is false)
                 await File.WriteAllTextAsync(
                     Path.Combine(testcasesFolder, $"{testCase.Id}{INPUT_EXTENSION}"),
@@ -212,8 +190,7 @@ public class Judger : IJudger
         logger.LogInformation("Finished writing {count} test cases.", testCases.Count());
     }
 
-    private IEnumerable<(string InputFilePath, string OutputFilePath, string Id)> EnumerateTestCases(string testCasesFolder)
-    {
+    private IEnumerable<(string InputFilePath, string OutputFilePath, string Id)> EnumerateTestCases(string testCasesFolder) {
         var inputFiles = Directory.EnumerateFiles(testCasesFolder, $"*{INPUT_EXTENSION}");
         var outputFiles = Directory.EnumerateFiles(testCasesFolder, $"*{OUTPUT_EXTENSION}");
 
@@ -223,11 +200,9 @@ public class Judger : IJudger
             outputFiles.Count());
 
         var dictionary = inputFiles.ToDictionary(path => Path.GetFileNameWithoutExtension(path));
-        foreach (var outputFile in outputFiles)
-        {
+        foreach (var outputFile in outputFiles) {
             var key = Path.GetFileNameWithoutExtension(outputFile);
-            if (dictionary.ContainsKey(key))
-            {
+            if (dictionary.ContainsKey(key)) {
                 var inputFile = dictionary[key];
                 dictionary.Remove(key);
                 yield return (inputFile, outputFile, key);
@@ -240,8 +215,7 @@ public class Judger : IJudger
             yield return (item.Value, string.Empty, item.Key);
     }
 
-    public async ValueTask<Guid> CreateTestCaseAsync(IEnumerable<ITestCase> testCases, CancellationToken cancellationToken = default)
-    {
+    public async ValueTask<Guid> CreateTestCaseAsync(IEnumerable<ITestCase> testCases, CancellationToken cancellationToken = default) {
         var testCaseId = Guid.NewGuid();
         var testCasesFolder = GetTestCaseFolder(testCaseId);
         var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
@@ -249,13 +223,11 @@ public class Judger : IJudger
         return testCaseId;
     }
 
-    public Guid CreateTestCaseFromZipArchive(Stream zipStream)
-    {
+    public Guid CreateTestCaseFromZipArchive(Stream zipStream) {
         var testCaseId = Guid.NewGuid();
         var testCasesFolder = GetTestCaseFolder(testCaseId);
 
-        using (var zip = new ZipArchive(zipStream, ZipArchiveMode.Read))
-        {
+        using (var zip = new ZipArchive(zipStream, ZipArchiveMode.Read)) {
             var testCasesDirectory = Directory.CreateDirectory(testCasesFolder);
             foreach (var entry in zip.Entries)
                 if (entry.Name.EndsWith(".in") || entry.Name.EndsWith(".out"))

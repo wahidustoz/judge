@@ -2,8 +2,7 @@ using Ilmhub.Judge.Abstractions.Models;
 
 namespace Ilmhub.Judge.Models;
 
-public class JudgeResult : IJudgeResult
-{
+public class JudgeResult : IJudgeResult {
     public JudgeResult(ICompilationResult compilation) => Compilation = compilation;
     public JudgeResult(ICompilationResult compilation, IEnumerable<ITestCaseResult> testCases)
         : this(compilation) => TestCases = testCases;
@@ -11,8 +10,7 @@ public class JudgeResult : IJudgeResult
     public bool IsSuccess => IsCompilationSuccess(Compilation) && AreTestCasesSuccess(TestCases);
     public ICompilationResult Compilation { get; }
     public IEnumerable<ITestCaseResult> TestCases { get; }
-    public EJudgeStatus Status => IsSuccess switch
-    {
+    public EJudgeStatus Status => IsSuccess switch {
         true when TestCases?.All(t => t.Status is ETestCaseStatus.Success) is true
             => EJudgeStatus.Accepted,
         true when TestCases?.Any(t => t.Status is ETestCaseStatus.Success) is true

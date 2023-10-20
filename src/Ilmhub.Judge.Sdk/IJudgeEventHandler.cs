@@ -2,8 +2,7 @@ using Ilmhub.Judge.Messaging.Shared.Events;
 
 namespace Ilmhub.Judge.Sdk;
 
-public interface IJudgeEventHandler
-{
+public interface IJudgeEventHandler {
     ValueTask HandleJudgeCompletedAsync(JudgeCompleted @event, CancellationToken cancellationToken = default);
     ValueTask HandleJudgeFailedAsync(JudgeFailed @event, CancellationToken cancellationToken = default);
     ValueTask HandleRunCompletedAsync(RunCompleted @event, CancellationToken cancellationToken = default);

@@ -8,12 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ilmhub.Judge;
 
-public static class ServiceCollectionExtensions
-{
-    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, IConfigurationSection judgeSection)
-    {
-        services.AddIlmhubJudge(options =>
-        {
+public static class ServiceCollectionExtensions {
+    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, IConfigurationSection judgeSection) {
+        services.AddIlmhubJudge(options => {
             var languages = new List<LanguageConfiguration>();
             judgeSection.Bind(options);
             judgeSection.Bind("LanguageConfigurations", languages);
@@ -23,8 +20,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, Action<IIlmhubJudgeOptions> configure)
-    {
+    public static IServiceCollection AddIlmhubJudge(this IServiceCollection services, Action<IIlmhubJudgeOptions> configure) {
         var options = new IlmhubJudgeOptions();
         configure(options);
         // TODO: implement fluent validation for options here

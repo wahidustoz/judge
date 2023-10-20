@@ -3,8 +3,7 @@ using Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 namespace Ilmhub.Judge.Models;
 
-public class CompilationResult : ICompilationResult
-{
+public class CompilationResult : ICompilationResult {
     public CompilationResult() { }
     public CompilationResult(IExecutionResult executionResult)
         => Execution = executionResult;
