@@ -1,7 +1,7 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Ilmhub.Judge.Abstractions;
+using Ilmhub.Judge.Api.Logging;
 using Ilmhub.Judge.Messaging;
+using Ilmhub.Judge.Messaging.Exceptions;
 using Ilmhub.Judge.Messaging.Shared.Commands;
 using Ilmhub.Judge.Messaging.Shared.Events;
 
@@ -10,12 +10,12 @@ namespace Ilmhub.Judge.Api;
 public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
 {
     private readonly IJudgeEventPublisher publisher;
-    private readonly ILogger<RunCommandHandler> logger;
+    private readonly ILogger<JudgeCommandHandler> logger;
     private readonly IJudger judger;
 
     public JudgeCommandHandler(
         IJudgeEventPublisher publisher, 
-        ILogger<RunCommandHandler> logger,
+        ILogger<JudgeCommandHandler> logger,
         IJudger judger)
     {
         this.publisher = publisher;
@@ -25,8 +25,7 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
 
     public async ValueTask HandleAsync(JudgeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Received Judge command {command}", command);
-
+        logger.LogCommandHandlerStarted(typeof(JudgeCommand).Name, command.RequestId);
         try
         {
             var result = await judger.JudgeAsync(
@@ -63,12 +62,11 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                     Memory = t.Execution.Execution.Memory
                 })
             }, cancellationToken);
-
         }
-        catch(Exception ex)
+        // We do NOT catch FailedToPublishJudgeEventException because we don't want to handle it
+        catch(Exception ex) when (ex is not FailedToPublishJudgeEventException)
         {
-            logger.LogWarning(ex, "Judge failed");
-
+            logger.LogJudgeFailedException(ex, command.RequestId);
             await publisher.PublishAsync(new JudgeFailed
             {
                 RequestId = command.RequestId,
@@ -78,6 +76,6 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 Error = ex.Message
             }, cancellationToken);
         }
-
+        logger.LogCommandHandlerCompleted(typeof(JudgeCommand).Name, command.RequestId);
     }
 }

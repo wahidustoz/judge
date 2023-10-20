@@ -1,4 +1,3 @@
-using System.Net;
 using Ilmhub.Judge.Messaging.Shared;
 using Ilmhub.Judge.Messaging.Shared.Converters;
 using Ilmhub.Judge.Messaging.Shared.Events;
@@ -32,13 +31,11 @@ public class JudgeSdkBuilder
     public JudgeSdkBuilder AddJudgeClient()
     {
         // TODO: Add judge client
-        services.AddHttpClient<IJudgeClient, JudgeClient>(builder => 
-            builder.BaseAddress = new Uri(settings.Endpoint));
-        services.AddResiliencePipeline(nameof(JudgeClient), (builder, context) =>
+        services.AddHttpClient<IJudgeClient, JudgeClient>(b => b.BaseAddress = new Uri(settings.Endpoint));
+        services.AddResiliencePipeline(nameof(JudgeClient), (options, context) =>
         {
-            var loggerFactory = context.ServiceProvider.GetRequiredService<ILoggerFactory>();
-            builder.ConfigureTelemetry(new TelemetryOptions { });
-            builder.AddRetry(new Polly.Retry.RetryStrategyOptions
+            options.ConfigureTelemetry(new TelemetryOptions { });
+            options.AddRetry(new Polly.Retry.RetryStrategyOptions
             {
                 ShouldHandle = new PredicateBuilder()
                     .Handle<HttpRequestException>(ex => ex.IsClientError() is false),
@@ -47,7 +44,7 @@ public class JudgeSdkBuilder
                 Delay = TimeSpan.FromSeconds(1),
                 OnRetry = args =>
                 {
-                    var logger = loggerFactory.CreateLogger<JudgeClient>();
+                    var logger = context.ServiceProvider.GetRequiredService<ILogger<JudgeClient>>();
                     logger.LogTrace(
                         args.Outcome.Exception, 
                         "Retrying JudgeClient error for attempt: {attemptNumber}",
