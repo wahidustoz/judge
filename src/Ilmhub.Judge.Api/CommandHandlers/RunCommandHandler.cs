@@ -1,4 +1,5 @@
-﻿using Ilmhub.Judge.Messaging;
+﻿using Ilmhub.Judge.Api.Logging;
+using Ilmhub.Judge.Messaging;
 using Ilmhub.Judge.Messaging.Shared.Commands;
 using Ilmhub.Judge.Messaging.Shared.Events;
 
@@ -16,7 +17,7 @@ public class RunCommandHandler : ICommandHandler<RunCommand>
 
     public async ValueTask HandleAsync(RunCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Received run command {command}", command);
+        logger.LogCommandHandlerStarted(typeof(RunCommand).Name, command.RequestId);
         await publisher.PublishAsync(new RunFailed
         {
             RequestId = command.RequestId,
@@ -25,5 +26,6 @@ public class RunCommandHandler : ICommandHandler<RunCommand>
             Source = command.Source,
             Error = "Run command not implemented yet."
         }, cancellationToken);
+        logger.LogCommandHandlerCompleted(typeof(RunCommand).Name, command.RequestId);
     }
 }
