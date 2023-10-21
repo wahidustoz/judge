@@ -20,7 +20,7 @@ public class LinuxCommandLine : ILinuxCommandLine
 
     public ValueTask AddPathOwnerAsync(string owner, string path, bool recursive = false, CancellationToken cancellationToken = default)
         => RunCommandAsync("chown", $"{(recursive ? "-R " : "")}{owner} {path}");
-    
+
     // TODO: People assume this method never throws. Add try catch in the method body here
     public async ValueTask<(bool IsSuccess, string Output, string ErrorMessage)> TryRunAsync(
         string command,
@@ -49,7 +49,7 @@ public class LinuxCommandLine : ILinuxCommandLine
     public async ValueTask RunCommandAsync(string command, string arguments, CancellationToken cancellationToken = default)
     {
         var processResult = await TryRunAsync(command, arguments, cancellationToken);
-        if(processResult.IsSuccess is false)
+        if (processResult.IsSuccess is false)
             throw new LinuxCommandFailedException(command, arguments, processResult.Output, processResult.ErrorMessage);
     }
 

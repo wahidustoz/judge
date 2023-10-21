@@ -19,7 +19,7 @@ public class JudgeWrapper : IJudgeWrapper
     private readonly ILinuxCommandLine cli;
 
     public JudgeWrapper(ILogger<JudgeWrapper> logger, ILinuxCommandLine cli)
-    { 
+    {
         this.logger = logger;
         this.cli = cli;
     }
@@ -47,7 +47,7 @@ public class JudgeWrapper : IJudgeWrapper
             var output = process.StandardOutput.ReadToEnd();
             var error = process.StandardError.ReadToEnd();
             logger.LogInformation(
-                "Libjudger.so process finished. Exit code: {exitCode}, Output: {output}, Error: {error}.", 
+                "Libjudger.so process finished. Exit code: {exitCode}, Output: {output}, Error: {error}.",
                 process.ExitCode,
                 output,
                 error);
@@ -57,12 +57,12 @@ public class JudgeWrapper : IJudgeWrapper
             resultObject.Output = output;
             return resultObject;
         }
-        catch(JsonException jsonException)
+        catch (JsonException jsonException)
         {
             logger.LogError(jsonException, "Failed to deserialize Libjudger.so output.");
             throw;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogWarning(ex, "Libjudger.so process faild while executing {executable}.", request.ExecutablePath);
             throw new JudgeProcessFailedException($"Libjudger.so process faild while executing {request.ExecutablePath}", ex);
@@ -78,7 +78,7 @@ public class JudgeWrapper : IJudgeWrapper
         AppendSingleArgument(builder, "error_path", request.ErrorPath);
         AppendSingleArgument(builder, "log_path", request.LogPath);
         AppendSingleArgument(builder, "seccomp_rule_name", request.SeccompRuleName);
-        
+
         // below values have defualt value so we dont need to null-check
         builder.Append($" --max_cpu_time={request.CpuTime}");
         builder.Append($" --max_real_time={request.RealTime}");
@@ -92,22 +92,22 @@ public class JudgeWrapper : IJudgeWrapper
 
         builder.Append($" --env=\"PATH={Environment.GetEnvironmentVariable("PATH")}\"");
 
-        if(request.Environments?.Any() is true)
-            foreach(var env in request.Environments)
+        if (request.Environments?.Any() is true)
+            foreach (var env in request.Environments)
                 AppendSingleArgument(builder, "env", env);
 
-        if(request.Arguments?.Any() is true)
-            foreach(var arg in request.Arguments)
+        if (request.Arguments?.Any() is true)
+            foreach (var arg in request.Arguments)
                 AppendSingleArgument(builder, "args", arg);
-        
+
         logger.LogInformation("Libjudger arguments: {arguments}", builder.ToString());
 
         return builder.ToString();
     }
 
-    private void AppendSingleArgument(StringBuilder builder, string key, string value) 
+    private void AppendSingleArgument(StringBuilder builder, string key, string value)
     {
-        if(string.IsNullOrWhiteSpace(value) is false) 
+        if (string.IsNullOrWhiteSpace(value) is false)
             builder.Append($" --{key}={value}");
     }
 }
