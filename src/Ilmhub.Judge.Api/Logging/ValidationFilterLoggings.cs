@@ -21,7 +21,7 @@ public static partial class ValidationFilterLoggings
         EventId = 4,
         Level = LogLevel.Trace,
         Message = "Fluent validation failed for {targetType} with error: {errors}.")]
-    public static partial void LogValidationFilterFailedException(
+    public static partial void LogValidationFailed(
         this ILogger logger,
         string targetType,
         Dictionary<string, string> errors);
