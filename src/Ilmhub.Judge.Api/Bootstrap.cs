@@ -1,16 +1,16 @@
 ﻿using System.Threading.RateLimiting;
+using FluentValidation;
 using HealthChecks.UI.Client;
+using Ilmhub.Judge.Api.Dtos;
 using Ilmhub.Judge.Api.Jaeger;
+using Ilmhub.Judge.Api.Validators;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using FluentValidation;
-using Ilmhub.Judge.Api.Validators;
-using Ilmhub.Judge.Api.Dtos;
- 
+
 
 namespace Ilmhub.Judge.Api;
 
@@ -29,10 +29,10 @@ public static class ServiceCollectionExtensions
             options.IncludeScopes = true;
             options.AddLogRecordProcessor();
             options.AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug);
-            options.AddOtlpExporter(o => 
+            options.AddOtlpExporter(o =>
             {
                 var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
-                if(string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
+                if (string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
                     o.Endpoint = new Uri(jaegerEndpoint);
             });
         });
@@ -55,10 +55,10 @@ public static class ServiceCollectionExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug)
-                    .AddOtlpExporter(options => 
+                    .AddOtlpExporter(options =>
                     {
                         var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
-                        if(string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
+                        if (string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
                             options.Endpoint = new Uri(jaegerEndpoint);
                     });
             });

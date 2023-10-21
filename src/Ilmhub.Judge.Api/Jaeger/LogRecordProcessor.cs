@@ -8,10 +8,7 @@ public class LogRecordProcessor : BaseProcessor<LogRecord>
 {
     private readonly LogRecordProcessorOptions options;
 
-    public LogRecordProcessor(LogRecordProcessorOptions options)
-    {
-        this.options = options ?? new LogRecordProcessorOptions();
-    }
+    public LogRecordProcessor(LogRecordProcessorOptions options) => this.options = options ?? new LogRecordProcessorOptions();
 
     public override void OnEnd(LogRecord data)
     {

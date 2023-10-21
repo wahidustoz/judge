@@ -14,7 +14,7 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
     private readonly IJudger judger;
 
     public JudgeCommandHandler(
-        IJudgeEventPublisher publisher, 
+        IJudgeEventPublisher publisher,
         ILogger<JudgeCommandHandler> logger,
         IJudger judger)
     {
@@ -25,7 +25,7 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
 
     public async ValueTask HandleAsync(JudgeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogCommandHandlerStarted(typeof(JudgeCommand).Name, command.RequestId);
+        logger.LogCommandHandlerStarted(nameof(JudgeCommand), command.RequestId);
         try
         {
             var result = await judger.JudgeAsync(
@@ -36,7 +36,7 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 maxCpu: command.MaxCpu ?? -1,
                 maxMemory: command.MaxMemory ?? -1,
                 cancellationToken: cancellationToken);
-            
+
             await publisher.PublishAsync(new JudgeCompleted
             {
                 RequestId = command.RequestId,
@@ -64,7 +64,7 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
             }, cancellationToken);
         }
         // We do NOT catch FailedToPublishJudgeEventException because we don't want to handle it
-        catch(Exception ex) when (ex is not FailedToPublishJudgeEventException)
+        catch (Exception ex) when (ex is not FailedToPublishJudgeEventException)
         {
             logger.LogJudgeFailedException(ex, command.RequestId);
             await publisher.PublishAsync(new JudgeFailed
@@ -76,6 +76,6 @@ public class JudgeCommandHandler : ICommandHandler<JudgeCommand>
                 Error = ex.Message
             }, cancellationToken);
         }
-        logger.LogCommandHandlerCompleted(typeof(JudgeCommand).Name, command.RequestId);
+        logger.LogCommandHandlerCompleted(nameof(JudgeCommand), command.RequestId);
     }
 }

@@ -97,7 +97,7 @@ public static class EndpointExtensions
         app.MapPost("/testcase-files", (
             IJudger judger,
             IFormFile testcases,
-            CancellationToken cancellationToken) 
+            CancellationToken cancellationToken)
             => Results.Ok(judger.CreateTestCaseFromZipArchive(testcases.OpenReadStream())))
         .WithAsyncValidation<IFormFile>()
         .WithRateLimiting("fixed", app.Configuration)

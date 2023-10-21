@@ -4,15 +4,15 @@ using FluentValidation;
 namespace Ilmhub.Judge.Api.Validators;
 public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
 {
-    private int maxBytes = 50 * 1024 * 1024;
-    private string ZIP_EXTENSION = ".zip";
+    private readonly int maxBytes = 50 * 1024 * 1024;
+    private readonly string zip_extension = ".zip";
     public TestCaseFormFileValidator(ILogger<TestCaseFormFileValidator> logger)
     {
         RuleFor(f => f.Length).ExclusiveBetween(1, maxBytes);
         RuleFor(f => f.FileName)
                 .NotEmpty()
                 .Must(HaveSupportedFileType)
-                .WithMessage($"File extension must be {ZIP_EXTENSION}");
+                .WithMessage($"File extension must be {zip_extension}");
 
         RuleFor(x => x)
             .Custom((file, context) =>
@@ -54,5 +54,5 @@ public class TestCaseFormFileValidator : AbstractValidator<IFormFile>
     private bool HaveMatchingNames(ZipArchiveEntry x, ZipArchiveEntry y)
         => string.Equals(Path.GetFileNameWithoutExtension(x.Name), Path.GetFileNameWithoutExtension(y.Name), StringComparison.OrdinalIgnoreCase);
     private bool HaveSupportedFileType(string fileName)
-       => string.Equals(Path.GetExtension(fileName), ZIP_EXTENSION, StringComparison.OrdinalIgnoreCase);
+       => string.Equals(Path.GetExtension(fileName), zip_extension, StringComparison.OrdinalIgnoreCase);
 }
