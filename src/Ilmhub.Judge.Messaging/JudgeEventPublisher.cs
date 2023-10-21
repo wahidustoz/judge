@@ -24,7 +24,7 @@ public class JudgeEventPublisher : IJudgeEventPublisher
 
     public async ValueTask PublishAsync<TEvent>(TEvent judgeEvent, CancellationToken cancellationToken)
         where TEvent : class, IJudgeEvent
-        => await GetRetryPolicy().ExecuteAsync(async () 
+        => await GetRetryPolicy().ExecuteAsync(async ()
             => await ExecutePublishAsync(judgeEvent, cancellationToken));
 
     private async ValueTask ExecutePublishAsync<TEvent>(TEvent judgeEvent, CancellationToken cancellationToken)
@@ -43,10 +43,7 @@ public class JudgeEventPublisher : IJudgeEventPublisher
                 source = eventWithSource.Source;
 
             var endpoint = await bus.GetSendEndpoint(new Uri($"{prefix}:{Queues.JudgeEvents}"));
-            await endpoint.Send(judgeEvent, context =>
-            {
-                context.Headers.Set("source", source);
-            }, cancellationToken);
+            await endpoint.Send(judgeEvent, context => context.Headers.Set("source", source), cancellationToken);
         }
         catch (Exception ex) when (ex is not JsonException)
         {
@@ -65,9 +62,9 @@ public class JudgeEventPublisher : IJudgeEventPublisher
         onRetry: (exception, timeSince, retryCount, ctx) =>
         {
             logger.LogInformation(
-                exception, 
-                "Retrying to send message to queue {queue} count: {retryCount}", 
-                Queues.JudgeEvents, 
+                exception,
+                "Retrying to send message to queue {queue} count: {retryCount}",
+                Queues.JudgeEvents,
                 retryCount);
         });
 }

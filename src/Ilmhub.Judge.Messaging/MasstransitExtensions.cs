@@ -22,4 +22,4 @@ public static class MasstransitExtensions
         });
         return e;
     }
-}    
+}

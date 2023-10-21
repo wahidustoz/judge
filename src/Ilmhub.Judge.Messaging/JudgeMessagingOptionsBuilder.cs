@@ -19,7 +19,7 @@ public class JudgeMessagingOptionsBuilder
 
     public JudgeMessagingOptionsBuilder AddMasstransitBus(Action<IReceiveEndpointConfigurator, IServiceProvider> receiverConfigurator)
     {
-        if(settings.Driver is "RabbitMQ")
+        if (settings.Driver is "RabbitMQ")
         {
             services.AddMassTransit(x =>
             {
@@ -47,9 +47,9 @@ public class JudgeMessagingOptionsBuilder
                 });
             });
         }
-        else 
+        else
             throw new NotSupportedException("Unsupported messaging driver: " + settings.Driver);
-        
+
         return this;
     }
 
