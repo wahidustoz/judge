@@ -9,4 +9,3 @@ public interface IRunConfiguration
     IEnumerable<string> EnvironmentVariables { get; set; }
     IEnumerable<string> Arguments { get; set; }
 }
-
