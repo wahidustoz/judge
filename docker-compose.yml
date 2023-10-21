@@ -11,7 +11,7 @@ services:
         ports:
             - "4000:5000"
         environment:
-            - JAEGER_ENDPOINT=http://jaeger:4317
+            - OpenTelemetry__Jaeger__Endpoint=http://jaeger:4317
             - MESSAGING__RABBITMQ__HOST=rabbitmq
         depends_on:
             rabbitmq: 

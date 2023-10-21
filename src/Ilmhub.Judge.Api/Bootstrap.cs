@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         if (configuration.GetValue("OpenTelemetry:Driver", "None") == "None")
             return builder;
 
+        builder.SetMinimumLevel(LogLevel.Trace);
         builder.AddOpenTelemetry(options =>
         {
             options.IncludeScopes = true;
@@ -31,7 +32,7 @@ public static class ServiceCollectionExtensions
             options.AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug);
             options.AddOtlpExporter(o =>
             {
-                var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
+                var jaegerEndpoint = configuration["OpenTelemetry:Jaeger:Endpoint"];
                 if (string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
                     o.Endpoint = new Uri(jaegerEndpoint);
             });
@@ -47,17 +48,17 @@ public static class ServiceCollectionExtensions
         services.AddOpenTelemetry()
             .WithTracing(builder =>
             {
-                builder.SetSampler(new AlwaysOnSampler());
-
                 builder
+                    .SetSampler(new AlwaysOnSampler())
                     .AddSource(configuration["OpenTelemetry:ServiceName"])
+                    .AddSource("Ilmhub.Judge.Messaging")
                     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(configuration["OpenTelemetry:ServiceName"]))
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddConsoleExporter(c => c.Targets = ConsoleExporterOutputTargets.Debug)
                     .AddOtlpExporter(options =>
                     {
-                        var jaegerEndpoint = Environment.GetEnvironmentVariable("JAEGER_ENDPOINT");
+                        var jaegerEndpoint = configuration["OpenTelemetry:Jaeger:Endpoint"];
                         if (string.IsNullOrWhiteSpace(jaegerEndpoint) is false)
                             options.Endpoint = new Uri(jaegerEndpoint);
                     });
