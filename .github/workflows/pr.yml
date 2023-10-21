@@ -21,12 +21,12 @@ jobs:
 
       - name: Install dependencies 📂
         run: dotnet restore
+        
+      - name: Build 🧱
+        run: dotnet build --configuration Release --no-restore -warnaserror
 
       - name: Check formatting 📏
         run: dotnet format --verify-no-changes --no-restore
-
-      - name: Build 🧱
-        run: dotnet build --configuration Release --no-restore -warnaserror
 
       # - name: Test 🧪
       #   run: dotnet test --configuration Release --no-build
