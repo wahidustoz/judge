@@ -1,5 +1,4 @@
 ﻿using Ilmhub.Judge.Messaging.Shared.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Ilmhub.Judge.Messaging.Demo;
 

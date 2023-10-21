@@ -1,7 +1,5 @@
 ﻿using Ilmhub.Judge.Messaging.Demo;
 using Ilmhub.Judge.Sdk;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
