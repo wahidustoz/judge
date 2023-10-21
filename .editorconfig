@@ -26,6 +26,8 @@ insert_final_newline = false
 
 # Organize usings
 dotnet_sort_system_directives_first = true
+dotnet_diagnostic.IDE0005.severity = warning    # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0005
+dotnet_diagnostic.IDE0082.severity = warning    # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0082
 
 # Language keywords vs BCL types preferences
 dotnet_style_predefined_type_for_locals_parameters_members = true:warning
@@ -56,8 +58,7 @@ dotnet_style_prefer_inferred_tuple_names = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
 dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:suggestion
-
-# Field preferences
+dotnet_style_namespace_match_folder = true:warning
 dotnet_style_readonly_field = true:warning
 
 # Parameter preferences
