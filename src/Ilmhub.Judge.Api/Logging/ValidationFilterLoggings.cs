@@ -4,16 +4,16 @@ public static partial class ValidationFilterLoggings
     [LoggerMessage(
         EventId = 0,
         Level = LogLevel.Trace,
-        Message = "FluentAsynValidationFilter started for type {targetType}.")]
-    public static partial void LogValidationFilterStarted(
+        Message = "Fluent validation started for type {targetType}.")]
+    public static partial void LogValidationStarted(
         this ILogger logger,
         string targetType);
 
     [LoggerMessage(
         EventId = 1,
         Level = LogLevel.Trace,
-        Message = "FluentAsyncValidationFilter validated {targetType} successfully.")]
-    public static partial void LogValidationFilterCompleted(
+        Message = "Fluent validation for {targetType} is successful.")]
+    public static partial void LogValidationCompleted(
         this ILogger logger,
         string targetType);
 
@@ -29,9 +29,9 @@ public static partial class ValidationFilterLoggings
     [LoggerMessage(
         EventId = 5,
         Level = LogLevel.Warning,
-        Message = "FluentAsynValidationFilter Validation failed {validationFilter}")]
-    public static partial void LogValidationFilterFailedException(
+        Message = "Error occured during fluent validation for {targetType}.")]
+    public static partial void LogValidationException(
         this ILogger logger,
-        string validationFilter,
+        string targetType,
         Exception exception);
 }

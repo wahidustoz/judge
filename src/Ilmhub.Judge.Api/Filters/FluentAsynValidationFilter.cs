@@ -4,9 +4,9 @@ using Ilmhub.Judge.Api.Logging;
 
 namespace Ilmhub.Judge.Api.Filters;
 
-public class FluentAsyncValidationFilter<T> : IEndpointFilter where T : class
+public class AsyncFluentValidationFilter<T> : IEndpointFilter where T : class
 {
-    private readonly ILogger<FluentAsyncValidationFilter<T>> logger;
+    private readonly ILogger<AsyncFluentValidationFilter<T>> logger;
     public async ValueTask<object> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         try
@@ -17,7 +17,7 @@ public class FluentAsyncValidationFilter<T> : IEndpointFilter where T : class
             if(argumentOrNull is T argumentToValidate is false)
                 return Results.BadRequest("Request is missing required object.");
             
-            logger.LogValidationFilterStarted(nameof(T));
+            logger.LogValidationStarted(nameof(T));
             if(validator is not null)
             {
                 var validationResult = await validator.ValidateAsync(argumentToValidate);
@@ -29,12 +29,12 @@ public class FluentAsyncValidationFilter<T> : IEndpointFilter where T : class
                     return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: (int)HttpStatusCode.UnprocessableEntity);
                 }
             }
-            logger.LogValidationFilterCompleted(nameof(T));
+            logger.LogValidationCompleted(nameof(T));
             return await next.Invoke(context);
         }
         catch (Exception ex)
         {
-            logger.LogValidationFilterFailedException(nameof(T), ex);
+            logger.LogValidationException(nameof(T), ex);
             return Results.Problem(ex.Message, statusCode: (int)HttpStatusCode.InternalServerError);
         }
     }
