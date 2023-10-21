@@ -2,8 +2,6 @@
 using Ilmhub.Judge.Messaging.Shared.Commands;
 using Ilmhub.Judge.Sdk;
 using Ilmhub.Judge.Sdk.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Ilmhub.Judge.Messaging.Demo;
 
@@ -25,7 +23,7 @@ public class PeriodicJudgeCommandSender : BackgroundService
                 new("3", "-1 0", "-1\n"),
             },
             stoppingToken);
-        while(stoppingToken.IsCancellationRequested is false)
+        while (stoppingToken.IsCancellationRequested is false)
         {
             using var scope = serviceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetRequiredService<IJudgeCommandPublisher>();
