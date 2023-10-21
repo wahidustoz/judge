@@ -23,7 +23,7 @@ public class AsyncFluentValidationFilter<T> : IEndpointFilter where T : class
                 var validationResult = await validator.ValidateAsync(argumentToValidate);
                 if(validationResult.IsValid is false)
                 {
-                    logger.LogValidationFilterFailedException(
+                    logger.LogValidationFailed(
                         targetType: nameof(T), 
                         errors: validationResult.Errors.ToDictionary(x => x.PropertyName, x => x.ErrorMessage));
                     return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: (int)HttpStatusCode.UnprocessableEntity);
