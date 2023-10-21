@@ -19,7 +19,7 @@ var users = app.Services.GetRequiredService<IIlmhubJudgeOptions>().SystemUsers;
 
 
 var cc = await compiler.CompileAsync(
-        source: @"Console.WriteLine(""Hello world"");", 
+        source: @"Console.WriteLine(""Hello world"");",
         languageId: 6);
 Console.WriteLine(JsonSerializer.Serialize(cc, new JsonSerializerOptions() { WriteIndented = true }));
 

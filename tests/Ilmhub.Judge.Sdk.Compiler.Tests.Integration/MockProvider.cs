@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Ilmhub.Judge.Abstractions.Models;
+﻿using Ilmhub.Judge.Abstractions.Models;
 using Ilmhub.Judge.Abstractions.Options;
-using Ilmhub.Judge.Options;
 using Ilmhub.Judge.Models;
+using Ilmhub.Judge.Options;
+using Microsoft.AspNetCore.Builder;
 
 namespace Ilmhub.Judge.Sdk.Compiler.Tests.Integration;
 
@@ -48,7 +48,7 @@ public static class MockProvider
                     Command = "{exe_path}",
                     SeccompRule = "c_cpp"
                 }
-            }, 
+            },
             new LanguageConfiguration
             {
                 Id = 2,
@@ -95,7 +95,7 @@ public static class MockProvider
             },
             new LanguageConfiguration
             {
-                Id = 4, 
+                Id = 4,
                 Name = "Python (3)",
                 Compile = new CompileConfiguration()
                 {
