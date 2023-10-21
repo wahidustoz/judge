@@ -13,4 +13,3 @@ public interface IExecutionResult
     EExecutionError Error { get; set; }
     EExecutionResult Status { get; set; }
 }
-

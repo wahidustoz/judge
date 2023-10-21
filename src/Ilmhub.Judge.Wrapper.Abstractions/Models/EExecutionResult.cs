@@ -2,7 +2,7 @@ namespace Ilmhub.Judge.Wrapper.Abstractions.Models;
 
 public enum EExecutionResult
 {
-    Success = 0, 
+    Success = 0,
     CpuTimeLimitExceeded = 1,
     RealTimeLimitExceeded = 2,
     MemoryLimitExceeded = 3,
