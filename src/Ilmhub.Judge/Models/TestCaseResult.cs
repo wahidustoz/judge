@@ -6,13 +6,13 @@ namespace Ilmhub.Judge.Models;
 
 public class TestCaseResult : ITestCaseResult
 {
-    private bool? UseStrictMode { get; }
+    private readonly bool? useStrictMode;
     public TestCaseResult(string id, string expectedOutput, IRunnerResult execution, bool? usestrictMode = default)
     {
         Id = id;
         ExpectedOutput = expectedOutput;
         Execution = execution;
-        UseStrictMode = usestrictMode;
+        useStrictMode = usestrictMode;
     }
 
     public string Id { get; }
@@ -25,9 +25,9 @@ public class TestCaseResult : ITestCaseResult
 
     private ETestCaseStatus GetStatus() => Execution.IsSuccess switch
     {
-        true when OutputMatches(strict: UseStrictMode)
+        true when OutputMatches(strict: useStrictMode)
             => ETestCaseStatus.Success,
-        true when UseStrictMode is true && OutputMatches(strict: false)
+        true when useStrictMode is true && OutputMatches(strict: false)
             => ETestCaseStatus.PresentationError,
         true => ETestCaseStatus.WrongAnswer,
         false when Execution.Execution.Status is EExecutionResult.CpuTimeLimitExceeded
