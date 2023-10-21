@@ -8,7 +8,7 @@ namespace Ilmhub.Judge.Messaging.Shared.Converters;
 public class CommandConverter : JsonConverter<ICommand>
 {
     private const string DESCRIMINATOR = "$command";
-    private Type[] Types = new Type[]
+    private readonly Type[] types = new Type[]
     {
         typeof(JudgeCommand),
         typeof(RunCommand)
@@ -27,7 +27,7 @@ public class CommandConverter : JsonConverter<ICommand>
         if (false == jsonDocument.RootElement.TryGetProperty(DESCRIMINATOR, out var typeProperty))
             throw new JsonException();
 
-        var type = Types.FirstOrDefault(x => x.Name == typeProperty.GetString())
+        var type = types.FirstOrDefault(x => x.Name == typeProperty.GetString())
             ?? throw new JsonException();
 
         var jsonObject = jsonDocument.RootElement.GetRawText();
