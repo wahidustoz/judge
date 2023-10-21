@@ -15,10 +15,9 @@ public static class MasstransitExtensions
             using var scope = serviceProvider.CreateScope();
             var commandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<TCommand>>();
 
-            using var activity = new Activity($"Ilmhub.Judge.{typeof(TCommand).Name}");
-            activity.Start();
+            var activitySource = new ActivitySource("Ilmhub.Judge.Messaging");
+            using var activity = activitySource.StartActivity(typeof(TCommand).Name);
             await commandHandler.HandleAsync(commandContext.Message, commandContext.CancellationToken);
-            activity.Stop();
         });
         return e;
     }
