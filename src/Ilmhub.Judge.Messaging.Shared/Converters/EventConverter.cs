@@ -8,7 +8,7 @@ namespace Ilmhub.Judge.Messaging.Shared.Converters;
 public class EventConverter : JsonConverter<IJudgeEvent>
 {
     private const string DESCRIMINATOR = "$event";
-    private Type[] Types = new Type[]
+    private readonly Type[] types = new Type[]
     {
         typeof(JudgeCompleted),
         typeof(JudgeFailed),
@@ -29,7 +29,7 @@ public class EventConverter : JsonConverter<IJudgeEvent>
         if (false == jsonDocument.RootElement.TryGetProperty(DESCRIMINATOR, out var typeProperty))
             throw new JsonException();
 
-        var type = Types.FirstOrDefault(x => x.Name == typeProperty.GetString())
+        var type = types.FirstOrDefault(x => x.Name == typeProperty.GetString())
             ?? throw new JsonException();
 
         var jsonObject = jsonDocument.RootElement.GetRawText();
