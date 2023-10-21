@@ -137,11 +137,11 @@ public class Judger : IJudger
             await cli.ChangePathModeAsync(LinuxCommandLine.EXECUTE_MODE, testCasesFolder, true, cancellationToken);
 
             var testCaseResults = new List<TestCaseResult>();
-            foreach (var (InputFilePath, OutputFilePath, Id) in testCases)
+            foreach (var (inputFilePath, outputFilePath, id) in testCases)
             {
-                var outputTask = IOUtilities.GetAllTextOrDefaultAsync(OutputFilePath, cancellationToken);
+                var outputTask = IOUtilities.GetAllTextOrDefaultAsync(outputFilePath, cancellationToken);
                 IRunnerResult runnerResult = default;
-                if (string.IsNullOrWhiteSpace(InputFilePath))
+                if (string.IsNullOrWhiteSpace(inputFilePath))
                 {
                     runnerResult = await runner.RunAsync(
                         languageId,
@@ -155,7 +155,7 @@ public class Judger : IJudger
                 {
                     runnerResult = await runner.RunAsync(
                         languageId,
-                        InputFilePath,
+                        inputFilePath,
                         compilationResult.ExecutableFilePath,
                         maxCpu,
                         maxMemory,
@@ -168,11 +168,11 @@ public class Judger : IJudger
                     logger.LogError(
                         "Runner failed for language {id} at test case {testcaseId}. Result: {result}. ABORTING....",
                         languageId,
-                        Id,
+                        id,
                         JsonSerializer.Serialize(compilationResult, new JsonSerializerOptions { WriteIndented = true }));
                 }
 
-                testCaseResults.Add(new TestCaseResult(Id, await outputTask, runnerResult, useStrictMode));
+                testCaseResults.Add(new TestCaseResult(id, await outputTask, runnerResult, useStrictMode));
             }
 
             logger.LogInformation("Completed Judge process 🎉");
@@ -212,7 +212,7 @@ public class Judger : IJudger
         logger.LogInformation("Finished writing {count} test cases.", testCases.Count());
     }
 
-    private IEnumerable<(string InputFilePath, string OutputFilePath, string Id)> EnumerateTestCases(string testCasesFolder)
+    private IEnumerable<(string inputFilePath, string outputFilePath, string Id)> EnumerateTestCases(string testCasesFolder)
     {
         var inputFiles = Directory.EnumerateFiles(testCasesFolder, $"*{INPUT_EXTENSION}");
         var outputFiles = Directory.EnumerateFiles(testCasesFolder, $"*{OUTPUT_EXTENSION}");

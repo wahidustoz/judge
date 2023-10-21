@@ -11,7 +11,7 @@ public class LanguageService : ILanguageService
 {
     private readonly int[] supportedDotnetVersions = { 6, 7 };
     private readonly ILogger<LanguageService> logger;
-    private IEnumerable<ILanguageConfiguration> languageConfigurationOptions;
+    private readonly IEnumerable<ILanguageConfiguration> languageConfigurationOptions;
 
     public LanguageService(
         ILogger<LanguageService> logger,
