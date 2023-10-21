@@ -6,7 +6,7 @@ public static class EndpointConventionBuilderExtensions
 {
     public static IEndpointConventionBuilder WithRateLimiting(this IEndpointConventionBuilder builder, string policy, IConfiguration configuration)
     {
-        if(configuration.GetValue("RateLimiting:Enabled", false))
+        if (configuration.GetValue("RateLimiting:Enabled", false))
             builder.RequireRateLimiting(policy);
         return builder;
     }

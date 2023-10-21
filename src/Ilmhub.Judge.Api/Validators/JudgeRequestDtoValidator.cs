@@ -58,7 +58,7 @@ public class JudgeRequestValidator : AbstractValidator<JudgeRequestDto>
             testcase.RuleFor(t => t.Input).MaximumLength(5000);
         });
     }
-    
-    private bool HaveUniqueId(IEnumerable<TestCase> testcases) 
+
+    private bool HaveUniqueId(IEnumerable<TestCase> testcases)
         => testcases.Select(x => x.Id).Distinct().Count() == testcases.Count();
 }

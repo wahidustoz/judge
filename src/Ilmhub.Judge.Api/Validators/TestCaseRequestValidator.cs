@@ -8,7 +8,7 @@ public class TestCaseRequestValidator : AbstractValidator<IEnumerable<TestCaseDt
     public TestCaseRequestValidator()
     {
         RuleFor(x => x.Count()).InclusiveBetween(1, 100);
-        
+
         RuleFor(x => x)
             .NotEmpty()
             .DependentRules(() =>
@@ -17,7 +17,7 @@ public class TestCaseRequestValidator : AbstractValidator<IEnumerable<TestCaseDt
                     .Must(HaveUniqueId)
                     .WithMessage("All {PropertyName} must have unique IDs.");
             });
-            
+
         RuleForEach(x => x).ChildRules(testcase =>
         {
             testcase.RuleFor(t => t.Id).NotEmpty();
@@ -26,6 +26,6 @@ public class TestCaseRequestValidator : AbstractValidator<IEnumerable<TestCaseDt
         });
     }
 
-    private bool HaveUniqueId(IEnumerable<TestCaseDto> testcases) 
+    private bool HaveUniqueId(IEnumerable<TestCaseDto> testcases)
         => testcases.Select(x => x.Id).Distinct().Count() == testcases.Count();
 }
