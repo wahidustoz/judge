@@ -13,7 +13,7 @@ public static class EndpointConventionBuilderExtensions
 
     public static IEndpointConventionBuilder WithAsyncValidation<T>(this RouteHandlerBuilder builder) where T : class
     {
-        builder.AddEndpointFilter<FluentAsynValidationFilter<T>>();
+        builder.AddEndpointFilter<FluentAsyncValidationFilter<T>>();
         return builder;
     }
 }

@@ -2,64 +2,36 @@ namespace Ilmhub.Judge.Api.Logging;
 public static partial class ValidationFilterLoggings
 {
     [LoggerMessage(
-        EventId = 0, 
-        Level = LogLevel.Trace, 
-        Message = "FluentAsynValidationFilter started {validationFilter} with request Body {body}")]
+        EventId = 0,
+        Level = LogLevel.Trace,
+        Message = "FluentAsynValidationFilter started for type {targetType}.")]
     public static partial void LogValidationFilterStarted(
         this ILogger logger,
-        string validationFilter,
-        Stream body);
+        string targetType);
 
     [LoggerMessage(
         EventId = 1,
-        Level = LogLevel.Information,
-        Message = "FluentAsynValidationFilter executed successfully with {validationFilter}"
-    )]
+        Level = LogLevel.Trace,
+        Message = "FluentAsyncValidationFilter validated {targetType} successfully.")]
     public static partial void LogValidationFilterCompleted(
         this ILogger logger,
-        string validationFilter
-    );
-
-    [LoggerMessage(
-        EventId = 2,
-        Level = LogLevel.Warning,
-        Message = "FluentAsynValidationFilter argument is null with {validationFilter}"
-    )]
-    public static partial void LogValidationFilterArgumentOrNull(
-        this ILogger logger,
-        string validationFilter
-    );
-
-    [LoggerMessage(
-        EventId = 3,
-        Level = LogLevel.Trace,
-        Message = "FluentAsynValidationFilter Validation started {validationFilter}"
-    )]
-    public static partial void LogValidationFilterValidationStarted(
-        this ILogger logger,
-        string validationFilter
-    );
+        string targetType);
 
     [LoggerMessage(
         EventId = 4,
         Level = LogLevel.Trace,
-        Message = "FluentAsynValidationFilter Validation IsValid false {validationFilter} with {keyValuePairs} statusCode {statusCode}"
-    )]
+        Message = "Fluent validation failed for {targetType} with error: {errors}.")]
     public static partial void LogValidationFilterValidationResulProblem(
         this ILogger logger,
-        string validationFilter,
-        Dictionary<string, string> keyValuePairs,
-        int statusCode
-    );
+        string targetType,
+        Dictionary<string, string> errors);
 
     [LoggerMessage(
         EventId = 5,
         Level = LogLevel.Warning,
-        Message = "FluentAsynValidationFilter Validation failed {validationFilter}"
-    )]
+        Message = "FluentAsynValidationFilter Validation failed {validationFilter}")]
     public static partial void LogValidationFilterFailedException(
         this ILogger logger,
         string validationFilter,
-        Exception exception
-    );
+        Exception exception);
 }
