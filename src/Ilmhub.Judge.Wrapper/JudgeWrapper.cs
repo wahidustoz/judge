@@ -4,6 +4,7 @@ using System.Text.Json;
 using Ilmhub.Judge.Wrapper.Abstractions;
 using Ilmhub.Judge.Wrapper.Abstractions.Models;
 using Ilmhub.Judge.Wrapper.Exceptions;
+using Ilmhub.Judge.Wrapper.Logging;
 using Ilmhub.Judge.Wrapper.Models;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +27,7 @@ public class JudgeWrapper : IJudgeWrapper
 
     public async ValueTask<IExecutionResult> ExecuteJudgerAsync(IExecutionRequest request, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Starting to execute Judgerlib.so process.");
+        logger.LogWrapperStarted(nameof(IExecutionRequest), request.Gid);
         try
         {
             var processArguments = BuildArguments(request);
@@ -46,11 +47,7 @@ public class JudgeWrapper : IJudgeWrapper
 
             var output = process.StandardOutput.ReadToEnd();
             var error = process.StandardError.ReadToEnd();
-            logger.LogInformation(
-                "Libjudger.so process finished. Exit code: {exitCode}, Output: {output}, Error: {error}.",
-                process.ExitCode,
-                output,
-                error);
+            logger.LogWrapperCompleted(process.ExitCode, output, error);
 
             var resultObject = JsonSerializer.Deserialize<ExecutionResult>(output);
             resultObject.ErrorMessage = error;
@@ -59,18 +56,19 @@ public class JudgeWrapper : IJudgeWrapper
         }
         catch (JsonException jsonException)
         {
-            logger.LogError(jsonException, "Failed to deserialize Libjudger.so output.");
+            logger.LogJudgeWrapperFailedException(jsonException);
             throw;
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Libjudger.so process faild while executing {executable}.", request.ExecutablePath);
+            logger.LogJudgeWrapperFailedException(request.ExecutablePath, ex);
             throw new JudgeProcessFailedException($"Libjudger.so process faild while executing {request.ExecutablePath}", ex);
         }
     }
 
     private string BuildArguments(IExecutionRequest request)
     {
+        logger.LogWrapperStarted(nameof(IExecutionRequest), request.Gid);
         StringBuilder builder = new();
         AppendSingleArgument(builder, "exe_path", request.ExecutablePath);
         AppendSingleArgument(builder, "input_path", request.InputPath);
@@ -100,7 +98,8 @@ public class JudgeWrapper : IJudgeWrapper
             foreach (var arg in request.Arguments)
                 AppendSingleArgument(builder, "args", arg);
 
-        logger.LogInformation("Libjudger arguments: {arguments}", builder.ToString());
+        // logger.LogInformation("Libjudger arguments: {arguments}", builder.ToString());
+        logger.LogWrapperCompleted(nameof(IExecutionRequest), request.Gid);
 
         return builder.ToString();
     }
